@@ -18,3 +18,25 @@ AUPCharacter::AUPCharacter()
 	bUseControllerRotationYaw = false;
 }
 
+void AUPCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	InitAbilityInfo();
+}
+
+void AUPCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	// сообщаем кто avatar actor и кто Owner
+	InitAbilityInfo();
+}
+// сообщаем кто avatar actor и кто Owner
+void AUPCharacter::InitAbilityInfo()
+{
+	AUpFightPlayerState* UpFightPlayerState = GetPlayerState<AUpFightPlayerState>();
+	check(UpFightPlayerState);
+	AbilitySystemComponent = UpFightPlayerState->GetAbilitySystemComponent();
+	AttributeSet = UpFightPlayerState->GetAttributeSet();
+	// сообщаем кто avatar actor и кто Owner
+	AbilitySystemComponent->InitAbilityActorInfo(UpFightPlayerState, this);
+}

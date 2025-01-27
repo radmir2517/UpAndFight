@@ -21,6 +21,13 @@ AUPEnemy::AUPEnemy()
 	AbilitySystemComponent->SetIsReplicated(true);
 }
 
+void AUPEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	// сообщаем кто avatar actor и кто Owner
+	AbilitySystemComponent->InitAbilityActorInfo(this,this);
+}
+
 void AUPEnemy::HighlightActor()
 {
 	GetMesh()->SetCustomDepthStencilValue(true);

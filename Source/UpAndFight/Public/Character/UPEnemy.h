@@ -17,6 +17,8 @@ class UPANDFIGHT_API AUPEnemy : public AUPCharacterBase, public IEnemyInterface
 public:
 
 	AUPEnemy();
+
+	virtual void BeginPlay() override;
 	
 	// функция выделения актера
 	virtual void HighlightActor() override;
