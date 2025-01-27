@@ -2,6 +2,8 @@
 
 
 #include "Character/UPEnemy.h"
+
+#include "AbilitySystemComponent.h"
 #include "UpAndFight/UpAndFight.h"
 
 AUPEnemy::AUPEnemy()
@@ -9,6 +11,14 @@ AUPEnemy::AUPEnemy()
 	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 	Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility,ECR_Block);
+
+	// создадим компонент AbilitySystemComponent и сделаем его реплицируемым
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent->SetIsReplicated(true);	// Сделаем его реплицуемым
+	AttributeSet = CreateDefaultSubobject<UAttributeSet>("AttributeSet");
+	// режим мультипликации минималльный, т.к это ИИ и ему не нужно репликации эффектов
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+	AbilitySystemComponent->SetIsReplicated(true);
 }
 
 void AUPEnemy::HighlightActor()

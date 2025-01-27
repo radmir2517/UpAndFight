@@ -3,18 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
 #include "UpFightPlayerState.generated.h"
 
-/**
- * 
- */
+class UAttributeSet;
+class UAbilitySystemComponent;
+
 UCLASS()
-class UPANDFIGHT_API AUpFightPlayerState : public APlayerState
+class UPANDFIGHT_API AUpFightPlayerState : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 public:
 
 	AUpFightPlayerState();
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UAttributeSet* GetAttributeSet() const;
 	
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	UPROPERTY()
+	TObjectPtr<UAttributeSet> AttributeSet;
 };
