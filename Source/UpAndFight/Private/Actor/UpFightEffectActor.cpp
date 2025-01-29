@@ -9,7 +9,7 @@
 AUpFightEffectActor::AUpFightEffectActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	Mesh = CreateDefaultSubobject<UMeshComponent>("Mesh");
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
 	SetRootComponent(Mesh);
 	
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");

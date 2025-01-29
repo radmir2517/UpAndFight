@@ -27,7 +27,7 @@ protected:
 	TObjectPtr<USphereComponent> Sphere;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UMeshComponent> Mesh;
+	TObjectPtr<UStaticMeshComponent> Mesh;
 
 	
 };
