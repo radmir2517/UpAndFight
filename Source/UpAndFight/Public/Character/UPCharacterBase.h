@@ -7,6 +7,8 @@
 #include "AbilitySystemInterface.h"
 #include "UPCharacterBase.generated.h"
 
+class UUpFightAttributeSet;
+class UUpFightSystemComponent;
 class UAttributeSet;
 // сделаем класс абстрактным, чтобы нельзя было его создать
 UCLASS(Abstract)

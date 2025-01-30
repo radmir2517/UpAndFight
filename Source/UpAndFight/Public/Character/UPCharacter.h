@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystemComponent.h"
 #include "Character/UPCharacterBase.h"
-#include "Player/UpFightPlayerState.h"
 #include "UPCharacter.generated.h"
 
 /**
@@ -18,7 +16,8 @@ class UPANDFIGHT_API AUPCharacter : public AUPCharacterBase
 
 public:
 	AUPCharacter();
-	
+	void InitOverlay();
+
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	// сообщаем кто avatar actor и кто Owner

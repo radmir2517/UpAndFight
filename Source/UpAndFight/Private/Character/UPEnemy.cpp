@@ -4,6 +4,8 @@
 #include "Character/UPEnemy.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/UpFightAttributeSet.h"
+#include "AbilitySystem/UpFightSystemComponent.h"
 #include "UpAndFight/UpAndFight.h"
 
 AUPEnemy::AUPEnemy()
@@ -13,9 +15,9 @@ AUPEnemy::AUPEnemy()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility,ECR_Block);
 
 	// создадим компонент AbilitySystemComponent и сделаем его реплицируемым
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent = CreateDefaultSubobject<UUpFightSystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);	// Сделаем его реплицуемым
-	AttributeSet = CreateDefaultSubobject<UAttributeSet>("AttributeSet");
+	AttributeSet = CreateDefaultSubobject<UUpFightAttributeSet>("AttributeSet");
 	// режим мультипликации минималльный, т.к это ИИ и ему не нужно репликации эффектов
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	AbilitySystemComponent->SetIsReplicated(true);

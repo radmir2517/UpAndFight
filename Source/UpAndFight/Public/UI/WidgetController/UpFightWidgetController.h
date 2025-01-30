@@ -3,22 +3,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
+#include "AbilitySystemComponent.h"
 #include "UpFightWidgetController.generated.h"
 
 class UAttributeSet;
 class UAbilitySystemComponent;
 
-USTRUCT(Blueprintable)
-struct FInitializeParameters
+// структура которая будет принимать несколько переменных, чтобы удобнее было инициализировать
+USTRUCT(BlueprintType)
+struct FWidgetControllerParams
 {
 	GENERATED_BODY()
-
+	// конструктор который принимает нужные переменные для контроллера
+	FWidgetControllerParams(){};
+	FWidgetControllerParams(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
+		: PlayerController(PC), PlayerState(PS), AbilitySystemComponent(ASC), AttributeSet(AS)   {}
+	
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 	
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UAttributeSet> AttributeSetl;
+	TObjectPtr<UAttributeSet> AttributeSet;
 	
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<APlayerState> PlayerState;
@@ -27,18 +32,25 @@ struct FInitializeParameters
 	TObjectPtr<APlayerController> PlayerController;
 };
 
-UCLASS()
+UCLASS(BlueprintType,Blueprintable)
 class UPANDFIGHT_API UUpFightWidgetController : public UObject
 {
 	GENERATED_BODY()
 
 public:
 
+	virtual void BindCalledDepends();
+	
+	virtual void BroadcastInitialValues();
+	
+	// сеттер который назначает переменные из структуры Params
+	void SetWidgetControllerParams(const FWidgetControllerParams& Params);
+
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 	
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UAttributeSet> AttributeSetl;
+	TObjectPtr<UAttributeSet> AttributeSet;
 	
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<APlayerState> PlayerState;

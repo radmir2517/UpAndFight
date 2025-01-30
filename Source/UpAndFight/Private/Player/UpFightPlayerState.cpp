@@ -4,6 +4,8 @@
 #include "Player/UpFightPlayerState.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/UpFightAttributeSet.h"
+#include "AbilitySystem/UpFightSystemComponent.h"
 
 AUpFightPlayerState::AUpFightPlayerState()
 {
@@ -11,9 +13,9 @@ AUpFightPlayerState::AUpFightPlayerState()
 	SetNetUpdateFrequency(100.f);
 
 	// создадим компонент AbilitySystemComponent и сделаем его реплицируемым
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent = CreateDefaultSubobject<UUpFightSystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);	// Сделаем его реплицуемым
-	AttributeSet = CreateDefaultSubobject<UAttributeSet>("AttributeSet");
+	AttributeSet = CreateDefaultSubobject<UUpFightAttributeSet>("AttributeSet");
 	// режим мультипликации смешанный, игровые эффекты реплицированны
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 	AbilitySystemComponent->SetIsReplicated(true);
