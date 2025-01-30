@@ -22,7 +22,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FAttributeChandedSignature MaxManaChangedDelegate;
 	
-	virtual void BindCalledDepends() override;
+	virtual void BindCallBacksToDependencies() override;
 	virtual void BroadcastInitialValues() override;
 
 	

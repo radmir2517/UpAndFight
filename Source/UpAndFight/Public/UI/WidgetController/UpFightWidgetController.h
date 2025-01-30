@@ -39,7 +39,7 @@ class UPANDFIGHT_API UUpFightWidgetController : public UObject
 
 public:
 
-	virtual void BindCalledDepends();
+	virtual void BindCallBacksToDependencies();
 	
 	virtual void BroadcastInitialValues();
 	

@@ -6,9 +6,9 @@
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 
-void UOverlayWidgetController::BindCalledDepends()
+void UOverlayWidgetController::BindCallBacksToDependencies()
 {
-	Super::BindCalledDepends();
+	Super::BindCallBacksToDependencies();
 	UUpFightSystemComponent* UpFightAbilitySystemComponent = Cast<UUpFightSystemComponent>(AbilitySystemComponent);
 	UUpFightAttributeSet* UpFightAttributeSet = Cast<UUpFightAttributeSet>(AttributeSet);
 	

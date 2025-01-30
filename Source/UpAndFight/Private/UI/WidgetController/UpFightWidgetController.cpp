@@ -4,7 +4,7 @@
 #include "UI/WidgetController/UpFightWidgetController.h"
 
 
-void UUpFightWidgetController::BindCalledDepends()
+void UUpFightWidgetController::BindCallBacksToDependencies()
 {
 	
 }

@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "UpFightEffectActor.generated.h"
 
+class UGameplayEffect;
 class USphereComponent;
 
 UCLASS()
@@ -16,18 +17,15 @@ class UPANDFIGHT_API AUpFightEffectActor : public AActor
 public:	
 	AUpFightEffectActor();
 
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void OnOverlap (UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	virtual void EndOverlap (UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
 protected:
 	virtual void BeginPlay() override;
+	UFUNCTION(BlueprintCallable)
+	//Функция применения эффекта к цели
+	void ApplyEffectToTarget(AActor* Target,TSubclassOf<UGameplayEffect>GameplayEffectClass);
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USphereComponent> Sphere;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UStaticMeshComponent> Mesh;
-
+	// класс мгновенного эффекта
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGameplayEffect>InstanceGameplayEffectClass;
 	
 };

@@ -14,6 +14,7 @@ UOverlayWidgetController* AUpFightHUD::GetOverlayWidgetController(const FWidgetC
 		OverlayWidgetController = NewObject<UOverlayWidgetController>(this, OverlayWidgetControllerClass);
 		// назначим AttributeSet, AbilitySystem, PlayerController, PlayerState в контроллер
 		OverlayWidgetController->SetWidgetControllerParams(WCParams);
+		OverlayWidgetController->BindCallBacksToDependencies();
 	}
 	return OverlayWidgetController;
 }
