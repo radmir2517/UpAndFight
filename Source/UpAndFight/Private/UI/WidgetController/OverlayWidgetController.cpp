@@ -35,8 +35,8 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	Super::BroadcastInitialValues();
 
 	UUpFightAttributeSet* UpFightAttributeSet = Cast<UUpFightAttributeSet>(AttributeSet);
-	HealthChangedDelegate.Broadcast(UpFightAttributeSet->GetHealth());
 	MaxHealthChangedDelegate.Broadcast(UpFightAttributeSet->GetMaxHealth());
-	ManaChangedDelegate.Broadcast(UpFightAttributeSet->GetMana());
+	HealthChangedDelegate.Broadcast(UpFightAttributeSet->GetHealth());
 	MaxManaChangedDelegate.Broadcast(UpFightAttributeSet->GetMaxMana());
+	ManaChangedDelegate.Broadcast(UpFightAttributeSet->GetMana());
 }
