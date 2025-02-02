@@ -27,7 +27,7 @@ void AUpFightEffectActor::ApplyEffectToTarget(AActor* Target, TSubclassOf<UGamep
 	{
 		FGameplayEffectContextHandle ContextHandle = TargetASC->MakeEffectContext();
 		ContextHandle.AddSourceObject(this);
-		FGameplayEffectSpecHandle SpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass,1.f,ContextHandle);
+		FGameplayEffectSpecHandle SpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass,ActorLevel,ContextHandle);
 		// теперь для применения эффекта нам нужна ссылка на этот необработанный(он диначический) указатель спецификатора/
 		FActiveGameplayEffectHandle ActiveGameplayEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 		// булевая которая хранит бесконечен ли эффект или нет

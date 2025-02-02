@@ -26,8 +26,16 @@ AUPEnemy::AUPEnemy()
 void AUPEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	// инцилизируем систему способностей у врага
+	InitAbilityInfo();
+}
+
+void AUPEnemy::InitAbilityInfo()
+{
 	// сообщаем кто avatar actor и кто Owner
 	AbilitySystemComponent->InitAbilityActorInfo(this,this);
+	// вызов привязки делегата OnGameplayEffectAppliedToSelf к нашей функции в AbilitySystemComponent
+	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 }
 
 void AUPEnemy::HighlightActor()

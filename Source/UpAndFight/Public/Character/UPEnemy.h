@@ -19,7 +19,8 @@ public:
 	AUPEnemy();
 
 	virtual void BeginPlay() override;
-	
+
+	virtual void InitAbilityInfo() override;
 	// функция выделения актера
 	virtual void HighlightActor() override;
 	// функция убирания выделения актера

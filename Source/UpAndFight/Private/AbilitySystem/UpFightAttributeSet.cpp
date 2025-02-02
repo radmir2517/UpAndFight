@@ -49,8 +49,6 @@ void UUpFightAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldValue)
 }
 
 
-
-
 void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);

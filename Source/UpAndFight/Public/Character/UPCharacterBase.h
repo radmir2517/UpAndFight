@@ -20,8 +20,8 @@ public:
 	AUPCharacterBase();
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-	
+	// функция вызова первичных для работы наших функции
+	virtual void InitAbilityInfo();
 protected:
 	virtual void BeginPlay() override;
 	

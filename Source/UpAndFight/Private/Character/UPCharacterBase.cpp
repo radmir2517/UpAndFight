@@ -18,6 +18,10 @@ UAbilitySystemComponent* AUPCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+void AUPCharacterBase::InitAbilityInfo()
+{
+}
+
 
 void AUPCharacterBase::BeginPlay()
 {

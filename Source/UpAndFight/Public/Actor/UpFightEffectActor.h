@@ -73,4 +73,8 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Applied Effect")
 	bool bDestroyOnEffectRemoval = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Applied Effect")
+	float ActorLevel = 1.f;
+	
 };

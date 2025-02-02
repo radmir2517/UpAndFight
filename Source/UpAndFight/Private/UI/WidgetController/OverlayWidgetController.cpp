@@ -11,6 +11,8 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 	Super::BindCallBacksToDependencies();
 	UUpFightSystemComponent* UpFightAbilitySystemComponent = Cast<UUpFightSystemComponent>(AbilitySystemComponent);
 	UUpFightAttributeSet* UpFightAttributeSet = Cast<UUpFightAttributeSet>(AttributeSet);
+
+	checkf(MessageWidgetDataTable, TEXT("Add a MessageWidgetDataTable to the OverlayWidgetController"));
 	
 	UpFightAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpFightAttributeSet->GetHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
 	{
@@ -27,6 +29,16 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 		UpFightAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpFightAttributeSet->GetMaxManaAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
 	{
 		MaxManaChangedDelegate.Broadcast(Data.NewValue);
+	});
+
+	// после применения эффекта мы будем получать теги эффекта и если оно совпадет с зельями выведем на экран
+	UpFightAbilitySystemComponent->EffectAssetTagsDelegate.AddLambda([this](const FGameplayTagContainer& AssetTags)
+	{
+		for(const FGameplayTag& Tag : AssetTags)
+		{
+			FUIWidgetRow* Row = GetDataRowFromTable<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+			EffectMessageDelegate.Broadcast(*Row);
+		}
 	});
 }
 
