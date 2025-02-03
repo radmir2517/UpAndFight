@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
+#include "Chaos/ChaosPerfTest.h"
 #include "Player/UpFightPlayerController.h"
 #include "Player/UpFightPlayerState.h"
 #include "UI/HUD/UpFightHUD.h"
@@ -50,10 +51,40 @@ void AUPCharacter::OnRep_PlayerState()
 	// сообщаем кто avatar actor и кто Owner
 	InitAbilityInfo();
 }
+
+
+void AUPCharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level)
+{
+	check(GameplayEffectClass)
+	FGameplayEffectContextHandle EffectHandle = AbilitySystemComponent->MakeEffectContext();
+	EffectHandle.AddSourceObject(this);
+	FGameplayEffectSpecHandle EffectSpec = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffectClass,Level,EffectHandle);
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
+}
+
+
+void AUPCharacter::InitializePrimaryAttributes()
+{
+	// включим эффект первичных атрибутов
+	ApplyEffectToSelf(PrimaryAttributesEffectClass, UpFightPlayerState->GetPlayerLevel());
+}
+
+void AUPCharacter::InitializeSecondaryAttributes()
+{// включим эффект вторичных атрибутов
+	ApplyEffectToSelf(SecondaryAttributesEffectClass, UpFightPlayerState->GetPlayerLevel());
+}
+
+
+void AUPCharacter::InitializeDefaultAttributes()
+{// применения эффекта с атрибутами Primary and Secondary
+	InitializePrimaryAttributes();
+	InitializeSecondaryAttributes();
+}
+
 // сообщаем кто avatar actor и кто Owner
 void AUPCharacter::InitAbilityInfo()
 {
-	AUpFightPlayerState* UpFightPlayerState = GetPlayerState<AUpFightPlayerState>();
+	UpFightPlayerState = GetPlayerState<AUpFightPlayerState>();
 	check(UpFightPlayerState);
 	AbilitySystemComponent = UpFightPlayerState->GetAbilitySystemComponent();
 	AttributeSet = UpFightPlayerState->GetAttributeSet();
@@ -61,6 +92,13 @@ void AUPCharacter::InitAbilityInfo()
 	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 	// сообщаем кто avatar actor и кто Owner
 	AbilitySystemComponent->InitAbilityActorInfo(UpFightPlayerState, this);
+	// применения эффекта с атрибутами Primary and Secondary
+	InitializeDefaultAttributes();
 	// инцилизация оверлея, создания контроллера в HUD и создания выведения Overlay виджета на экран
 	InitOverlay();
+}
+
+int32 AUPCharacter::GetPlayerLevel()
+{
+	return Cast<AUpFightPlayerState>(GetPlayerState())->GetPlayerLevel();
 }

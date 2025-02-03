@@ -50,3 +50,9 @@ void AUPEnemy::UnHighlightActor()
 	Weapon->SetRenderCustomDepth(false);
 }
 
+int32 AUPEnemy::GetPlayerLevel()
+{
+	return Level;
+}
+
+

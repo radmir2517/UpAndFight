@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
+#include "Net/UnrealNetwork.h"
 
 AUpFightPlayerState::AUpFightPlayerState()
 {
@@ -29,4 +30,15 @@ UAbilitySystemComponent* AUpFightPlayerState::GetAbilitySystemComponent() const
 UAttributeSet* AUpFightPlayerState::GetAttributeSet() const
 {
 	return AttributeSet;
+}
+
+void AUpFightPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AUpFightPlayerState,Level);
+}
+
+void AUpFightPlayerState::OnRep_Level(const int32& OldValue) const
+{
+	//GAMEPLAYATTRIBUTE_REPNOTIFY(AUpFightPlayerState,Level,OldValue);
 }
