@@ -5,9 +5,7 @@
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
-#include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
-#include "Chaos/ChaosPerfTest.h"
 #include "Player/UpFightPlayerController.h"
 #include "Player/UpFightPlayerState.h"
 #include "UI/HUD/UpFightHUD.h"
@@ -50,35 +48,6 @@ void AUPCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 	// сообщаем кто avatar actor и кто Owner
 	InitAbilityInfo();
-}
-
-
-void AUPCharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level)
-{
-	check(GameplayEffectClass)
-	FGameplayEffectContextHandle EffectHandle = AbilitySystemComponent->MakeEffectContext();
-	EffectHandle.AddSourceObject(this);
-	FGameplayEffectSpecHandle EffectSpec = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffectClass,Level,EffectHandle);
-	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
-}
-
-
-void AUPCharacter::InitializePrimaryAttributes()
-{
-	// включим эффект первичных атрибутов
-	ApplyEffectToSelf(PrimaryAttributesEffectClass, UpFightPlayerState->GetPlayerLevel());
-}
-
-void AUPCharacter::InitializeSecondaryAttributes()
-{// включим эффект вторичных атрибутов
-	ApplyEffectToSelf(SecondaryAttributesEffectClass, UpFightPlayerState->GetPlayerLevel());
-}
-
-
-void AUPCharacter::InitializeDefaultAttributes()
-{// применения эффекта с атрибутами Primary and Secondary
-	InitializePrimaryAttributes();
-	InitializeSecondaryAttributes();
 }
 
 // сообщаем кто avatar actor и кто Owner

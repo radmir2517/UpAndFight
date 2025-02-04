@@ -23,12 +23,7 @@ public:
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-	// включим эффект первичных атрибутов
-	
-	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level);
-	// включим эффект первичных атрибутов
-	void InitializeSecondaryAttributes();
-	void InitializeDefaultAttributes();
+
 	// сообщаем кто avatar actor и кто Owner
 	void InitAbilityInfo() override;
 
@@ -39,17 +34,10 @@ public:
 	
 	/* end CombatInterface*/
 protected:
-	UPROPERTY(EditDefaultsOnly,Category="Attributes")
-	TSubclassOf<UGameplayEffect> PrimaryAttributesEffectClass;
-	UPROPERTY(EditDefaultsOnly,Category="Attributes")
-	TSubclassOf<UGameplayEffect> SecondaryAttributesEffectClass;
 	
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AUpFightPlayerState> UpFightPlayerState;
-
-private:
-	// применения эффекта с атрибутами Primary and Secondary
-	void InitializePrimaryAttributes();
+	
 };
 
 

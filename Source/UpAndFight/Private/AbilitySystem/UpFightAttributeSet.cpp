@@ -11,8 +11,6 @@
 
 UUpFightAttributeSet::UUpFightAttributeSet()
 {
-	InitHealth(80.f);
-	InitMana(100.f);
 }
 
 void UUpFightAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
