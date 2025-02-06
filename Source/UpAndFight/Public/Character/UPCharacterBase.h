@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "UPCharacterBase.generated.h"
 
+class UGameplayAbility;
 class UGameplayEffect;
 class UUpFightAttributeSet;
 class UUpFightSystemComponent;
@@ -34,6 +35,8 @@ protected:
 	void InitializePrimaryAttributes();
 	void InitializeSecondaryAttributes();
 	void InitializeVitalAttributes();
+	// функция которая GiveAbility нашим StartedGameplayAbilities
+	void AddCharacterAbilities();
 	
 	// создадим оружие
 	UPROPERTY(VisibleAnywhere, Category="Combat")
@@ -50,6 +53,8 @@ protected:
 	TSubclassOf<UGameplayEffect> SecondaryAttributesEffectClass;
 	UPROPERTY(EditDefaultsOnly,Category="Attributes")
 	TSubclassOf<UGameplayEffect> VitalAttributesEffectClass;
-
+	// способности которые должны быть вначале у игрока/врага
+	UPROPERTY(EditDefaultsOnly,Category="Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartedGameplayAbilities;
 	
 };

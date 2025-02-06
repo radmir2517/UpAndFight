@@ -41,6 +41,8 @@ void AUPCharacter::PossessedBy(AController* NewController)
 	// сообщаем кто avatar actor и кто Owner, также получаем AbilitySystem, AttributeSet из PlayerState
 	// также там проводит инициализацию OverlayWidget и OverlayWidgetController
 	InitAbilityInfo();
+	// сделаем give ability для стартовых ability
+	AddCharacterAbilities();
 }
 
 void AUPCharacter::OnRep_PlayerState()

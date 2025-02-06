@@ -92,8 +92,10 @@ public:
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UUpFightAttributeSet,MaxMana);
 
+	// карта в которой тег атрибута и указатель функция получения самого атрибута
+	TMap<FGameplayTag, FGameplayAttribute(*)()> TagToAttributeFunc;
 
-		
+	
 	UFUNCTION()
 	void OnRep_Intelligence(const FGameplayAttributeData& OldValue) const;
 	

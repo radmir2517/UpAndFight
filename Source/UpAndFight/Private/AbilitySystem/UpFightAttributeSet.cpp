@@ -6,11 +6,24 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectExtension.h"
+#include "UpFightGameplayTags.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 
 UUpFightAttributeSet::UUpFightAttributeSet()
 {
+	FUpFightGameplayTags Tags = FUpFightGameplayTags::Get();
+	// добавим в карту атрибутов тег и в указатель вложим функцию вызова атрибута
+	TagToAttributeFunc.Add(Tags.Attribute_Primary_Intelligence, GetIntelligenceAttribute);
+	TagToAttributeFunc.Add(Tags.Attribute_Primary_Vigor, GetVigorAttribute);
+	
+	TagToAttributeFunc.Add(Tags.Attribute_Secondary_MaxMana, GetMaxManaAttribute);
+	TagToAttributeFunc.Add(Tags.Attribute_Secondary_MaxHealth, GetMaxHealthAttribute);
+	TagToAttributeFunc.Add(Tags.Attribute_Secondary_HealthRegeneration,GetHealthRegenerationAttribute);
+	TagToAttributeFunc.Add(Tags.Attribute_Secondary_ManaRegeneration,GetManaRegenerationAttribute);
+
+	TagToAttributeFunc.Add(Tags.Attribute_Vital_Health,GetHealthAttribute);
+	TagToAttributeFunc.Add(Tags.Attribute_Vital_Mana, GetManaAttribute);
 }
 
 void UUpFightAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

@@ -38,9 +38,9 @@ class UPANDFIGHT_API UUpFightWidgetController : public UObject
 	GENERATED_BODY()
 
 public:
-
-	virtual void BindCallBacksToDependencies();
 	
+	virtual void BindCallBacksToDependencies();
+	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialValues();
 	
 	// сеттер который назначает переменные из структуры Params

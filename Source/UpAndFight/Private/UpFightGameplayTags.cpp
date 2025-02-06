@@ -11,17 +11,19 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 {
 	UGameplayTagsManager& UpFightTagsManager = UGameplayTagsManager::Get();
 
-	// Добаление Vigor теги атрибутов
-	UpFightGameplayTags.Attribute_Vigor_Health = UpFightTagsManager.AddNativeGameplayTag("Attribute.Vigor.Health", "Health Attribute Tag");
-	UpFightGameplayTags.Attribute_Vigor_MaxHealth = UpFightTagsManager.AddNativeGameplayTag("Attribute.Vigor.MaxHealth", "MaxHealth Attribute Tag");
-	UpFightGameplayTags.Attribute_Vigor_Mana = UpFightTagsManager.AddNativeGameplayTag("Attribute.Vigor.Mana", "Mana Attribute Tag");
-	UpFightGameplayTags.Attribute_Vigor_MaxMana = UpFightTagsManager.AddNativeGameplayTag("Attribute.Vigor.MaxMana", "MaxMana Attribute Tag");
-}
-
-UpFightGameplayTags::UpFightGameplayTags()
-{
-}
-
-UpFightGameplayTags::~UpFightGameplayTags()
-{
+	// Добаление теги атрибутов
+	/* Primary Attributes */
+	UpFightGameplayTags.Attribute_Primary_Intelligence = UpFightTagsManager.AddNativeGameplayTag("Attribute.Primary.Intelligence", "Intelligence Attribute Tag");
+	UpFightGameplayTags.Attribute_Primary_Vigor = UpFightTagsManager.AddNativeGameplayTag("Attribute.Primary.Vigor", "Vigor Attribute Tag");
+	/* end Primary Attributes */
+	/* Secondary Attributes */
+	UpFightGameplayTags.Attribute_Secondary_HealthRegeneration = UpFightTagsManager.AddNativeGameplayTag("Attribute.Secondary.HealthRegeneration", "HealthRegeneration Attribute Tag");
+	UpFightGameplayTags.Attribute_Secondary_ManaRegeneration = UpFightTagsManager.AddNativeGameplayTag("Attribute.Secondary.ManaRegeneration", "ManaRegeneration Attribute Tag");
+	UpFightGameplayTags.Attribute_Secondary_MaxHealth = UpFightTagsManager.AddNativeGameplayTag("Attribute.Secondary.MaxHealth", "MaxHealth Attribute Tag");
+	UpFightGameplayTags.Attribute_Secondary_MaxMana = UpFightTagsManager.AddNativeGameplayTag("Attribute.Secondary.MaxMana", "MaxMana Attribute Tag");
+	/* end Secondary Attributes */
+	/* Vital Attributes */
+	UpFightGameplayTags.Attribute_Vital_Health = UpFightTagsManager.AddNativeGameplayTag("Attribute.Vital.Health", "Health Attribute Tag");
+	UpFightGameplayTags.Attribute_Vital_Mana = UpFightTagsManager.AddNativeGameplayTag("Attribute.Vital.Mana", "Mana Attribute Tag");
+	/* end Vital Attributes */
 }

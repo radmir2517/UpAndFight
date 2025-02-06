@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectTypes.h"
+#include "AbilitySystem/UpFightSystemComponent.h"
 #include "Interaction/CombatInterface.h"
 
 
@@ -65,5 +66,11 @@ void AUPCharacterBase::InitializeVitalAttributes()
 {// включим эффект Vital атрибутов
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(this);
 	ApplyEffectToSelf(VitalAttributesEffectClass, CombatInterface->GetPlayerLevel());
+}
+
+void AUPCharacterBase::AddCharacterAbilities()
+{	// проверим что это выполняет сервер и сделаем give ability
+	if(!HasAuthority()) return;
+	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AddCharacterAbilities(StartedGameplayAbilities);
 }
 

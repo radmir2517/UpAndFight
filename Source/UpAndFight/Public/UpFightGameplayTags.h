@@ -19,25 +19,25 @@ struct FUpFightGameplayTags
 
 	static void InitializeNativeGameplayTags();
 
-	FGameplayTag Attribute_Vigor_Health;
 
-	FGameplayTag Attribute_Vigor_MaxHealth;
+	/* Primary Attributes */
+	FGameplayTag Attribute_Primary_Intelligence;
+	FGameplayTag Attribute_Primary_Vigor;
+	/* Secondary Attributes */
+	FGameplayTag Attribute_Secondary_HealthRegeneration;
+	FGameplayTag Attribute_Secondary_ManaRegeneration;
+	FGameplayTag Attribute_Secondary_MaxHealth;
+	FGameplayTag Attribute_Secondary_MaxMana;
+	/*end Secondary Attributes */
 
-	FGameplayTag Attribute_Vigor_Mana;
-
-	FGameplayTag Attribute_Vigor_MaxMana;
+	/* Vital Attributes */
+	FGameplayTag Attribute_Vital_Health;
+	FGameplayTag Attribute_Vital_Mana;
+	/*end Vital Attributes */
+	
 
 
 private:
 	// синглтон, единственный образец структуры
 	static FUpFightGameplayTags UpFightGameplayTags;
-};
-
-
-
-class UPANDFIGHT_API UpFightGameplayTags
-{
-public:
-	UpFightGameplayTags();
-	~UpFightGameplayTags();
 };

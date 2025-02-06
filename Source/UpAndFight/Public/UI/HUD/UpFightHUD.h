@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "UpFightHUD.generated.h"
 
+class UUpFightAttributeMenuController;
 class UAttributeSet;
 class UAbilitySystemComponent;
 struct FWidgetControllerParams;
@@ -24,7 +25,9 @@ public:
 	TObjectPtr<UUpFightUserWidget> OverlayWidget;
 
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
-
+	UFUNCTION(BlueprintCallable)
+	UUpFightAttributeMenuController* GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
+	
 	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 
 protected:
@@ -33,9 +36,13 @@ protected:
 private:
 
 	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;
+	TObjectPtr<UUpFightAttributeMenuController> AttributeMenuWidgetController;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> OverlayWidgetClass;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUpFightAttributeMenuController> AttributeMenuWidgetControllerClass;
+	
 };

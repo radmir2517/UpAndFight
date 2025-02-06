@@ -8,7 +8,7 @@
 
 class UUpFightUserWidget;
 
-
+// структура которая будет хранить для виджета сообщения его тег для вызова и сам класс виджета
 USTRUCT(BlueprintType,Blueprintable)
 struct FUIWidgetRow : public FTableRowBase
 {
