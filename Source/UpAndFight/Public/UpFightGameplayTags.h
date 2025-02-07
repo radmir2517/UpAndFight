@@ -34,7 +34,14 @@ struct FUpFightGameplayTags
 	FGameplayTag Attribute_Vital_Health;
 	FGameplayTag Attribute_Vital_Mana;
 	/*end Vital Attributes */
-	
+
+	/* Input Tags */
+	FGameplayTag InputTag_LMB;
+	FGameplayTag InputTag_RMB;
+	FGameplayTag InputTag_1;
+	FGameplayTag InputTag_2;
+	FGameplayTag InputTag_3;
+	/* end Input Tags */
 
 
 private:

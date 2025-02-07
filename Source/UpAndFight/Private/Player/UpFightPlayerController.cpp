@@ -2,9 +2,12 @@
 
 #include "Player/UpFightPlayerController.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-
+#include "AbilitySystem/UpFightSystemComponent.h"
+#include "Character/UPCharacter.h"
+#include "Input/UpFightEnhancedInputComponent.h"
 
 
 AUpFightPlayerController::AUpFightPlayerController()
@@ -32,14 +35,15 @@ void AUpFightPlayerController::BeginPlay()
 }
 
 
-
 void AUpFightPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+	UUpFightEnhancedInputComponent* EnhancedInputComponent = CastChecked<UUpFightEnhancedInputComponent>(InputComponent);
 
 	EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered, this, &AUpFightPlayerController::Move);
+	// функция бинда InputActions(лкм,пкм, 1,2,3) для вызова функции в ASC
+	EnhancedInputComponent->BindActions(InputConfig,this,&ThisClass::AbilityInputTagPressed,&ThisClass::AbilityInputTagHeld, &ThisClass::AbilityInputTagReleased);
 }
 
 void AUpFightPlayerController::Move(const FInputActionValue& InputActionValue)
@@ -59,3 +63,20 @@ void AUpFightPlayerController::Move(const FInputActionValue& InputActionValue)
 		ControlledPawn->AddMovementInput(RightDirection,InputAxisVector.X);
 	}
 }
+
+void AUpFightPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(1,3.f,FColor::Red,FString::Printf(TEXT("AbilityInputTagPressed InputTag: %s"),*InputTag.ToString()));
+}
+
+void AUpFightPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
+{
+	UUpFightSystemComponent* UpFightASC =  Cast<UUpFightSystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetCharacter()));
+	UpFightASC->AbilityInputTagHeld(InputTag);
+}
+void AUpFightPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	UUpFightSystemComponent* UpFightASC =  Cast<UUpFightSystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetCharacter()));
+	UpFightASC->AbilityInputTagReleased(InputTag);
+}
+

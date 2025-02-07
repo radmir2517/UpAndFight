@@ -26,4 +26,12 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	UpFightGameplayTags.Attribute_Vital_Health = UpFightTagsManager.AddNativeGameplayTag("Attribute.Vital.Health", "Health Attribute Tag");
 	UpFightGameplayTags.Attribute_Vital_Mana = UpFightTagsManager.AddNativeGameplayTag("Attribute.Vital.Mana", "Mana Attribute Tag");
 	/* end Vital Attributes */
+
+	/* InputTag */
+	UpFightGameplayTags.InputTag_LMB = UpFightTagsManager.AddNativeGameplayTag("InputTag.LMB", "LMB Input Tag");
+	UpFightGameplayTags.InputTag_RMB = UpFightTagsManager.AddNativeGameplayTag("InputTag.RMB", "RMB Input Tag");
+	UpFightGameplayTags.InputTag_1 = UpFightTagsManager.AddNativeGameplayTag("InputTag.1", "1 Button Input Tag");
+	UpFightGameplayTags.InputTag_2 = UpFightTagsManager.AddNativeGameplayTag("InputTag.2", "2 Button Input Tag");
+	UpFightGameplayTags.InputTag_3 = UpFightTagsManager.AddNativeGameplayTag("InputTag.3", "3 Button Input Tag");
+	/* end InputTag */
 }

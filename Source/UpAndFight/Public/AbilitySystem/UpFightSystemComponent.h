@@ -19,6 +19,10 @@ public:
 	// переберем классы всех GameplayAbilities стартовых для игрока/врага и сделаем GiveAbility
 	void AddCharacterAbilities(TArray<TSubclassOf<UGameplayAbility>> StartedGameplayAbilities);
 
+	void AbilityInputTagHeld(FGameplayTag& GameplayTag);
+	void AbilityInputTagReleased(FGameplayTag& GameplayTag);
+	
+
 	// экземпляр делегата передающий теги эффекта
 	FEffectAssetTagsSignature EffectAssetTagsDelegate;
 

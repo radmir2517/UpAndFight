@@ -13,5 +13,8 @@ UCLASS()
 class UPANDFIGHT_API UUpFightGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
-	
+public:
+	// тег который проверяется в ASC в AbilityInputTagHeld и в AbilityInputTagReleased
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag SetupInputTag;
 };
