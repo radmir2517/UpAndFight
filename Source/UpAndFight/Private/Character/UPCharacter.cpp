@@ -69,7 +69,7 @@ void AUPCharacter::InitAbilityInfo()
 	InitOverlay();
 }
 
-int32 AUPCharacter::GetPlayerLevel()
+int32 AUPCharacter::GetPlayerLevel_Implementation()
 {
 	return Cast<AUpFightPlayerState>(GetPlayerState())->GetPlayerLevel();
 }

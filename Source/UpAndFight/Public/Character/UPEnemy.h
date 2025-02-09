@@ -12,7 +12,7 @@
  * 
  */
 UCLASS()
-class UPANDFIGHT_API AUPEnemy : public AUPCharacterBase, public IEnemyInterface, public ICombatInterface
+class UPANDFIGHT_API AUPEnemy : public AUPCharacterBase, public IEnemyInterface
 {
 	GENERATED_BODY()
 public:
@@ -23,13 +23,13 @@ public:
 
 	virtual void InitAbilityInfo() override;
 	// функция выделения актера
-	virtual void HighlightActor() override;
+	virtual void HighlightActor_Implementation() override;
 	// функция убирания выделения актера
-	virtual void UnHighlightActor() override;
+	virtual void UnHighlightActor_Implementation() override;
 	
 	/* CombatInterface */
 	// функция ICombatInterface по получению уровня
-	virtual int32 GetPlayerLevel() override;
+	virtual int32 GetPlayerLevel_Implementation() override;
 	/* end CombatInterface */
 
 	

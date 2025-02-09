@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectTypes.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "Interaction/CombatInterface.h"
 
 
@@ -34,6 +35,12 @@ void AUPCharacterBase::InitializeDefaultAttributes()
 	InitializeVitalAttributes();
 }
 
+FVector AUPCharacterBase::GetSocketWeapon_Implementation()
+{
+	
+	return Weapon->GetSocketLocation("TipSocket");
+}
+
 
 void AUPCharacterBase::BeginPlay()
 {
@@ -52,20 +59,17 @@ void AUPCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEf
 
 void AUPCharacterBase::InitializePrimaryAttributes()
 {// включим эффект первичных атрибутов
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(this);
-	ApplyEffectToSelf(PrimaryAttributesEffectClass, CombatInterface->GetPlayerLevel());
+	ApplyEffectToSelf(PrimaryAttributesEffectClass, ICombatInterface::Execute_GetPlayerLevel(this));
 }
 
 void AUPCharacterBase::InitializeSecondaryAttributes()
 {// включим эффект вторичных атрибутов
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(this);
-	ApplyEffectToSelf(SecondaryAttributesEffectClass, CombatInterface->GetPlayerLevel());
+	ApplyEffectToSelf(SecondaryAttributesEffectClass, ICombatInterface::Execute_GetPlayerLevel(this));
 }
 
 void AUPCharacterBase::InitializeVitalAttributes()
 {// включим эффект Vital атрибутов
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(this);
-	ApplyEffectToSelf(VitalAttributesEffectClass, CombatInterface->GetPlayerLevel());
+	ApplyEffectToSelf(VitalAttributesEffectClass, ICombatInterface::Execute_GetPlayerLevel(this));
 }
 
 void AUPCharacterBase::AddCharacterAbilities()

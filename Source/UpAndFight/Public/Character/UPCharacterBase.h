@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "Interaction/CombatInterface.h"
 #include "UPCharacterBase.generated.h"
 
 class UGameplayAbility;
@@ -14,7 +15,7 @@ class UUpFightSystemComponent;
 class UAttributeSet;
 // сделаем класс абстрактным, чтобы нельзя было его создать
 UCLASS(Abstract)
-class UPANDFIGHT_API AUPCharacterBase : public ACharacter, public IAbilitySystemInterface
+class UPANDFIGHT_API AUPCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -26,6 +27,10 @@ public:
 	virtual void InitAbilityInfo();
 	// включим эффект первичных, вторичных и Vital атрибутов
 	virtual void InitializeDefaultAttributes();
+	/* ICombatInterface */\
+	virtual FVector GetSocketWeapon_Implementation() override;
+	/*end ICombatInterface*/
+	
 protected:
 	virtual void BeginPlay() override;
 

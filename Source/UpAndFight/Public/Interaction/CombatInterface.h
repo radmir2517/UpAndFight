@@ -12,14 +12,15 @@ class UCombatInterface : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
 class UPANDFIGHT_API ICombatInterface
 {
 	GENERATED_BODY()
 
 public:
 	// функция ICombatInterface по получению уровня
-	virtual int32 GetPlayerLevel() = 0;
+	UFUNCTION(BlueprintNativeEvent)
+	int32 GetPlayerLevel();
+	
+	UFUNCTION(BlueprintNativeEvent)
+	FVector GetSocketWeapon();
 };

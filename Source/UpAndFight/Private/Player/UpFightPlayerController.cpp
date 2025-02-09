@@ -8,12 +8,64 @@
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "Character/UPCharacter.h"
 #include "Input/UpFightEnhancedInputComponent.h"
+#include "Interaction/EnemyInterface.h"
 
 
 AUpFightPlayerController::AUpFightPlayerController()
 {
 	// контроллер будет реплицирован другим участинкам сети
 	bReplicates = true;
+}
+
+void AUpFightPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	CursorTrace();
+}
+
+
+void AUpFightPlayerController::CursorTrace()
+{
+		
+	GetHitResultUnderCursor(ECC_Visibility,false,HitResult);
+
+	LastActor = ThisActor;
+	
+	if(!HitResult.bBlockingHit) return;
+
+	if(HitResult.GetActor()->Implements<UEnemyInterface>())
+	{
+		
+		ThisActor = HitResult.GetActor();
+	}
+	else
+	{
+		ThisActor = nullptr;
+	}
+
+	if(ThisActor == nullptr)
+	{
+		if(ThisActor == LastActor)
+		{
+			// ничего не делаем
+		}
+		else //(ThisActor != LastActor)
+		{
+			IEnemyInterface::Execute_UnHighlightActor(LastActor);
+		}
+	}
+	else //(ThisActor != nullptr)
+	{
+		if(ThisActor == LastActor)
+		{
+			// ничего не делаем
+		}
+		else //(ThisActor != LastActor)
+		{
+			IEnemyInterface::Execute_HighlightActor(ThisActor);
+		}
+	}
 }
 
 void AUpFightPlayerController::BeginPlay()
@@ -33,6 +85,8 @@ void AUpFightPlayerController::BeginPlay()
 	InputGameMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	SetInputMode(InputGameMode);
 }
+
+
 
 
 void AUpFightPlayerController::SetupInputComponent()
@@ -79,4 +133,5 @@ void AUpFightPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 	UUpFightSystemComponent* UpFightASC =  Cast<UUpFightSystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetCharacter()));
 	UpFightASC->AbilityInputTagReleased(InputTag);
 }
+
 

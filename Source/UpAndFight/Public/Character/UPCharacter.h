@@ -13,7 +13,7 @@ class UGameplayEffect;
  * 
  */
 UCLASS()
-class UPANDFIGHT_API AUPCharacter : public AUPCharacterBase, public ICombatInterface
+class UPANDFIGHT_API AUPCharacter : public AUPCharacterBase
 {
 	GENERATED_BODY()
 
@@ -30,7 +30,7 @@ public:
 	/* CombatInterface */
 	
 	// функция ICombatInterface по получению уровня
-	virtual int32 GetPlayerLevel() override;
+	virtual int32 GetPlayerLevel_Implementation() override;
 	
 	/* end CombatInterface*/
 protected:

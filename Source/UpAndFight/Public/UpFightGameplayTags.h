@@ -42,6 +42,9 @@ struct FUpFightGameplayTags
 	FGameplayTag InputTag_2;
 	FGameplayTag InputTag_3;
 	/* end Input Tags */
+	/* Input Tags */
+	FGameplayTag Event_MontageTag_FireBolt;
+	
 
 
 private:

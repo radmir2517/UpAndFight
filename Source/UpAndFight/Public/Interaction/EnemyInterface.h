@@ -19,7 +19,9 @@ class UPANDFIGHT_API IEnemyInterface
 
 public:
 	// функция выделения актера
-	virtual void HighlightActor() = 0;
+	UFUNCTION(BlueprintNativeEvent)
+	void HighlightActor();
 	// функция убирания выделения актера
-	virtual void UnHighlightActor() = 0;
+	UFUNCTION(BlueprintNativeEvent)
+	void UnHighlightActor();
 };

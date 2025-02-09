@@ -38,19 +38,19 @@ void AUPEnemy::InitAbilityInfo()
 	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 }
 
-void AUPEnemy::HighlightActor()
+void AUPEnemy::HighlightActor_Implementation()
 {
-	GetMesh()->SetCustomDepthStencilValue(true);
+	GetMesh()->SetRenderCustomDepth(true);
 	Weapon->SetRenderCustomDepth(true);
 }
 
-void AUPEnemy::UnHighlightActor()
+void AUPEnemy::UnHighlightActor_Implementation()
 {
-	GetMesh()->SetCustomDepthStencilValue(false);
+	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
 }
 
-int32 AUPEnemy::GetPlayerLevel()
+int32 AUPEnemy::GetPlayerLevel_Implementation()
 {
 	return Level;
 }

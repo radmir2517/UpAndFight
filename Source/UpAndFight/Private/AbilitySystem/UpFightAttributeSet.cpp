@@ -132,7 +132,17 @@ void UUpFightAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackD
 	if(Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
 	{
 		Props.TargetAvatarActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
-		Props.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
+		if(Props.TargetController == nullptr && Props.TargetAvatarActor != nullptr)
+		{
+			if(const APawn* Pawn = Cast<APawn>(Props.TargetAvatarActor))
+			{
+				Props.TargetController = Pawn->GetController();
+			}
+			if(Props.TargetController)
+			{
+				Props.TargetCharacter = Cast<ACharacter>(Props.TargetController->GetPawn());
+			}
+		}
 		Props.TargetCharacter = Cast<ACharacter>(Props.TargetController->GetPawn());
 		Props.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Props.TargetCharacter);
 	}

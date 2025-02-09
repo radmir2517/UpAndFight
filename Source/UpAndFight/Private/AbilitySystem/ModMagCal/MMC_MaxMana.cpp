@@ -16,9 +16,9 @@ UMMC_MaxMana::UMMC_MaxMana()
 
 float UMMC_MaxMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	if(ICombatInterface* CombatInterface = Cast<ICombatInterface> (Spec.GetContext().GetSourceObject()))
+	if(Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
 	{	// получим уровень игрока или моба
-		const float PlayerLevel = CombatInterface->GetPlayerLevel();
+		const float PlayerLevel = ICombatInterface::Execute_GetPlayerLevel(Spec.GetContext().GetSourceObject());
 		// далее идет структура которая будет иметь теги target, source 
 		FAggregatorEvaluateParameters Params;
 		Params.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();

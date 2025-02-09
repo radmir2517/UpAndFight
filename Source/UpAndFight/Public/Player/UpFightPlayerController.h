@@ -22,6 +22,8 @@ public:
 	virtual void SetupInputComponent() override;
 
 	AUpFightPlayerController();
+
+	virtual void Tick(float DeltaSeconds) override;
 protected:
 	virtual void BeginPlay() override;
 
@@ -33,6 +35,8 @@ private:
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagHeld(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
+
+	void CursorTrace();
 	
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	TObjectPtr<UInputAction> MoveAction;
@@ -42,4 +46,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	TObjectPtr<UUpFightInputConfig> InputConfig;
+
+	FHitResult HitResult;
+
+	TObjectPtr<AActor> ThisActor;
+	TObjectPtr<AActor> LastActor;
 };
