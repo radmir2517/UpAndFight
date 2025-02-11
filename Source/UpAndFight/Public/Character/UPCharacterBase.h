@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "MotionWarpingComponent.h"
 #include "Interaction/CombatInterface.h"
 #include "UPCharacterBase.generated.h"
 
@@ -29,6 +30,7 @@ public:
 	virtual void InitializeDefaultAttributes();
 	/* ICombatInterface */\
 	virtual FVector GetSocketWeapon_Implementation() override;
+	virtual void UpdateMotionWarping_Implementation(const FVector& TargetLocation) override;
 	/*end ICombatInterface*/
 	
 protected:
@@ -46,6 +48,9 @@ protected:
 	// создадим оружие
 	UPROPERTY(VisibleAnywhere, Category="Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
+	
+	UPROPERTY(VisibleAnywhere, Category="Combat")
+	TObjectPtr<UMotionWarpingComponent> MotionWarping;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

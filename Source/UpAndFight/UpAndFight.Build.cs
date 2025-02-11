@@ -8,7 +8,7 @@ public class UpAndFight : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "GameplayAbilities", "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput" });
+        PublicDependencyModuleNames.AddRange(new string[] { "GameplayAbilities", "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput", "MotionWarping" });
         PrivateDependencyModuleNames.AddRange(new string[] { "GameplayTags", "GameplayTasks" });
     }
 }

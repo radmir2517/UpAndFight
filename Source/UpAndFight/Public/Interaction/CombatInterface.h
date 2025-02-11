@@ -18,9 +18,12 @@ class UPANDFIGHT_API ICombatInterface
 
 public:
 	// функция ICombatInterface по получению уровня
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	int32 GetPlayerLevel();
 	
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	FVector GetSocketWeapon();
+
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable )
+	void UpdateMotionWarping(const FVector& TargetLocation);
 };

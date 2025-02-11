@@ -15,7 +15,7 @@ class UPANDFIGHT_API UUpFightProjectileSpell : public UUpFightGameplayAbility
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable)
-	void SpawnProjectile();
+	void SpawnProjectile(FVector InTargetLocation);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)

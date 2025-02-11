@@ -7,24 +7,32 @@
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 
-void UUpFightProjectileSpell::SpawnProjectile()
+void UUpFightProjectileSpell::SpawnProjectile(FVector InTargetLocation)
 {
+	// проверяем чтобы это делал сервер
 	if(!HasAuthority(&CurrentActivationInfo)) return;
-		
+	// создаем transform в посохе и пока направления игрока
 	FTransform ProjectileTransform;
-	ProjectileTransform.SetLocation(ICombatInterface::Execute_GetSocketWeapon(GetAvatarActorFromActorInfo()));
-	ProjectileTransform.SetRotation(GetAvatarActorFromActorInfo()->GetActorRotation().Quaternion());
+	FVector SocketLocation = ICombatInterface::Execute_GetSocketWeapon(GetAvatarActorFromActorInfo());
+	ProjectileTransform.SetLocation(SocketLocation);
+	// получаем направление шарика к цели
+	FVector FromActorToTargetVector = InTargetLocation - SocketLocation;
+	FromActorToTargetVector.Normalize();
+	FRotator FromActorToTargetRotation = FromActorToTargetVector.Rotation();
+	FromActorToTargetRotation.Pitch = 0.f;
+	ProjectileTransform.SetRotation(FromActorToTargetRotation.Quaternion());
 	
+	// создаем отложенное спавн шарика
 	 AActor* CreatedActor = UGameplayStatics::BeginDeferredActorSpawnFromClass(this,
 		ProjectileClass,
 		ProjectileTransform,
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn,
 		GetAvatarActorFromActorInfo());
-
-	AUpFightProjectile* Projectile = Cast<AUpFightProjectile>(CreatedActor);
 	
+	AUpFightProjectile* Projectile = Cast<AUpFightProjectile>(CreatedActor);
+	// в шарике создаем спецификацию эффекта и назначаем источник
 	Projectile->DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect,1);
 	Projectile->DamageEffectSpecHandle.Data->GetContext().AddSourceObject(GetAvatarActorFromActorInfo());
-	
+	// досоздаем шарик
 	UGameplayStatics::FinishSpawningActor(CreatedActor,ProjectileTransform);
 }

@@ -17,6 +17,9 @@ AUPCharacterBase::AUPCharacterBase()
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), "WeaponHandSocket");
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	MotionWarping = CreateDefaultSubobject<UMotionWarpingComponent>("MotionWarpingComponent");
+	
 }
 
 UAbilitySystemComponent* AUPCharacterBase::GetAbilitySystemComponent() const
@@ -39,6 +42,11 @@ FVector AUPCharacterBase::GetSocketWeapon_Implementation()
 {
 	
 	return Weapon->GetSocketLocation("TipSocket");
+}
+
+void AUPCharacterBase::UpdateMotionWarping_Implementation(const FVector& TargetLocation)
+{
+	MotionWarping->AddOrUpdateWarpTargetFromLocation("FacingTarget",TargetLocation);
 }
 
 
