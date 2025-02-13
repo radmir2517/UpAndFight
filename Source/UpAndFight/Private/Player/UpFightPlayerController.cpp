@@ -68,6 +68,8 @@ void AUpFightPlayerController::CursorTrace()
 	}
 }
 
+
+
 void AUpFightPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -96,6 +98,9 @@ void AUpFightPlayerController::SetupInputComponent()
 	UUpFightEnhancedInputComponent* EnhancedInputComponent = CastChecked<UUpFightEnhancedInputComponent>(InputComponent);
 
 	EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered, this, &AUpFightPlayerController::Move);
+	
+	//EnhancedInputComponent->BindAction(CTRLAction,ETriggerEvent::Started, this, &AUpFightPlayerController::IsCTRLPressed,true);
+	//EnhancedInputComponent->BindAction(CTRLAction,ETriggerEvent::Completed, this, &AUpFightPlayerController::IsCTRLPressed, false);
 	// функция бинда InputActions(лкм,пкм, 1,2,3) для вызова функции в ASC
 	EnhancedInputComponent->BindActions(InputConfig,this,&ThisClass::AbilityInputTagPressed,&ThisClass::AbilityInputTagHeld, &ThisClass::AbilityInputTagReleased);
 }
@@ -117,6 +122,9 @@ void AUpFightPlayerController::Move(const FInputActionValue& InputActionValue)
 		ControlledPawn->AddMovementInput(RightDirection,InputAxisVector.X);
 	}
 }
+
+
+
 
 void AUpFightPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {

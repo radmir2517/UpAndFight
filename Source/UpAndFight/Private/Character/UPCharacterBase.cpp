@@ -6,7 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectTypes.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
-#include "Engine/SkeletalMeshSocket.h"
+#include "Components/CapsuleComponent.h"
 #include "Interaction/CombatInterface.h"
 
 
@@ -17,6 +17,9 @@ AUPCharacterBase::AUPCharacterBase()
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), "WeaponHandSocket");
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
 
 	MotionWarping = CreateDefaultSubobject<UMotionWarpingComponent>("MotionWarpingComponent");
 	

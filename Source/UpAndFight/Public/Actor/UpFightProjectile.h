@@ -8,6 +8,7 @@
 #include "UpFightProjectile.generated.h"
 
 
+class UNiagaraSystem;
 class UProjectileMovementComponent;
 class USphereComponent;
 
@@ -23,14 +24,37 @@ public:
 
 	UPROPERTY()
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;
+	
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void Destroyed() override;
+
+
+	// переменная которая true при ударе и будет проверяться при destroy
+	bool bHit = false;
+	// время жизни шарика
+	UPROPERTY(EditDefaultsOnly)
+	float LifeSpanValue = 15.f;
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAudioComponent> LoopingSoundComponent;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Projectile")
+	TObjectPtr<USoundBase> ImpactSound;
+
+	UPROPERTY(EditDefaultsOnly, Category="Projectile")
+	TObjectPtr<UNiagaraSystem> ImpactEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category="Projectile")
+	TObjectPtr<USoundBase> LoopingSound;
+
 
 	
 };

@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Character/UPCharacterBase.h"
-#include "Interaction/CombatInterface.h"
 #include "Interaction/EnemyInterface.h"
+#include "UI/WidgetController/EnemyWidgetController.h"
 #include "UPEnemy.generated.h"
 
+
+class UUpFightUserWidget;
+class UWidgetComponent;
 /**
  * 
  */
@@ -26,15 +29,36 @@ public:
 	virtual void HighlightActor_Implementation() override;
 	// функция убирания выделения актера
 	virtual void UnHighlightActor_Implementation() override;
-	
+
+	UFUNCTION(BlueprintCallable)
+	UEnemyWidgetController* GetEnemyWidgetController();
+
+	void InitEnemyWidget();
 	/* CombatInterface */
 	// функция ICombatInterface по получению уровня
 	virtual int32 GetPlayerLevel_Implementation() override;
 	/* end CombatInterface */
 
 	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UWidgetComponent> HealthWidgetComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UUpFightUserWidget> HeathWidget;
+
+	
+
+
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Default")
 	int32 Level = 1;
 
+	TObjectPtr<UEnemyWidgetController> EnemyWidgetController;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UEnemyWidgetController> EnemyWidgetControllerClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUpFightUserWidget> EnemyWidgetClass;
 };

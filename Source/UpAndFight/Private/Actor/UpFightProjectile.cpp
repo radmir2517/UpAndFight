@@ -6,9 +6,13 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "UpAndFight/UpAndFight.h"
 
 // Sets default values
 AUpFightProjectile::AUpFightProjectile()
@@ -27,26 +31,67 @@ AUpFightProjectile::AUpFightProjectile()
 	ProjectileMovement->InitialSpeed = 550.f;
 	ProjectileMovement->MaxSpeed = 550.f;
 	ProjectileMovement->ProjectileGravityScale = 0.5f;
+	// установим на новый тип колизии
+	Sphere->SetCollisionObjectType(ECC_Projectile);
 }
-
 
 void AUpFightProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	Sphere->OnComponentBeginOverlap.AddDynamic(this,&AUpFightProjectile::OnOverlap);
+	// звук шипения 
+	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound,GetRootComponent());
+	// задания время жизни
+	SetLifeSpan(LifeSpanValue);
 }
 
 void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(OtherActor->Implements<UCombatInterface>() && DamageEffectSpecHandle.Data->GetContext().GetSourceObject() != OtherActor )
 	{
-		UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
-		ASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-		Destroy();
+		// звук удара и эффект удара
+		UGameplayStatics::PlaySoundAtLocation(this,ImpactSound,GetActorLocation(),FRotator::ZeroRotator);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactEffect,GetActorLocation());
+		// остановим звук шипения
+		LoopingSoundComponent->Stop();
+		// если сервер то уничтожим если клиент то bHit = true
+		if(HasAuthority())
+		{
+			if(UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+			{
+				ASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+			}
+			Destroy();
+		}
+		else
+		{
+			bHit = true;
+		}
 	}
 	else if(!OtherActor->Implements<UCombatInterface>())
 	{
-		Destroy();
+		if(HasAuthority())
+		{
+			Destroy();
+		}
+		else
+		{
+			bHit = true;
+		}
 	}
+}
+
+void AUpFightProjectile::Destroyed()
+{
+	if(!HasAuthority() && !bHit)
+	{	// если это клиент и звука не было еще то воспроизведем
+		UGameplayStatics::PlaySoundAtLocation(this,ImpactSound,GetActorLocation(),FRotator::ZeroRotator);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactEffect,GetActorLocation());
+		if(IsValid(LoopingSoundComponent))
+		{
+			LoopingSoundComponent->Stop();
+		}
+	}
+	Super::Destroyed();
 }

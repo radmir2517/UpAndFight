@@ -37,15 +37,22 @@ private:
 	void AbilityInputTagReleased(FGameplayTag InputTag);
 
 	void CursorTrace();
+
+	//void IsCTRLPressed(bool IsPressed);
 	
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	TObjectPtr<UInputAction> MoveAction;
 
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	TObjectPtr<UInputAction> CTRLAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	TObjectPtr<UInputMappingContext> MoveActionMapping;
 
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	TObjectPtr<UUpFightInputConfig> InputConfig;
+
+	//bool bCTRLPressed = false;
 
 	FHitResult HitResult;
 

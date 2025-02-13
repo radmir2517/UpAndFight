@@ -6,6 +6,10 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "UI/Widget/UpFightUserWidget.h"
+#include "UI/WidgetController/EnemyWidgetController.h"
 #include "UpAndFight/UpAndFight.h"
 
 AUPEnemy::AUPEnemy()
@@ -14,6 +18,10 @@ AUPEnemy::AUPEnemy()
 	Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility,ECR_Block);
 
+	HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("HealthWidgetComponent");
+	HealthWidgetComponent->SetupAttachment(GetRootComponent());
+
+	
 	// создадим компонент AbilitySystemComponent и сделаем его реплицируемым
 	AbilitySystemComponent = CreateDefaultSubobject<UUpFightSystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);	// Сделаем его реплицуемым
@@ -21,6 +29,10 @@ AUPEnemy::AUPEnemy()
 	// режим мультипликации минималльный, т.к это ИИ и ему не нужно репликации эффектов
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	AbilitySystemComponent->SetIsReplicated(true);
+	// укажем чтобы новый тип коллизии враг делал Overlap
+	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
+	
 }
 
 void AUPEnemy::BeginPlay()
@@ -28,6 +40,7 @@ void AUPEnemy::BeginPlay()
 	Super::BeginPlay();
 	// инцилизируем систему способностей у врага
 	InitAbilityInfo();
+	InitEnemyWidget();
 }
 
 void AUPEnemy::InitAbilityInfo()
@@ -36,6 +49,9 @@ void AUPEnemy::InitAbilityInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(this,this);
 	// вызов привязки делегата OnGameplayEffectAppliedToSelf к нашей функции в AbilitySystemComponent
 	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
+
+	InitializeDefaultAttributes();
+	
 }
 
 void AUPEnemy::HighlightActor_Implementation()
@@ -55,4 +71,37 @@ int32 AUPEnemy::GetPlayerLevel_Implementation()
 	return Level;
 }
 
+UEnemyWidgetController* AUPEnemy::GetEnemyWidgetController()
+{
+	if(!IsValid(EnemyWidgetController))
+	{
+		EnemyWidgetController = NewObject<UEnemyWidgetController>(this,EnemyWidgetControllerClass);
+		APlayerController* PC = UGameplayStatics::GetPlayerController(this,0);
+		FWidgetControllerParams Param(PC,GetPlayerState(),AbilitySystemComponent,AttributeSet);
+		EnemyWidgetController->SetWidgetControllerParams(Param);
+	}
+	return EnemyWidgetController;
+}
+
+void AUPEnemy::InitEnemyWidget()
+{
+	check(EnemyWidgetControllerClass);
+	check(EnemyWidgetClass);
+	
+	UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(),EnemyWidgetClass);
+	HeathWidget = Cast<UUpFightUserWidget>(UserWidget);
+	HeathWidget->SetWidgetController(GetEnemyWidgetController());
+	
+	EnemyWidgetController->BindCallBacksToDependencies();
+	EnemyWidgetController->BroadcastInitialValues();
+	
+	HealthWidgetComponent->SetWidget(HeathWidget);
+
+	HealthWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	HealthWidgetComponent->SetRelativeLocation(FVector(0.f,0.f, 80.f));
+	HealthWidgetComponent->SetDrawSize(FVector2D(100.f,10.f));
+	HealthWidgetComponent->SetWidgetClass(EnemyWidgetClass);
+	HealthWidgetComponent->SetWidget(HeathWidget);
+	//HeathWidget->SetVisibility(ESlateVisibility::Hidden);
+}
 
