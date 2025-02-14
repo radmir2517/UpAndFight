@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "CharacterClassInfo.generated.h"
 
+class UGameplayAbility;
 class UGameplayEffect;
 
 
@@ -43,4 +44,7 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly,Category="Character Class Defaults")
 	TSubclassOf<UGameplayEffect> VitalAttributesEffectClass;
+	// сюда будет входит HitReact например
+	UPROPERTY(EditDefaultsOnly,Category="Character Class Defaults")
+	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;
 };

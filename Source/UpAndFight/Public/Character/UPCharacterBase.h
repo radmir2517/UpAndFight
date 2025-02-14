@@ -36,6 +36,7 @@ public:
 	/* ICombatInterface */\
 	virtual FVector GetSocketWeapon_Implementation() override;
 	virtual void UpdateMotionWarping_Implementation(const FVector& TargetLocation) override;
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	/*end ICombatInterface*/
 	
 protected:
@@ -71,5 +72,8 @@ protected:
 	// способности которые должны быть вначале у игрока/врага
 	UPROPERTY(EditDefaultsOnly,Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartedGameplayAbilities;
+
+	UPROPERTY(EditDefaultsOnly,Category="Abilities")
+	TObjectPtr<UAnimMontage> HitReactMontage;
 	
 };

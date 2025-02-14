@@ -46,6 +46,11 @@ void AUPCharacterBase::UpdateMotionWarping_Implementation(const FVector& TargetL
 	MotionWarping->AddOrUpdateWarpTargetFromLocation("FacingTarget",TargetLocation);
 }
 
+UAnimMontage* AUPCharacterBase::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
 
 void AUPCharacterBase::BeginPlay()
 {

@@ -4,6 +4,7 @@
 #include "Character/UPEnemy.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "Components/WidgetComponent.h"
@@ -41,6 +42,8 @@ void AUPEnemy::BeginPlay()
 	// инцилизируем систему способностей у врага
 	InitAbilityInfo();
 	InitEnemyWidget();
+	// give абилку GA_HitReact
+	UUpFightAbilitySystemLibrary::GiveStartupAbilities(this,AbilitySystemComponent);
 }
 
 void AUPEnemy::InitAbilityInfo()

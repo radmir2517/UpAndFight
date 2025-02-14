@@ -91,6 +91,7 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 	FEffectProperties Props;
 	// получим SourceASC, SourceCharacter, SourceAvatarActor, SourceController, TargetASC, TargetCharacter,TargetAvatarActor, TargetController и EffectContextHandle
 	SetEffectProperties(Data, Props);
+	FUpFightGameplayTags& UpFightGameplayTags = FUpFightGameplayTags::Get();
 	
 	// пропишем ограничений для маны и здоровья, после изменением модификатором
 	if(Data.EvaluatedData.Attribute == GetHealthAttribute())
@@ -102,6 +103,32 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 	{
 		
 		SetMana(FMath::Clamp(GetMana(),0.f,GetMaxMana()));
+	}
+	
+	// получение урона
+	if(Data.EvaluatedData.Attribute == GetDamageAttribute())
+	{	
+		const float LocalDamage = GetDamage();
+		SetDamage(0.f);
+		const float LocalHealth = GetHealth() - LocalDamage;
+		SetHealth(FMath::Clamp(LocalHealth,0.f,GetMaxHealth()));
+		// если хп меньше нуля то будет считаться мертвым
+		const bool bDead = LocalHealth <= 0.f;
+		if(!bDead)
+		{	// пробуем активировать GA_HitReact если он есть у персонажа
+			FGameplayTagContainer TagContainer(UpFightGameplayTags.Effect_HitReact);
+			
+			for(auto Spec:Props.TargetAbilitySystemComponent->GetActivatableAbilities())
+			{
+				for(const FGameplayTag& Tag : Spec.Ability->AbilityTags)
+				{
+					if(Tag.MatchesTagExact(UpFightGameplayTags.Effect_HitReact))
+					{
+						Props.TargetAbilitySystemComponent->TryActivateAbility(Spec.Handle);
+					}
+				}
+			}
+		}
 	}
 	
 }

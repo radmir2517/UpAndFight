@@ -71,3 +71,14 @@ void UUpFightAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* Wo
 	ASC->ApplyGameplayEffectSpecToSelf(*VitalAttributesSpec.Data.Get());
 
 }
+
+void UUpFightAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject,
+	UAbilitySystemComponent* ASC)
+{
+	check(ASC);
+	UCharacterClassInfo* ClassInfo = GetCharacterClassInfo(WorldContextObject);
+	for(const TSubclassOf<UGameplayAbility> AbilityClass : ClassInfo->CommonAbilities)
+	{
+		ASC->GiveAbility(ASC->BuildAbilitySpecFromClass(AbilityClass));
+	}
+}

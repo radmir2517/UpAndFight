@@ -24,6 +24,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	FVector GetSocketWeapon();
 
-	UFUNCTION(BlueprintNativeEvent,BlueprintCallable )
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	void UpdateMotionWarping(const FVector& TargetLocation);
+
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+	UAnimMontage* GetHitReactMontage();
 };

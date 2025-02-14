@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DamageGameplayAbility.h"
 #include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
 #include "UpFightProjectileSpell.generated.h"
 
@@ -10,7 +11,7 @@
  * 
  */
 UCLASS(Blueprintable,BlueprintType)
-class UPANDFIGHT_API UUpFightProjectileSpell : public UUpFightGameplayAbility
+class UPANDFIGHT_API UUpFightProjectileSpell : public UDamageGameplayAbility
 {
 	GENERATED_BODY()
 public:

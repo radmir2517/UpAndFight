@@ -38,4 +38,8 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	/* MontageTag */
 	UpFightGameplayTags.Event_MontageTag_FireBolt = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.FireBolt", "FireBolt Event Montage Tag");
 	/* end MontageTag */
+
+	UpFightGameplayTags.Effect_HitReact = UpFightTagsManager.AddNativeGameplayTag("Effect.HitReact", "HitReact Tag");
+
+	UpFightGameplayTags.Damage = UpFightTagsManager.AddNativeGameplayTag("Damage", "Damage Tag");
 }

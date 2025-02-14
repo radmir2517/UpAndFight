@@ -92,6 +92,13 @@ public:
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UUpFightAttributeSet,MaxMana);
 
+	/*Meta attributes*/
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")
+	FGameplayAttributeData Damage;
+	ATTRIBUTE_ACCESSORS(UUpFightAttributeSet,Damage);
+
+	/*end Meta attributes*/
+	
 	// карта в которой тег атрибута и указатель функция получения самого атрибута
 	TMap<FGameplayTag, FGameplayAttribute(*)()> TagToAttributeFunc;
 

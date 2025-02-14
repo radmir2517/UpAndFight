@@ -7,6 +7,7 @@
 #include "UpFightAbilitySystemLibrary.generated.h"
 
 
+class UAbilitySystemComponent;
 enum class ECharacterClass : uint8;
 class UCharacterClassInfo;
 class UOverlayWidgetController;
@@ -32,4 +33,7 @@ public:
 	// функция инициализации Primary,Secondary,Vital атрибутов для RPG классов
 	UFUNCTION(BlueprintCallable,Category="AuraAbilitySystemLibrary|DefaultAttributes")
 	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, UAbilitySystemComponent* ASC, float Level);
+	// достанем из AbilityClassInfo common абилки и активируем их(GA_HitReact)
+	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
+	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC);
 };

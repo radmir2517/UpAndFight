@@ -3,6 +3,8 @@
 
 #include "AbilitySystem/Abilities/UpFightProjectileSpell.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "UpFightGameplayTags.h"
 #include "Actor/UpFightProjectile.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -30,9 +32,13 @@ void UUpFightProjectileSpell::SpawnProjectile(FVector InTargetLocation)
 		GetAvatarActorFromActorInfo());
 	
 	AUpFightProjectile* Projectile = Cast<AUpFightProjectile>(CreatedActor);
+	const FUpFightGameplayTags& GameplayTags = FUpFightGameplayTags::Get();
 	// в шарике создаем спецификацию эффекта и назначаем источник
 	Projectile->DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect,1);
 	Projectile->DamageEffectSpecHandle.Data->GetContext().AddSourceObject(GetAvatarActorFromActorInfo());
+
+	
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle,GameplayTags.Damage,DamageValue.GetValueAtLevel(GetAbilityLevel()));
 	// досоздаем шарик
 	UGameplayStatics::FinishSpawningActor(CreatedActor,ProjectileTransform);
 }

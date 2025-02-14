@@ -23,6 +23,7 @@ void UUpFightSystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGameplay
 	}
 }
 
+
 void UUpFightSystemComponent::AbilityInputTagHeld(FGameplayTag& GameplayTag)
 {// переберем все GetActivatableAbilities и активируем заклинания
 	FScopedAbilityListLock ActiveScopeLock(*this);
