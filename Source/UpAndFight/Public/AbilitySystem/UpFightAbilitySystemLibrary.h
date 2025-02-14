@@ -7,6 +7,8 @@
 #include "UpFightAbilitySystemLibrary.generated.h"
 
 
+enum class ECharacterClass : uint8;
+class UCharacterClassInfo;
 class UOverlayWidgetController;
 class UUpFightAttributeMenuController;
 
@@ -20,4 +22,14 @@ public:
 	static UOverlayWidgetController* GetOverlayWidgetController(const UObject* WorldContextObject);
 	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|WidgetController")
 	static UUpFightAttributeMenuController* GetAttributeMenuController(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|CharacterInfo")
+	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);
+
+	/*
+	 * Ability System Startup
+	 */
+	// функция инициализации Primary,Secondary,Vital атрибутов для RPG классов
+	UFUNCTION(BlueprintCallable,Category="AuraAbilitySystemLibrary|DefaultAttributes")
+	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, UAbilitySystemComponent* ASC, float Level);
 };

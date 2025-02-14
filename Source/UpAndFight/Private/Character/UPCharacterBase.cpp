@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectTypes.h"
+#include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Interaction/CombatInterface.h"
@@ -34,13 +35,6 @@ void AUPCharacterBase::InitAbilityInfo()
 {
 }
 
-void AUPCharacterBase::InitializeDefaultAttributes()
-{// применения эффекта с атрибутами Primary and Secondary, Vital
-	InitializePrimaryAttributes();
-	InitializeSecondaryAttributes();
-	InitializeVitalAttributes();
-}
-
 FVector AUPCharacterBase::GetSocketWeapon_Implementation()
 {
 	
@@ -59,28 +53,11 @@ void AUPCharacterBase::BeginPlay()
 	
 }
 
-void AUPCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level)
-{
-	check(GameplayEffectClass)
-	FGameplayEffectContextHandle EffectHandle = AbilitySystemComponent->MakeEffectContext();
-	EffectHandle.AddSourceObject(this);
-	FGameplayEffectSpecHandle EffectSpec = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffectClass,Level,EffectHandle);
-	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
-}
 
-void AUPCharacterBase::InitializePrimaryAttributes()
-{// включим эффект первичных атрибутов
-	ApplyEffectToSelf(PrimaryAttributesEffectClass, ICombatInterface::Execute_GetPlayerLevel(this));
-}
 
-void AUPCharacterBase::InitializeSecondaryAttributes()
-{// включим эффект вторичных атрибутов
-	ApplyEffectToSelf(SecondaryAttributesEffectClass, ICombatInterface::Execute_GetPlayerLevel(this));
-}
-
-void AUPCharacterBase::InitializeVitalAttributes()
-{// включим эффект Vital атрибутов
-	ApplyEffectToSelf(VitalAttributesEffectClass, ICombatInterface::Execute_GetPlayerLevel(this));
+void AUPCharacterBase::InitializeDefaultAttributes()
+{	// применения эффекта с атрибутами Primary and Secondary, Vital
+	UUpFightAbilitySystemLibrary::InitializeDefaultAttributes(this,CharacterClass,AbilitySystemComponent,Level);
 }
 
 void AUPCharacterBase::AddCharacterAbilities()

@@ -6,14 +6,19 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "MotionWarpingComponent.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Interaction/CombatInterface.h"
 #include "UPCharacterBase.generated.h"
+
 
 class UGameplayAbility;
 class UGameplayEffect;
 class UUpFightAttributeSet;
 class UUpFightSystemComponent;
 class UAttributeSet;
+
+
+
 // сделаем класс абстрактным, чтобы нельзя было его создать
 UCLASS(Abstract)
 class UPANDFIGHT_API AUPCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -35,15 +40,13 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-
-	// включим эффект атрибутов
-	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level);
+	
 	// применения эффекта с атрибутами Primary and Secondary, Vital
-	void InitializePrimaryAttributes();
-	void InitializeSecondaryAttributes();
-	void InitializeVitalAttributes();
 	// функция которая GiveAbility нашим StartedGameplayAbilities
 	void AddCharacterAbilities();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Default")
+	int32 Level = 1;
 	
 	// создадим оружие
 	UPROPERTY(VisibleAnywhere, Category="Combat")
@@ -56,6 +59,8 @@ protected:
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 
 	UPROPERTY(EditDefaultsOnly,Category="Attributes")
 	TSubclassOf<UGameplayEffect> PrimaryAttributesEffectClass;

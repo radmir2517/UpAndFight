@@ -46,14 +46,10 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UUpFightUserWidget> HeathWidget;
 
-	
-
 
 	
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Default")
-	int32 Level = 1;
-
+	
 	TObjectPtr<UEnemyWidgetController> EnemyWidgetController;
 
 	UPROPERTY(EditDefaultsOnly)
