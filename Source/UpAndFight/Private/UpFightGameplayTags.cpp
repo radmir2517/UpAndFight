@@ -41,5 +41,20 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 
 	UpFightGameplayTags.Effect_HitReact = UpFightTagsManager.AddNativeGameplayTag("Effect.HitReact", "HitReact Tag");
 
-	UpFightGameplayTags.Damage = UpFightTagsManager.AddNativeGameplayTag("Damage", "Damage Tag");
+	UpFightGameplayTags.Attribute_Resistance_Fire = UpFightTagsManager.AddNativeGameplayTag("Attribute.Resistance.Fire", "Fire Resistance Tag");
+	UpFightGameplayTags.Attribute_Resistance_Lightning = UpFightTagsManager.AddNativeGameplayTag("Attribute.Resistance.Lightning", "Lightning Resistance Tag");
+	UpFightGameplayTags.Attribute_Resistance_Arcane = UpFightTagsManager.AddNativeGameplayTag("Attribute.Resistance.Arcane", "Arcane Resistance Tag");
+	UpFightGameplayTags.Attribute_Resistance_Physical = UpFightTagsManager.AddNativeGameplayTag("Attribute.Resistance.Physical", "Physical Resistance Tag");
+
+	
+	UpFightGameplayTags.Damage_Fire = UpFightTagsManager.AddNativeGameplayTag("Damage.Fire", "Fire Damage Tag");
+	UpFightGameplayTags.Damage_Lightning = UpFightTagsManager.AddNativeGameplayTag("Damage.Lightning", "Lightning Damage Tag");
+	UpFightGameplayTags.Damage_Arcane = UpFightTagsManager.AddNativeGameplayTag("Damage.Arcane", "Arcane Damage Tag");
+	UpFightGameplayTags.Damage_Physical = UpFightTagsManager.AddNativeGameplayTag("Damage.Physical", "Physical Damage Tag");
+
+
+	UpFightGameplayTags.DamageTypesToResistances.Add(UpFightGameplayTags.Damage_Fire,UpFightGameplayTags.Attribute_Resistance_Fire);
+	UpFightGameplayTags.DamageTypesToResistances.Add(UpFightGameplayTags.Damage_Lightning,UpFightGameplayTags.Attribute_Resistance_Lightning);
+	UpFightGameplayTags.DamageTypesToResistances.Add(UpFightGameplayTags.Damage_Arcane,UpFightGameplayTags.Attribute_Resistance_Arcane);
+	UpFightGameplayTags.DamageTypesToResistances.Add(UpFightGameplayTags.Damage_Physical,UpFightGameplayTags.Attribute_Resistance_Physical);
 }

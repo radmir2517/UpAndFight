@@ -9,6 +9,7 @@
 #include "Character/UPCharacter.h"
 #include "Input/UpFightEnhancedInputComponent.h"
 #include "Interaction/EnemyInterface.h"
+#include "UI/Widget/DamageWidgetComponent.h"
 
 
 AUpFightPlayerController::AUpFightPlayerController()
@@ -23,6 +24,7 @@ void AUpFightPlayerController::Tick(float DeltaSeconds)
 	
 	CursorTrace();
 }
+
 
 
 void AUpFightPlayerController::CursorTrace()
@@ -76,8 +78,11 @@ void AUpFightPlayerController::BeginPlay()
 	check(MoveActionMapping);
 	// создадим субсистему и сделаем ее как enhanced
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	// добавим в него наш контекст
-	Subsystem->AddMappingContext(MoveActionMapping,0);
+	if(Subsystem)
+	{
+		// добавим в него наш контекст
+		Subsystem->AddMappingContext(MoveActionMapping,0);
+	}
 	// курсор будет виден всегда и он будет обычным
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
@@ -123,7 +128,16 @@ void AUpFightPlayerController::Move(const FInputActionValue& InputActionValue)
 	}
 }
 
+void AUpFightPlayerController::ShowDamageNumber_Implementation(ACharacter* TargetCharacter, const float Value)
+{
+	UDamageWidgetComponent* DamageWidgetComponent = NewObject<UDamageWidgetComponent>(TargetCharacter,DamageWidgetComponentClass);
 
+	DamageWidgetComponent->AttachToComponent(TargetCharacter->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform);
+	DamageWidgetComponent->SetRelativeLocation(FVector(0.f,-100.f,120.f));
+	DamageWidgetComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	DamageWidgetComponent->RegisterComponent();
+	DamageWidgetComponent->SetTextDamage(Value);
+}
 
 
 void AUpFightPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)

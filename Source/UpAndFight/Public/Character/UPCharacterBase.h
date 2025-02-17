@@ -37,6 +37,8 @@ public:
 	virtual FVector GetSocketWeapon_Implementation() override;
 	virtual void UpdateMotionWarping_Implementation(const FVector& TargetLocation) override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	
+	virtual void Die_Implementation() override;
 	/*end ICombatInterface*/
 	
 protected:
@@ -45,9 +47,24 @@ protected:
 	// применения эффекта с атрибутами Primary and Secondary, Vital
 	// функция которая GiveAbility нашим StartedGameplayAbilities
 	void AddCharacterAbilities();
+	UFUNCTION(NetMulticast,Reliable)
+	void MulticastHandleDeath();
+
+	void Dissolve();
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartBodyDissolveTimeline(UMaterialInstanceDynamic* BodyInstanceDynamic);
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartWeaponDissolveTimeline(UMaterialInstanceDynamic* WeaponInstanceDynamic);
+
+	float DissolveValue = -1.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Default")
 	int32 Level = 1;
+	// переменная которая будет переключать состояние аниммации на state Died
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bDied = false;
+
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 	
 	// создадим оружие
 	UPROPERTY(VisibleAnywhere, Category="Combat")
@@ -55,14 +72,12 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category="Combat")
 	TObjectPtr<UMotionWarpingComponent> MotionWarping;
-
+	
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
-
-	ECharacterClass CharacterClass = ECharacterClass::Warrior;
-
+	
 	UPROPERTY(EditDefaultsOnly,Category="Attributes")
 	TSubclassOf<UGameplayEffect> PrimaryAttributesEffectClass;
 	UPROPERTY(EditDefaultsOnly,Category="Attributes")
@@ -75,5 +90,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly,Category="Abilities")
 	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	UPROPERTY(EditDefaultsOnly,Category="Dissolve")
+	TObjectPtr<UMaterialInstance> BodyDissolveMaterial;
+	UPROPERTY(EditDefaultsOnly,Category="Dissolve")
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterial;
+
+	
 	
 };

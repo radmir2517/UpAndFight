@@ -47,6 +47,7 @@ UCharacterClassInfo* UUpFightAbilitySystemLibrary::GetCharacterClassInfo(const U
 void UUpFightAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject,
 	ECharacterClass CharacterClass, UAbilitySystemComponent* ASC, float Level)
 {
+
 	// получим доступ к UpFightGameModeBase чтобы взять оттуда ассут с Primary attributes,Secondary,Vital;
 	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
 	

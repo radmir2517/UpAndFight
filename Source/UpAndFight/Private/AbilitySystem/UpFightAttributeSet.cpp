@@ -8,12 +8,14 @@
 #include "GameplayEffectExtension.h"
 #include "UpFightGameplayTags.h"
 #include "GameFramework/Character.h"
+#include "Interaction/CombatInterface.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/UpFightPlayerController.h"
 
 UUpFightAttributeSet::UUpFightAttributeSet()
 {
 	FUpFightGameplayTags Tags = FUpFightGameplayTags::Get();
-	// добавим в карту атрибутов тег и в указатель вложим функцию вызова атрибута
+	// добавим в карту атрибутов тег и в указатель вложим функцию вызова атрибута. Будет перебираться в AttributesMenuController и отправляться делегатом
 	TagToAttributeFunc.Add(Tags.Attribute_Primary_Intelligence, GetIntelligenceAttribute);
 	TagToAttributeFunc.Add(Tags.Attribute_Primary_Vigor, GetVigorAttribute);
 	
@@ -24,6 +26,12 @@ UUpFightAttributeSet::UUpFightAttributeSet()
 
 	TagToAttributeFunc.Add(Tags.Attribute_Vital_Health,GetHealthAttribute);
 	TagToAttributeFunc.Add(Tags.Attribute_Vital_Mana, GetManaAttribute);
+
+	TagToAttributeFunc.Add(Tags.Attribute_Resistance_Fire,GetFireResistanceAttribute);
+	TagToAttributeFunc.Add(Tags.Attribute_Resistance_Lightning,GetLightningResistanceAttribute);
+	TagToAttributeFunc.Add(Tags.Attribute_Resistance_Arcane,GetArcaneResistanceAttribute);
+	TagToAttributeFunc.Add(Tags.Attribute_Resistance_Physical,GetPhysicalResistanceAttribute);
+	
 }
 
 void UUpFightAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -40,6 +48,11 @@ void UUpFightAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME_CONDITION_NOTIFY(UUpFightAttributeSet,MaxHealth,COND_None,REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UUpFightAttributeSet,Mana,COND_None,REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UUpFightAttributeSet,MaxMana,COND_None,REPNOTIFY_Always);
+	// Resistance
+	DOREPLIFETIME_CONDITION_NOTIFY(UUpFightAttributeSet,FireResistance,COND_None,REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UUpFightAttributeSet,LightningResistance,COND_None,REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UUpFightAttributeSet,ArcaneResistance,COND_None,REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UUpFightAttributeSet,PhysicalResistance,COND_None,REPNOTIFY_Always);
 }
 
 
@@ -84,6 +97,27 @@ void UUpFightAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldValue)
 }
 
 
+void UUpFightAttributeSet::OnRep_FireResistance(const FGameplayAttributeData& OldValue) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UUpFightAttributeSet, FireResistance, OldValue);
+}
+
+void UUpFightAttributeSet::OnRep_LightningResistance(const FGameplayAttributeData& OldValue) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UUpFightAttributeSet, LightningResistance, OldValue);
+}
+
+void UUpFightAttributeSet::OnRep_ArcaneResistance(const FGameplayAttributeData& OldValue) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UUpFightAttributeSet, ArcaneResistance, OldValue);
+}
+
+void UUpFightAttributeSet::OnRep_PhysicalResistance(const FGameplayAttributeData& OldValue) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UUpFightAttributeSet, PhysicalResistance, OldValue);
+}
+
+
 void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
@@ -107,8 +141,11 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 	
 	// получение урона
 	if(Data.EvaluatedData.Attribute == GetDamageAttribute())
-	{	
+	{
 		const float LocalDamage = GetDamage();
+		
+		if(LocalDamage == 0) return;
+		
 		SetDamage(0.f);
 		const float LocalHealth = GetHealth() - LocalDamage;
 		SetHealth(FMath::Clamp(LocalHealth,0.f,GetMaxHealth()));
@@ -128,6 +165,19 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 					}
 				}
 			}
+			// покажем и воспроиведем анимацию виджета отвечающие за отоброжение урона
+			if(Props.SourceCharacter != Props.TargetCharacter)
+			{
+				if(AUpFightPlayerController* UpFightPlayerController = Cast<AUpFightPlayerController>(Props.SourceController))
+				{
+					UpFightPlayerController->ShowDamageNumber(Props.TargetCharacter,LocalDamage);
+				}
+			}
+			
+		}
+		else //(bDead)
+		{
+			ICombatInterface::Execute_Die(Props.TargetCharacter);
 		}
 	}
 	

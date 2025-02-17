@@ -27,12 +27,14 @@ AUPCharacter::AUPCharacter()
 void AUPCharacter::InitOverlay()
 {
 	// делаем касты на наш контроллер и HUD с проверкой
-	AUpFightPlayerController* UpFightPlayerController = CastChecked<AUpFightPlayerController>(GetController());
-	AUpFightHUD* UpFightHUD = CastChecked<AUpFightHUD>(UpFightPlayerController->GetHUD());
-	// если они пустые то возвращаем
-	if(!IsValid(UpFightHUD) || !IsValid(UpFightPlayerController)) return;
-	// инцилизация оверлея, создания контроллера в HUD и создания выведения Overlay виджета на экран
-	UpFightHUD->InitOverlay(UpFightPlayerController,GetPlayerState(),AbilitySystemComponent,AttributeSet);
+	if(AUpFightPlayerController* UpFightPlayerController = Cast<AUpFightPlayerController>(GetController()))
+	{
+		if(AUpFightHUD* UpFightHUD = Cast<AUpFightHUD>(UpFightPlayerController->GetHUD()))
+		{
+			// инцилизация оверлея, создания контроллера в HUD и создания выведения Overlay виджета на экран
+			UpFightHUD->InitOverlay(UpFightPlayerController,GetPlayerState(),AbilitySystemComponent,AttributeSet);
+		}
+	}
 }
 
 void AUPCharacter::PossessedBy(AController* NewController)

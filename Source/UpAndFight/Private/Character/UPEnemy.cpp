@@ -21,7 +21,6 @@ AUPEnemy::AUPEnemy()
 
 	HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("HealthWidgetComponent");
 	HealthWidgetComponent->SetupAttachment(GetRootComponent());
-
 	
 	// создадим компонент AbilitySystemComponent и сделаем его реплицируемым
 	AbilitySystemComponent = CreateDefaultSubobject<UUpFightSystemComponent>("AbilitySystemComponent");
@@ -42,6 +41,7 @@ void AUPEnemy::BeginPlay()
 	// инцилизируем систему способностей у врага
 	InitAbilityInfo();
 	InitEnemyWidget();
+	if(!HasAuthority()) return;
 	// give абилку GA_HitReact
 	UUpFightAbilitySystemLibrary::GiveStartupAbilities(this,AbilitySystemComponent);
 }
@@ -52,7 +52,7 @@ void AUPEnemy::InitAbilityInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(this,this);
 	// вызов привязки делегата OnGameplayEffectAppliedToSelf к нашей функции в AbilitySystemComponent
 	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
-
+	if(!HasAuthority()){return;}
 	InitializeDefaultAttributes();
 	
 }
@@ -74,6 +74,8 @@ int32 AUPEnemy::GetPlayerLevel_Implementation()
 	return Level;
 }
 
+
+
 UEnemyWidgetController* AUPEnemy::GetEnemyWidgetController()
 {
 	if(!IsValid(EnemyWidgetController))
@@ -89,9 +91,9 @@ UEnemyWidgetController* AUPEnemy::GetEnemyWidgetController()
 void AUPEnemy::InitEnemyWidget()
 {
 	check(EnemyWidgetControllerClass);
-	check(EnemyWidgetClass);
+	check(EnemyHealthWidgetClass);
 	
-	UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(),EnemyWidgetClass);
+	UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(),EnemyHealthWidgetClass);
 	HeathWidget = Cast<UUpFightUserWidget>(UserWidget);
 	HeathWidget->SetWidgetController(GetEnemyWidgetController());
 	
@@ -103,8 +105,10 @@ void AUPEnemy::InitEnemyWidget()
 	HealthWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	HealthWidgetComponent->SetRelativeLocation(FVector(0.f,0.f, 80.f));
 	HealthWidgetComponent->SetDrawSize(FVector2D(100.f,10.f));
-	HealthWidgetComponent->SetWidgetClass(EnemyWidgetClass);
+	HealthWidgetComponent->SetWidgetClass(EnemyHealthWidgetClass);
 	HealthWidgetComponent->SetWidget(HeathWidget);
+	
+	
 	//HeathWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 

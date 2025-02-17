@@ -14,10 +14,10 @@ class UPANDFIGHT_API UDamageGameplayAbility : public UUpFightGameplayAbility
 {
 	GENERATED_BODY()
 public:
+	// Map в котором будет тег урона и его значение
 	UPROPERTY(EditDefaultsOnly, Category="Damage Properties")
-	FGameplayTag DamageTag;
-
-	UPROPERTY(EditDefaultsOnly, Category="Damage Properties")
-	FScalableFloat DamageValue;
+	TMap<FGameplayTag,FScalableFloat> DamageTypes;
 	
+	UPROPERTY(EditDefaultsOnly, Category="Damage Properties")
+	TSubclassOf<UGameplayEffect> DamageEffect;
 };

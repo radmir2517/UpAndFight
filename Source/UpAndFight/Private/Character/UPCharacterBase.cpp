@@ -4,11 +4,11 @@
 #include "Character/UPCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
-#include "GameplayEffectTypes.h"
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 AUPCharacterBase::AUPCharacterBase()
@@ -25,6 +25,14 @@ AUPCharacterBase::AUPCharacterBase()
 	MotionWarping = CreateDefaultSubobject<UMotionWarpingComponent>("MotionWarpingComponent");
 	
 }
+
+
+void AUPCharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+	
+}
+
 
 UAbilitySystemComponent* AUPCharacterBase::GetAbilitySystemComponent() const
 {
@@ -52,16 +60,36 @@ UAnimMontage* AUPCharacterBase::GetHitReactMontage_Implementation()
 }
 
 
-void AUPCharacterBase::BeginPlay()
+
+void AUPCharacterBase::Die_Implementation()
 {
-	Super::BeginPlay();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	MulticastHandleDeath();
+}
+
+void AUPCharacterBase::MulticastHandleDeath_Implementation()
+{
 	
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic,ECR_Block);
+	GetMesh()->SetSimulatePhysics(true);
+	
+	
+	Weapon->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	Weapon->SetCollisionResponseToChannel(ECC_Pawn,ECR_Block);
+	Weapon->SetCollisionResponseToChannel(ECC_WorldStatic,ECR_Block);
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	Weapon->SetSimulatePhysics(true);
+	bDied = true;
+
+	Dissolve();
 }
 
 
 
 void AUPCharacterBase::InitializeDefaultAttributes()
 {	// применения эффекта с атрибутами Primary and Secondary, Vital
+	if(!HasAuthority()){return;}
 	UUpFightAbilitySystemLibrary::InitializeDefaultAttributes(this,CharacterClass,AbilitySystemComponent,Level);
 }
 
@@ -70,4 +98,25 @@ void AUPCharacterBase::AddCharacterAbilities()
 	if(!HasAuthority()) return;
 	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AddCharacterAbilities(StartedGameplayAbilities);
 }
+
+void AUPCharacterBase::Dissolve()
+{
+	if(IsValid(BodyDissolveMaterial))
+	{
+		UMaterialInstanceDynamic* BodyInstanceDynamic = UMaterialInstanceDynamic::Create(BodyDissolveMaterial,this);
+		GetMesh()->SetMaterial(0,BodyInstanceDynamic);
+		StartBodyDissolveTimeline(BodyInstanceDynamic);
+	}
+	if(IsValid(WeaponDissolveMaterial))
+	{
+		UMaterialInstanceDynamic* WeaponInstanceDynamic = UMaterialInstanceDynamic::Create(WeaponDissolveMaterial,this);
+		Weapon->SetMaterial(0,WeaponInstanceDynamic);
+		StartWeaponDissolveTimeline(WeaponInstanceDynamic);	
+	}
+
+}
+
+
+
+
 

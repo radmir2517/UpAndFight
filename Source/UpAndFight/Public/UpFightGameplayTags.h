@@ -46,8 +46,18 @@ struct FUpFightGameplayTags
 	/* Event Tags */
 	FGameplayTag Event_MontageTag_FireBolt;
 	/* end Event Tags */
+
+	FGameplayTag Attribute_Resistance_Fire;
+	FGameplayTag Attribute_Resistance_Lightning;
+	FGameplayTag Attribute_Resistance_Arcane;
+	FGameplayTag Attribute_Resistance_Physical;
 	
-	FGameplayTag Damage;
+	FGameplayTag Damage_Fire;
+	FGameplayTag Damage_Lightning;
+	FGameplayTag Damage_Arcane;
+	FGameplayTag Damage_Physical;
+
+	TMap<FGameplayTag,FGameplayTag > DamageTypesToResistances;
 
 	FGameplayTag Effect_HitReact;
 

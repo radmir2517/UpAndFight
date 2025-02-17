@@ -21,7 +21,6 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AActor> ProjectileClass;
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> DamageEffect;
+;
 	
 };

@@ -9,10 +9,13 @@
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 
+
+
 void UUpFightProjectileSpell::SpawnProjectile(FVector InTargetLocation)
 {
 	// проверяем чтобы это делал сервер
-	if(!HasAuthority(&CurrentActivationInfo)) return;
+	if(!GetAvatarActorFromActorInfo()->HasAuthority()) return;
+	
 	// создаем transform в посохе и пока направления игрока
 	FTransform ProjectileTransform;
 	FVector SocketLocation = ICombatInterface::Execute_GetSocketWeapon(GetAvatarActorFromActorInfo());
@@ -25,20 +28,23 @@ void UUpFightProjectileSpell::SpawnProjectile(FVector InTargetLocation)
 	ProjectileTransform.SetRotation(FromActorToTargetRotation.Quaternion());
 	
 	// создаем отложенное спавн шарика
-	 AActor* CreatedActor = UGameplayStatics::BeginDeferredActorSpawnFromClass(this,
-		ProjectileClass,
-		ProjectileTransform,
-		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn,
-		GetAvatarActorFromActorInfo());
+	AActor* CreatedActor = UGameplayStatics::BeginDeferredActorSpawnFromClass(this,
+	   ProjectileClass,
+	   ProjectileTransform,
+	   ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn,
+	   GetAvatarActorFromActorInfo());
 	
 	AUpFightProjectile* Projectile = Cast<AUpFightProjectile>(CreatedActor);
 	const FUpFightGameplayTags& GameplayTags = FUpFightGameplayTags::Get();
 	// в шарике создаем спецификацию эффекта и назначаем источник
 	Projectile->DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect,1);
 	Projectile->DamageEffectSpecHandle.Data->GetContext().AddSourceObject(GetAvatarActorFromActorInfo());
+	// пройдемся по всем типам урона которые есть в заклинание и присвоим им теги и урон
+	for(auto Pair : DamageTypes)
+	{
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle,Pair.Key,Pair.Value.GetValueAtLevel(GetAbilityLevel()));
+	}
 
-	
-	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle,GameplayTags.Damage,DamageValue.GetValueAtLevel(GetAbilityLevel()));
 	// досоздаем шарик
 	UGameplayStatics::FinishSpawningActor(CreatedActor,ProjectileTransform);
 }

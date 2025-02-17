@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "UpFightPlayerController.generated.h"
 
+class UDamageWidgetComponent;
 class UUpFightInputConfig;
 struct FGameplayTag;
 struct FInputActionValue;
@@ -24,11 +25,14 @@ public:
 	AUpFightPlayerController();
 
 	virtual void Tick(float DeltaSeconds) override;
+	UFUNCTION(Client,Reliable)
+	void ShowDamageNumber(ACharacter* TargetCharacter, float Value);
 protected:
 	virtual void BeginPlay() override;
 
 	void Move(const FInputActionValue& InputActionValue);
 
+	
 
 private:
 	// функции которые будут использоваться при разных срабатыванию(при нажатии,отпускания,зажатия)
@@ -51,6 +55,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	TObjectPtr<UUpFightInputConfig> InputConfig;
+
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	TSubclassOf<UDamageWidgetComponent> DamageWidgetComponentClass;
 
 	//bool bCTRLPressed = false;
 

@@ -37,6 +37,7 @@ public:
 	/* CombatInterface */
 	// функция ICombatInterface по получению уровня
 	virtual int32 GetPlayerLevel_Implementation() override;
+	//virtual void Die_Implementation() override;
 	/* end CombatInterface */
 
 	
@@ -45,7 +46,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UUpFightUserWidget> HeathWidget;
+	/*
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UWidgetComponent> DamageWidgetComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UUpFightUserWidget> DamageWidget;
+	*/
 
 	
 protected:
@@ -56,5 +63,7 @@ protected:
 	TSubclassOf<UEnemyWidgetController> EnemyWidgetControllerClass;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUpFightUserWidget> EnemyWidgetClass;
+	TSubclassOf<UUpFightUserWidget> EnemyHealthWidgetClass;
+
+
 };

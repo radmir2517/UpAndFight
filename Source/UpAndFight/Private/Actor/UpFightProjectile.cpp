@@ -17,7 +17,9 @@
 // Sets default values
 AUpFightProjectile::AUpFightProjectile()
 {
- 	
+	// реппликация на клиентах
+	bReplicates = true;
+	
 	PrimaryActorTick.bCanEverTick = false;
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	SetRootComponent(Sphere);
@@ -48,7 +50,7 @@ void AUpFightProjectile::BeginPlay()
 void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor->Implements<UCombatInterface>() && DamageEffectSpecHandle.Data->GetContext().GetSourceObject() != OtherActor )
+	if(OtherActor->Implements<UCombatInterface>())
 	{
 		// звук удара и эффект удара
 		UGameplayStatics::PlaySoundAtLocation(this,ImpactSound,GetActorLocation(),FRotator::ZeroRotator);
@@ -56,7 +58,7 @@ void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		// остановим звук шипения
 		LoopingSoundComponent->Stop();
 		// если сервер то уничтожим если клиент то bHit = true
-		if(HasAuthority())
+		if(HasAuthority() && DamageEffectSpecHandle.Data->GetContext().GetSourceObject() != OtherActor)
 		{
 			if(UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{
