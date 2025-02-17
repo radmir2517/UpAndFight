@@ -7,6 +7,10 @@
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
+#include "AI/UpFightAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/Widget/UpFightUserWidget.h"
@@ -44,6 +48,22 @@ void AUPEnemy::BeginPlay()
 	if(!HasAuthority()) return;
 	// give абилку GA_HitReact
 	UUpFightAbilitySystemLibrary::GiveStartupAbilities(this,AbilitySystemComponent);
+}
+
+void AUPEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	// т.к PossessedBy вызывается лишь сервере, скажем чтобы на клиенте он сразу выходил из него
+	if(!HasAuthority()) return;
+	check(BehaviorTree);
+	// кастуем на наш контроллер
+	AUpFightAIController* UpFightAIController = Cast<AUpFightAIController>(NewController);
+	// далее инициализируем BlackboardComponent() доской назначенной в дереве
+	UpFightAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	// далле запустим работы нашего дерева
+	UpFightAIController->RunBehaviorTree(BehaviorTree);
+	
+	
 }
 
 void AUPEnemy::InitAbilityInfo()

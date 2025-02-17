@@ -9,6 +9,7 @@
 #include "UPEnemy.generated.h"
 
 
+class UBehaviorTree;
 class UUpFightUserWidget;
 class UWidgetComponent;
 /**
@@ -23,6 +24,8 @@ public:
 	AUPEnemy();
 
 	virtual void BeginPlay() override;
+
+	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void InitAbilityInfo() override;
 	// функция выделения актера
@@ -64,6 +67,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUpFightUserWidget> EnemyHealthWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UBehaviorTree> BehaviorTree;
 
 
 };
