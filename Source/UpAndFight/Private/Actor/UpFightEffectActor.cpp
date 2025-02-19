@@ -25,6 +25,9 @@ void AUpFightEffectActor::ApplyEffectToTarget(AActor* Target, TSubclassOf<UGamep
 	checkf(GameplayEffectClass, TEXT("Set GameplayEffectclass to ActorEffect"));
 	if(TargetASC)
 	{
+		if(!bApplyEffectToEnemy && Target->ActorHasTag("Enemy")) return;
+
+			
 		FGameplayEffectContextHandle ContextHandle = TargetASC->MakeEffectContext();
 		ContextHandle.AddSourceObject(this);
 		FGameplayEffectSpecHandle SpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass,ActorLevel,ContextHandle);

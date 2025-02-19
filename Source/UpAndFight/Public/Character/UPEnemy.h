@@ -9,6 +9,7 @@
 #include "UPEnemy.generated.h"
 
 
+class UBlackboardComponent;
 class UBehaviorTree;
 class UUpFightUserWidget;
 class UWidgetComponent;
@@ -59,6 +60,9 @@ public:
 
 	
 protected:
+
+	void HitReactTagChanged(FGameplayTag Tag, int32 Count);
+
 	
 	TObjectPtr<UEnemyWidgetController> EnemyWidgetController;
 
@@ -71,5 +75,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 
-
+	TObjectPtr<UBlackboardComponent> BlackBoardComponent;
+	
+	bool bHitReacting = false;
 };
+

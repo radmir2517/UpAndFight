@@ -72,7 +72,10 @@ protected:
 	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandles;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Applied Effect")
-	bool bDestroyOnEffectRemoval = false;
+	bool bDestroyOnEffectRemoval = true;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Applied Effect")
+	bool bApplyEffectToEnemy = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Applied Effect")
 	float ActorLevel = 1.f;

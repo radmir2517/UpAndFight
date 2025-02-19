@@ -4,14 +4,15 @@
 #include "Character/UPEnemy.h"
 
 #include "AbilitySystemComponent.h"
+#include "UpFightGameplayTags.h"
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "AI/UpFightAIController.h"
 #include "BehaviorTree/BehaviorTree.h"
-#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/Widget/UpFightUserWidget.h"
 #include "UI/WidgetController/EnemyWidgetController.h"
@@ -36,6 +37,11 @@ AUPEnemy::AUPEnemy()
 	// укажем чтобы новый тип коллизии враг делал Overlap
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+	
 	
 }
 
@@ -59,7 +65,9 @@ void AUPEnemy::PossessedBy(AController* NewController)
 	// кастуем на наш контроллер
 	AUpFightAIController* UpFightAIController = Cast<AUpFightAIController>(NewController);
 	// далее инициализируем BlackboardComponent() доской назначенной в дереве
-	UpFightAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	BlackBoardComponent = UpFightAIController->GetBlackboardComponent();
+	BlackBoardComponent->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	BlackBoardComponent->SetValueAsBool("RangedAttacker", CharacterClass != ECharacterClass::Warrior);
 	// далле запустим работы нашего дерева
 	UpFightAIController->RunBehaviorTree(BehaviorTree);
 	
@@ -70,13 +78,27 @@ void AUPEnemy::InitAbilityInfo()
 {
 	// сообщаем кто avatar actor и кто Owner
 	AbilitySystemComponent->InitAbilityActorInfo(this,this);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FUpFightGameplayTags::Get().Effect_HitReact,EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AUPEnemy::HitReactTagChanged);
+	
 	// вызов привязки делегата OnGameplayEffectAppliedToSelf к нашей функции в AbilitySystemComponent
 	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 	if(!HasAuthority()){return;}
-	InitializeDefaultAttributes();
 	
+	InitializeDefaultAttributes();
 }
 
+
+void AUPEnemy::HitReactTagChanged(const FGameplayTag Tag, int32 Count)
+{
+	bHitReacting = Count >= 1;
+
+	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : 250.f;
+	if(IsValid(BlackBoardComponent))
+	{
+		BlackBoardComponent->SetValueAsBool(("HitReacting"),bHitReacting);
+	}
+	
+}
 void AUPEnemy::HighlightActor_Implementation()
 {
 	GetMesh()->SetRenderCustomDepth(true);
