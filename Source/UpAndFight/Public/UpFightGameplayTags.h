@@ -45,7 +45,13 @@ struct FUpFightGameplayTags
 	
 	/* Event Tags */
 	FGameplayTag Event_MontageTag_FireBolt;
+	FGameplayTag Event_MontageTag_Attack_Melee;
+	FGameplayTag Event_MontageTag_Attack_Ranged;
 	/* end Event Tags */
+
+	/* Attack Tags */
+	FGameplayTag Abilities_Attack;
+	/* end Attack Tags */
 
 	FGameplayTag Attribute_Resistance_Fire;
 	FGameplayTag Attribute_Resistance_Lightning;

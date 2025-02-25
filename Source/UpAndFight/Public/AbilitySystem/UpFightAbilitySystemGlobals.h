@@ -16,4 +16,6 @@ class UPANDFIGHT_API UUpFightAbilitySystemGlobals : public UAbilitySystemGlobals
 public:
 	/** Should allocate a project specific GameplayEffectContext struct. Caller is responsible for deallocation */
 	 virtual FGameplayEffectContext* AllocGameplayEffectContext() const override;
+
+	
 };

@@ -7,6 +7,8 @@
 #include "UpFightAbilitySystemLibrary.generated.h"
 
 
+struct FScalableFloat;
+struct FGameplayTag;
 class UAbilitySystemComponent;
 enum class ECharacterClass : uint8;
 class UCharacterClassInfo;
@@ -35,5 +37,18 @@ public:
 	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, UAbilitySystemComponent* ASC, float Level);
 	// достанем из AbilityClassInfo common абилки и активируем их(GA_HitReact)
 	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
-	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC);
+	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass& Class);
+	// вернем врагов цели в определенном радиусе
+	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
+	static TArray<AActor*> GetLiveActorsFromRadius(const UObject* WorldContextObject, const AActor* SourceActor, const FVector& InLocation, const float InRadius);
+
+	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
+	static bool AreTheyFriends(const AActor* SourceActor, const AActor* TargetActor);
+
+	/*
+	 * Gameplay Effect 
+	 */
+	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
+	static void UpFightApplyGameplayEffect(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceActor, AActor* TargetActor, TMap<FGameplayTag, FScalableFloat> EffectTypes, float Level);
 };
+

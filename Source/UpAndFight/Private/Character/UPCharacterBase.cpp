@@ -7,8 +7,7 @@
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
+
 
 
 AUPCharacterBase::AUPCharacterBase()
@@ -43,7 +42,7 @@ void AUPCharacterBase::InitAbilityInfo()
 {
 }
 
-FVector AUPCharacterBase::GetSocketWeapon_Implementation()
+FVector AUPCharacterBase::GetSocketLocation_Implementation()
 {
 	
 	return Weapon->GetSocketLocation("TipSocket");
@@ -51,7 +50,7 @@ FVector AUPCharacterBase::GetSocketWeapon_Implementation()
 
 void AUPCharacterBase::UpdateMotionWarping_Implementation(const FVector& TargetLocation)
 {
-	MotionWarping->AddOrUpdateWarpTargetFromLocation("FacingTarget",TargetLocation);
+	MotionWarping->AddOrUpdateWarpTargetFromLocation("TargetFacing",TargetLocation);
 }
 
 UAnimMontage* AUPCharacterBase::GetHitReactMontage_Implementation()
@@ -59,7 +58,12 @@ UAnimMontage* AUPCharacterBase::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
+UAnimMontage* AUPCharacterBase::GetAttackMontage_Implementation(FGameplayTag Tag)
+{
+	return *AttackMontagesByTag.Find(Tag);
+}
 
+;
 
 void AUPCharacterBase::Die_Implementation()
 {
@@ -113,7 +117,6 @@ void AUPCharacterBase::Dissolve()
 		Weapon->SetMaterial(0,WeaponInstanceDynamic);
 		StartWeaponDissolveTimeline(WeaponInstanceDynamic);	
 	}
-
 }
 
 

@@ -76,6 +76,8 @@ protected:
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 
 	TObjectPtr<UBlackboardComponent> BlackBoardComponent;
+
+
 	
 	bool bHitReacting = false;
 };

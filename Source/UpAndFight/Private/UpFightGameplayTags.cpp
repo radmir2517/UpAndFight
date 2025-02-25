@@ -35,10 +35,16 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	UpFightGameplayTags.InputTag_3 = UpFightTagsManager.AddNativeGameplayTag("InputTag.3", "3 Button Input Tag");
 	/* end InputTag */
 
-	/* MontageTag */
+	/*  Event Tags  */
 	UpFightGameplayTags.Event_MontageTag_FireBolt = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.FireBolt", "FireBolt Event Montage Tag");
-	/* end MontageTag */
+	UpFightGameplayTags.Event_MontageTag_Attack_Melee = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.Attack.Melee", "Melee Attack Event Montage Tag");
+	UpFightGameplayTags.Event_MontageTag_Attack_Ranged = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.Attack.Ranged", "Ranged Attack Event Montage Tag");
+	/* end Event Tags */
 
+	/* Attack Tags */
+	UpFightGameplayTags.Abilities_Attack= UpFightTagsManager.AddNativeGameplayTag("Abilities.Attack", "Abilities Attack Tag");
+	/* end Attack Tags */
+	
 	UpFightGameplayTags.Effect_HitReact = UpFightTagsManager.AddNativeGameplayTag("Effect.HitReact", "HitReact Tag");
 
 	UpFightGameplayTags.Attribute_Resistance_Fire = UpFightTagsManager.AddNativeGameplayTag("Attribute.Resistance.Fire", "Fire Resistance Tag");

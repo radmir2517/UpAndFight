@@ -18,6 +18,7 @@ enum class ECharacterClass : uint8
 	Warrior
 };
 
+// структура для RPG - класса персонажей, содержит эффект главных атрибутов и атакующих абилок 
 USTRUCT(BlueprintType)
 struct FCharacterClassDefaultInfo
 {
@@ -25,6 +26,9 @@ struct FCharacterClassDefaultInfo
  
 	UPROPERTY(EditDefaultsOnly, Category="CharacterClass")
 	TSubclassOf<UGameplayEffect> PrimaryAttributes;
+
+	UPROPERTY(EditDefaultsOnly, Category="CharacterClass")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 	
 };
 

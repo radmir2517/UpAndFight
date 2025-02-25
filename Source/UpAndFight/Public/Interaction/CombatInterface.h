@@ -3,8 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
+
+
 
 UINTERFACE(MinimalAPI)
 class UCombatInterface : public UInterface
@@ -22,7 +25,7 @@ public:
 	int32 GetPlayerLevel();
 	
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
-	FVector GetSocketWeapon();
+	FVector GetSocketLocation();
 
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	void UpdateMotionWarping(const FVector& TargetLocation);
@@ -31,5 +34,11 @@ public:
 	UAnimMontage* GetHitReactMontage();
 
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+	UAnimMontage* GetAttackMontage(FGameplayTag Tag);
+
+
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	void Die();
+
+	
 };

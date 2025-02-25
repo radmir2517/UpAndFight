@@ -18,7 +18,7 @@ void UUpFightProjectileSpell::SpawnProjectile(FVector InTargetLocation)
 	
 	// создаем transform в посохе и пока направления игрока
 	FTransform ProjectileTransform;
-	FVector SocketLocation = ICombatInterface::Execute_GetSocketWeapon(GetAvatarActorFromActorInfo());
+	FVector SocketLocation = ICombatInterface::Execute_GetSocketLocation(GetAvatarActorFromActorInfo());
 	ProjectileTransform.SetLocation(SocketLocation);
 	// получаем направление шарика к цели
 	FVector FromActorToTargetVector = InTargetLocation - SocketLocation;
@@ -41,10 +41,12 @@ void UUpFightProjectileSpell::SpawnProjectile(FVector InTargetLocation)
 	Projectile->DamageEffectSpecHandle.Data->GetContext().AddSourceObject(GetAvatarActorFromActorInfo());
 	// пройдемся по всем типам урона которые есть в заклинание и присвоим им теги и урон
 	for(auto Pair : DamageTypes)
-	{
+	{	
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle,Pair.Key,Pair.Value.GetValueAtLevel(GetAbilityLevel()));
 	}
 
+	
+	
 	// досоздаем шарик
 	UGameplayStatics::FinishSpawningActor(CreatedActor,ProjectileTransform);
 }

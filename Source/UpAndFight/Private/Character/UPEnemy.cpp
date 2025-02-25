@@ -53,7 +53,7 @@ void AUPEnemy::BeginPlay()
 	InitEnemyWidget();
 	if(!HasAuthority()) return;
 	// give абилку GA_HitReact
-	UUpFightAbilitySystemLibrary::GiveStartupAbilities(this,AbilitySystemComponent);
+	UUpFightAbilitySystemLibrary::GiveStartupAbilities(this,AbilitySystemComponent, CharacterClass);
 }
 
 void AUPEnemy::PossessedBy(AController* NewController)
@@ -70,8 +70,6 @@ void AUPEnemy::PossessedBy(AController* NewController)
 	BlackBoardComponent->SetValueAsBool("RangedAttacker", CharacterClass != ECharacterClass::Warrior);
 	// далле запустим работы нашего дерева
 	UpFightAIController->RunBehaviorTree(BehaviorTree);
-	
-	
 }
 
 void AUPEnemy::InitAbilityInfo()
@@ -83,8 +81,10 @@ void AUPEnemy::InitAbilityInfo()
 	// вызов привязки делегата OnGameplayEffectAppliedToSelf к нашей функции в AbilitySystemComponent
 	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 	if(!HasAuthority()){return;}
-	
+	// применяем эффекты главных и второстепеных атрибутов
 	InitializeDefaultAttributes();
+	// применяем GA_HitReact, и атакующие абилки для каждого класса
+	AddCharacterAbilities();
 }
 
 
@@ -115,6 +115,7 @@ int32 AUPEnemy::GetPlayerLevel_Implementation()
 {
 	return Level;
 }
+
 
 
 

@@ -11,6 +11,7 @@
 #include "UPCharacterBase.generated.h"
 
 
+struct FGameplayTag;
 class UGameplayAbility;
 class UGameplayEffect;
 class UUpFightAttributeSet;
@@ -33,11 +34,11 @@ public:
 	virtual void InitAbilityInfo();
 	// включим эффект первичных, вторичных и Vital атрибутов
 	virtual void InitializeDefaultAttributes();
-	/* ICombatInterface */\
-	virtual FVector GetSocketWeapon_Implementation() override;
+	/* ICombatInterface */
+	virtual FVector GetSocketLocation_Implementation() override;
 	virtual void UpdateMotionWarping_Implementation(const FVector& TargetLocation) override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	
+	virtual UAnimMontage* GetAttackMontage_Implementation(FGameplayTag Tag) override;
 	virtual void Die_Implementation() override;
 	/*end ICombatInterface*/
 	
@@ -64,6 +65,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bDied = false;
 
+	UPROPERTY(EditDefaultsOnly,Category = "Combat")
+	TMap<FGameplayTag,UAnimMontage*> AttackMontagesByTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Character Class Default")
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 	
 	// создадим оружие
@@ -72,6 +77,7 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category="Combat")
 	TObjectPtr<UMotionWarpingComponent> MotionWarping;
+	
 	
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
@@ -95,6 +101,8 @@ protected:
 	TObjectPtr<UMaterialInstance> BodyDissolveMaterial;
 	UPROPERTY(EditDefaultsOnly,Category="Dissolve")
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterial;
+
+	
 
 	
 	

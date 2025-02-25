@@ -3,7 +3,10 @@
 
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "Engine/OverlapResult.h"
 #include "Game/UpFightGameMode.h"
+#include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/UpFightPlayerState.h"
 #include "UI/HUD/UpFightHUD.h"
@@ -74,7 +77,7 @@ void UUpFightAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* Wo
 }
 
 void UUpFightAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject,
-	UAbilitySystemComponent* ASC)
+                                                        UAbilitySystemComponent* ASC, ECharacterClass& Class)
 {
 	check(ASC);
 	UCharacterClassInfo* ClassInfo = GetCharacterClassInfo(WorldContextObject);
@@ -82,4 +85,74 @@ void UUpFightAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldCont
 	{
 		ASC->GiveAbility(ASC->BuildAbilitySpecFromClass(AbilityClass));
 	}
+	UCharacterClassInfo* CharacterClassInfo = UUpFightAbilitySystemLibrary::GetCharacterClassInfo(WorldContextObject);
+	const FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetCharacterClassInfoByEnum(Class);
+
+	for(auto Ability: ClassDefaultInfo.StartupAbilities)
+	{
+		if(ASC->GetAvatarActor()->Implements<UCombatInterface>())
+		{
+			const FGameplayAbilitySpec Spec = ASC->BuildAbilitySpecFromClass(Ability,ICombatInterface::Execute_GetPlayerLevel(ASC->GetAvatarActor()));
+			ASC->GiveAbility(Spec);
+		}
+	}
+}
+
+
+TArray<AActor*> UUpFightAbilitySystemLibrary::GetLiveActorsFromRadius(const UObject* WorldContextObject, const AActor* SourceActor,
+                                                                      const FVector& InLocation, const float InRadius)
+{
+	// параметры запроса коллизии, добавим туда игнор нашего персонажа
+	FCollisionQueryParams SphereParams(FName(),false, SourceActor);
+	
+	// query scene to see what we hit
+	TArray<FOverlapResult> Overlaps;
+	
+	if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{	// тут нужна будет структура с запросом колиизии, добавим туда запрос с AllDynamicObjects и лишь в концу добавим наш SphereParams, т.к в конструкторе нет одновременно фильтра MobilityType и игнор объекта
+		World->OverlapMultiByObjectType(Overlaps, InLocation, FQuat::Identity, FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), FCollisionShape::MakeSphere(InRadius), SphereParams);
+	}
+	// структура актеров которые мы будем возвращать
+	TArray<AActor*> OverlapActors;
+	// переберем массив в котором будут актеры в радиусе
+	for (const FOverlapResult& Overlap : Overlaps)
+	{
+		AActor* const OverlapActor = Overlap.OverlapObjectHandle.FetchActor();
+		if(!AreTheyFriends(SourceActor, OverlapActor))
+		{
+			OverlapActors.AddUnique(OverlapActor);
+		}
+	}
+	return OverlapActors;
+}
+
+bool UUpFightAbilitySystemLibrary::AreTheyFriends( const AActor* SourceActor,
+	const AActor* TargetActor)
+{
+	bool IsFriend = false;
+	IsFriend = SourceActor->ActorHasTag("Enemy") && TargetActor->ActorHasTag("Enemy");
+	IsFriend = SourceActor->ActorHasTag("Player") && TargetActor->ActorHasTag("Player");
+	return IsFriend;
+}
+
+void UUpFightAbilitySystemLibrary::UpFightApplyGameplayEffect(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceActor,
+	AActor* TargetActor, TMap<FGameplayTag, FScalableFloat> EffectTypes, float Level)
+{
+	if( !IsValid(SourceActor) || !IsValid(TargetActor) || EffectTypes.IsEmpty() ) return;
+	
+	UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
+	if(!IsValid(SourceASC)) return;
+
+	FGameplayEffectContextHandle ContextHandle = SourceASC->MakeEffectContext();
+	ContextHandle.AddSourceObject(SourceActor);
+	FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(EffectClass,Level,ContextHandle);
+
+	for(auto Pair : EffectTypes)
+	{
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,Pair.Key,Pair.Value.GetValueAtLevel(Level));
+	}
+	
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(),TargetASC);
+	
 }
