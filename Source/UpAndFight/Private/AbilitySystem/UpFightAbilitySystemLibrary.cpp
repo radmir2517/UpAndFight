@@ -99,40 +99,38 @@ void UUpFightAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldCont
 }
 
 
-TArray<AActor*> UUpFightAbilitySystemLibrary::GetLiveActorsFromRadius(const UObject* WorldContextObject, const AActor* SourceActor,
-                                                                      const FVector& InLocation, const float InRadius)
+void UUpFightAbilitySystemLibrary::GetLiveActorsFromRadius(const UObject* WorldContextObject, const TArray<AActor*>& IgnoreActors,
+	TArray<AActor*>& ActorsToOut, const float InRadius, const FVector& Origin)
 {
 	// параметры запроса коллизии, добавим туда игнор нашего персонажа
-	FCollisionQueryParams SphereParams(FName(),false, SourceActor);
-	
+	FCollisionQueryParams SphereParams;
+
+	SphereParams.AddIgnoredActors(IgnoreActors);
 	// query scene to see what we hit
 	TArray<FOverlapResult> Overlaps;
-	
+	// провреим что можем получить мир
 	if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{	// тут нужна будет структура с запросом колиизии, добавим туда запрос с AllDynamicObjects и лишь в концу добавим наш SphereParams, т.к в конструкторе нет одновременно фильтра MobilityType и игнор объекта
-		World->OverlapMultiByObjectType(Overlaps, InLocation, FQuat::Identity, FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), FCollisionShape::MakeSphere(InRadius), SphereParams);
-	}
-	// структура актеров которые мы будем возвращать
-	TArray<AActor*> OverlapActors;
-	// переберем массив в котором будут актеры в радиусе
-	for (const FOverlapResult& Overlap : Overlaps)
-	{
-		AActor* const OverlapActor = Overlap.OverlapObjectHandle.FetchActor();
-		if(!AreTheyFriends(SourceActor, OverlapActor))
+		World->OverlapMultiByObjectType(Overlaps, Origin, FQuat::Identity, FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), FCollisionShape::MakeSphere(InRadius), SphereParams);
+		// переберем массив в котором будут актеры в радиусе
+		ActorsToOut.Empty();
+		for (const FOverlapResult& Overlap : Overlaps)
 		{
-			OverlapActors.AddUnique(OverlapActor);
+			AActor* OverlapActor = Overlap.OverlapObjectHandle.FetchActor();
+			if(OverlapActor->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsDead(OverlapActor))
+			{
+				ActorsToOut.AddUnique(OverlapActor);
+			}
 		}
 	}
-	return OverlapActors;
+	
+	
 }
 
 bool UUpFightAbilitySystemLibrary::AreTheyFriends( const AActor* SourceActor,
 	const AActor* TargetActor)
 {
-	bool IsFriend = false;
-	IsFriend = SourceActor->ActorHasTag("Enemy") && TargetActor->ActorHasTag("Enemy");
-	IsFriend = SourceActor->ActorHasTag("Player") && TargetActor->ActorHasTag("Player");
-	return IsFriend;
+	return SourceActor->Tags[0] == TargetActor->Tags[0];
 }
 
 void UUpFightAbilitySystemLibrary::UpFightApplyGameplayEffect(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceActor,

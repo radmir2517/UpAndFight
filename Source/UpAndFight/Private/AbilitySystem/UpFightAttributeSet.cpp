@@ -9,6 +9,7 @@
 #include "UpFightGameplayTags.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/UpFightPlayerController.h"
 
@@ -168,10 +169,15 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 			// покажем и воспроиведем анимацию виджета отвечающие за отоброжение урона
 			if(Props.SourceCharacter != Props.TargetCharacter)
 			{
-				if(AUpFightPlayerController* UpFightPlayerController = Cast<AUpFightPlayerController>(Props.SourceController))
+				if(AUpFightPlayerController* UpPC = Cast<AUpFightPlayerController>(Props.SourceController))
 				{
-					UpFightPlayerController->ShowDamageNumber(Props.TargetCharacter,LocalDamage);
+					UpPC->ShowDamageNumber(Props.TargetCharacter,LocalDamage);
 				}
+				else if(AUpFightPlayerController* UpPLayerController = Cast<AUpFightPlayerController>(Props.TargetController))
+				{
+					UpPLayerController->ShowDamageNumber(Props.TargetCharacter,LocalDamage);
+				}
+				
 			}
 			
 		}

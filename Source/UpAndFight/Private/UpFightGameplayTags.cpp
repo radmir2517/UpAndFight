@@ -37,8 +37,10 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 
 	/*  Event Tags  */
 	UpFightGameplayTags.Event_MontageTag_FireBolt = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.FireBolt", "FireBolt Event Montage Tag");
-	UpFightGameplayTags.Event_MontageTag_Attack_Melee = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.Attack.Melee", "Melee Attack Event Montage Tag");
-	UpFightGameplayTags.Event_MontageTag_Attack_Ranged = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.Attack.Ranged", "Ranged Attack Event Montage Tag");
+	UpFightGameplayTags.Event_MontageTag_Attack_Weapon = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.Attack.Weapon", "Weapon Attack Event Montage Tag");
+
+	UpFightGameplayTags.Event_MontageTag_Attack_LeftHand = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.Attack.LeftHand", "LeftHand Attack Event Montage Tag");
+	UpFightGameplayTags.Event_MontageTag_Attack_RightHand = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.Attack.RightHand", "RightHand Attack Event Montage Tag");
 	/* end Event Tags */
 
 	/* Attack Tags */

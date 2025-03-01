@@ -38,8 +38,10 @@ public:
 	virtual FVector GetSocketLocation_Implementation() override;
 	virtual void UpdateMotionWarping_Implementation(const FVector& TargetLocation) override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	virtual UAnimMontage* GetAttackMontage_Implementation(FGameplayTag Tag) override;
+	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 	virtual void Die_Implementation() override;
+	virtual bool IsDead_Implementation() override;
+	virtual AActor* GetActor_Implementation() override;
 	/*end ICombatInterface*/
 	
 protected:
@@ -63,10 +65,9 @@ protected:
 	int32 Level = 1;
 	// переменная которая будет переключать состояние аниммации на state Died
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool bDied = false;
+	bool bDead = false;
 
-	UPROPERTY(EditDefaultsOnly,Category = "Combat")
-	TMap<FGameplayTag,UAnimMontage*> AttackMontagesByTag;
+	
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Character Class Default")
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;
@@ -93,7 +94,10 @@ protected:
 	// способности которые должны быть вначале у игрока/врага
 	UPROPERTY(EditDefaultsOnly,Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartedGameplayAbilities;
-
+	
+	UPROPERTY(EditDefaultsOnly,Category = "Combat")
+	TArray<FTaggedMontage> AttackMontages;
+	
 	UPROPERTY(EditDefaultsOnly,Category="Abilities")
 	TObjectPtr<UAnimMontage> HitReactMontage;
 

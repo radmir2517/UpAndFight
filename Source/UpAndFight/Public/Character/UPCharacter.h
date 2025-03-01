@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/UPCharacterBase.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/PlayerInterface.h"
 #include "UPCharacter.generated.h"
 
 class AUpFightPlayerState;
@@ -13,7 +14,7 @@ class UGameplayEffect;
  * 
  */
 UCLASS()
-class UPANDFIGHT_API AUPCharacter : public AUPCharacterBase
+class UPANDFIGHT_API AUPCharacter : public AUPCharacterBase, public IPlayerInterface
 {
 	GENERATED_BODY()
 

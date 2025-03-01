@@ -40,7 +40,7 @@ public:
 	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass& Class);
 	// вернем врагов цели в определенном радиусе
 	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
-	static TArray<AActor*> GetLiveActorsFromRadius(const UObject* WorldContextObject, const AActor* SourceActor, const FVector& InLocation, const float InRadius);
+	static void GetLiveActorsFromRadius(const UObject* WorldContextObject, const TArray<AActor*>& IgnoreActors,TArray<AActor*>& ActorsToOut, const float InRadius, const FVector& Origin);
 
 	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
 	static bool AreTheyFriends(const AActor* SourceActor, const AActor* TargetActor);

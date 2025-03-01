@@ -7,6 +7,18 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+USTRUCT(BlueprintType)
+struct FTaggedMontage
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimMontage* Montage = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag MontageTag;
+};
+
 
 
 UINTERFACE(MinimalAPI)
@@ -32,9 +44,16 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	UAnimMontage* GetHitReactMontage();
+	
 
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
-	UAnimMontage* GetAttackMontage(FGameplayTag Tag);
+	TArray<FTaggedMontage> GetAttackMontages();
+
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+	bool IsDead();
+
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+	AActor* GetActor();
 
 
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)

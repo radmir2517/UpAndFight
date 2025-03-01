@@ -58,17 +58,25 @@ UAnimMontage* AUPCharacterBase::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
-UAnimMontage* AUPCharacterBase::GetAttackMontage_Implementation(FGameplayTag Tag)
+TArray<FTaggedMontage> AUPCharacterBase::GetAttackMontages_Implementation()
 {
-	return *AttackMontagesByTag.Find(Tag);
+	return AttackMontages;
 }
-
-;
 
 void AUPCharacterBase::Die_Implementation()
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	MulticastHandleDeath();
+}
+
+bool AUPCharacterBase::IsDead_Implementation()
+{
+	return bDead;
+}
+
+AActor* AUPCharacterBase::GetActor_Implementation()
+{
+	return this;
 }
 
 void AUPCharacterBase::MulticastHandleDeath_Implementation()
@@ -84,7 +92,7 @@ void AUPCharacterBase::MulticastHandleDeath_Implementation()
 	Weapon->SetCollisionResponseToChannel(ECC_WorldStatic,ECR_Block);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	Weapon->SetSimulatePhysics(true);
-	bDied = true;
+	bDead = true;
 
 	Dissolve();
 }

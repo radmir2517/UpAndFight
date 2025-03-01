@@ -45,8 +45,10 @@ struct FUpFightGameplayTags
 	
 	/* Event Tags */
 	FGameplayTag Event_MontageTag_FireBolt;
-	FGameplayTag Event_MontageTag_Attack_Melee;
-	FGameplayTag Event_MontageTag_Attack_Ranged;
+	FGameplayTag Event_MontageTag_Attack_Weapon;
+
+	FGameplayTag Event_MontageTag_Attack_LeftHand;
+	FGameplayTag Event_MontageTag_Attack_RightHand;
 	/* end Event Tags */
 
 	/* Attack Tags */
