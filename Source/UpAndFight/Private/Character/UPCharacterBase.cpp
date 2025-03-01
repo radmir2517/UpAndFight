@@ -4,6 +4,7 @@
 #include "Character/UPCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "UpFightGameplayTags.h"
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -42,10 +43,23 @@ void AUPCharacterBase::InitAbilityInfo()
 {
 }
 
-FVector AUPCharacterBase::GetSocketLocation_Implementation()
-{
-	
-	return Weapon->GetSocketLocation("TipSocket");
+FVector AUPCharacterBase::GetSocketLocation_Implementation(const FGameplayTag& MontageTag)
+{	// вернем местоположения сокета в зависимости от тега монтажа
+	const FUpFightGameplayTags& UpTags = FUpFightGameplayTags::Get();
+	if(MontageTag.MatchesTagExact(UpTags.Event_MontageTag_Attack_Weapon))
+	{
+		return Weapon->GetSocketLocation(WeaponSocketTipName);
+	}
+	else if(MontageTag.MatchesTagExact(UpTags.Event_MontageTag_Attack_LeftHand))
+	{
+		return GetMesh()->GetSocketLocation(LeftHandSocketTipName);
+	}
+	else if(MontageTag.MatchesTagExact(UpTags.Event_MontageTag_Attack_RightHand))
+	{
+		return GetMesh()->GetSocketLocation(RightHandSocketTipName);
+	}
+	UE_LOG(LogTemp,Error,TEXT("Check GetSocketLocation_Implementation, because it returns null"))
+	return FVector();
 }
 
 void AUPCharacterBase::UpdateMotionWarping_Implementation(const FVector& TargetLocation)

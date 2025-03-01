@@ -15,10 +15,10 @@ void UUpFightProjectileSpell::SpawnProjectile(FVector InTargetLocation)
 {
 	// проверяем чтобы это делал сервер
 	if(!GetAvatarActorFromActorInfo()->HasAuthority()) return;
-	
+	const FUpFightGameplayTags& GameplayTags = FUpFightGameplayTags::Get();
 	// создаем transform в посохе и пока направления игрока
 	FTransform ProjectileTransform;
-	FVector SocketLocation = ICombatInterface::Execute_GetSocketLocation(GetAvatarActorFromActorInfo());
+	const FVector SocketLocation = ICombatInterface::Execute_GetSocketLocation(GetAvatarActorFromActorInfo(),GameplayTags.Event_MontageTag_Attack_Weapon );
 	ProjectileTransform.SetLocation(SocketLocation);
 	// получаем направление шарика к цели
 	FVector FromActorToTargetVector = InTargetLocation - SocketLocation;
@@ -35,7 +35,7 @@ void UUpFightProjectileSpell::SpawnProjectile(FVector InTargetLocation)
 	   GetAvatarActorFromActorInfo());
 	
 	AUpFightProjectile* Projectile = Cast<AUpFightProjectile>(CreatedActor);
-	const FUpFightGameplayTags& GameplayTags = FUpFightGameplayTags::Get();
+	
 	// в шарике создаем спецификацию эффекта и назначаем источник
 	Projectile->DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect,1);
 	Projectile->DamageEffectSpecHandle.Data->GetContext().AddSourceObject(GetAvatarActorFromActorInfo());

@@ -35,7 +35,7 @@ public:
 	// включим эффект первичных, вторичных и Vital атрибутов
 	virtual void InitializeDefaultAttributes();
 	/* ICombatInterface */
-	virtual FVector GetSocketLocation_Implementation() override;
+	virtual FVector GetSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
 	virtual void UpdateMotionWarping_Implementation(const FVector& TargetLocation) override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
@@ -67,6 +67,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bDead = false;
 
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category="Character Class Default")
+	FName WeaponSocketTipName = "TipSocket";
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category="Character Class Default")
+	FName LeftHandSocketTipName = "LeftHandSocket";
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category="Character Class Default")
+	FName RightHandSocketTipName = "RightHandSocket";
 	
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Character Class Default")

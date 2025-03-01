@@ -42,8 +42,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
 	static void GetLiveActorsFromRadius(const UObject* WorldContextObject, const TArray<AActor*>& IgnoreActors,TArray<AActor*>& ActorsToOut, const float InRadius, const FVector& Origin);
 
-	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
-	static bool AreTheyFriends(const AActor* SourceActor, const AActor* TargetActor);
+	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|CommonAttributes")
+	static bool AreTheyFriends(const AActor* FirstActor, const AActor* SecondActor);
 
 	/*
 	 * Gameplay Effect 

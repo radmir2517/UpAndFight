@@ -51,9 +51,7 @@ void AUPEnemy::BeginPlay()
 	// инцилизируем систему способностей у врага
 	InitAbilityInfo();
 	InitEnemyWidget();
-	if(!HasAuthority()) return;
-	// give абилку GA_HitReact
-	UUpFightAbilitySystemLibrary::GiveStartupAbilities(this,AbilitySystemComponent, CharacterClass);
+	
 }
 
 void AUPEnemy::PossessedBy(AController* NewController)
@@ -84,7 +82,11 @@ void AUPEnemy::InitAbilityInfo()
 	// применяем эффекты главных и второстепеных атрибутов
 	InitializeDefaultAttributes();
 	// применяем GA_HitReact, и атакующие абилки для каждого класса
-	AddCharacterAbilities();
+	// устарел теперь это делается через UUpFightAbilitySystemLibrary::GiveStartupAbilities с помощью DA_CharacterInfo
+	//AddCharacterAbilities();
+	if(!HasAuthority()) return;
+	// give абилку GA_HitReact
+	UUpFightAbilitySystemLibrary::GiveStartupAbilities(this,AbilitySystemComponent, CharacterClass);
 }
 
 

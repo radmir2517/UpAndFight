@@ -37,7 +37,7 @@ public:
 	int32 GetPlayerLevel();
 	
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
-	FVector GetSocketLocation();
+	FVector GetSocketLocation(const FGameplayTag& MontageTag);
 
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	void UpdateMotionWarping(const FVector& TargetLocation);

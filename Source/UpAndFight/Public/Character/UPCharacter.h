@@ -38,6 +38,8 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AUpFightPlayerState> UpFightPlayerState;
+
+	
 	
 };
 
