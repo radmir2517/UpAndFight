@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
 #include "NiagaraFunctionLibrary.h"
+#include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -45,20 +46,27 @@ void AUpFightProjectile::BeginPlay()
 	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound,GetRootComponent());
 	// задания время жизни
 	SetLifeSpan(LifeSpanValue);
+	
 }
 
 void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor->Implements<UCombatInterface>())
+	
+	if(OtherActor->Implements<UCombatInterface>() && DamageEffectSpecHandle.Data->GetContext().GetSourceObject() !=OtherActor)
 	{
+		const AActor* SourceObject = Cast<AActor>(DamageEffectSpecHandle.Data->GetContext().GetSourceObject());
 		// звук удара и эффект удара
 		UGameplayStatics::PlaySoundAtLocation(this,ImpactSound,GetActorLocation(),FRotator::ZeroRotator);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactEffect,GetActorLocation());
 		// остановим звук шипения
-		LoopingSoundComponent->Stop();
+		if(IsValid(LoopingSoundComponent))
+		{
+			LoopingSoundComponent->Stop();
+		}
+
 		// если сервер то уничтожим если клиент то bHit = true
-		if(HasAuthority() && DamageEffectSpecHandle.Data->GetContext().GetSourceObject() != OtherActor)
+		if(HasAuthority() && !UUpFightAbilitySystemLibrary::AreTheyFriends(SourceObject,OtherActor))
 		{
 			if(UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{
