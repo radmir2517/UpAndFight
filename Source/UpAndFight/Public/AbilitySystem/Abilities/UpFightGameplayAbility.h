@@ -6,6 +6,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "UpFightGameplayAbility.generated.h"
 
+struct FTaggedMontage;
 /**
  * 
  */
@@ -17,4 +18,7 @@ public:
 	// тег который проверяется в ASC в AbilityInputTagHeld и в AbilityInputTagReleased
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag SetupInputTag;
+	// получим рандомный монтаж из массива структы сонтажа с тегом
+	UFUNCTION(BlueprintCallable)
+	FTaggedMontage GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& TaggedMontages);
 };

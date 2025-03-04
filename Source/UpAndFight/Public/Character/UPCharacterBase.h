@@ -79,7 +79,7 @@ protected:
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 	
 	// создадим оружие
-	UPROPERTY(VisibleAnywhere, Category="Combat")
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category="Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 	
 	UPROPERTY(VisibleAnywhere, Category="Combat")
