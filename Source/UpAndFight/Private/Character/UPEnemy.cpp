@@ -119,8 +119,6 @@ int32 AUPEnemy::GetPlayerLevel_Implementation()
 }
 
 
-
-
 UEnemyWidgetController* AUPEnemy::GetEnemyWidgetController()
 {
 	if(!IsValid(EnemyWidgetController))
@@ -153,7 +151,5 @@ void AUPEnemy::InitEnemyWidget()
 	HealthWidgetComponent->SetWidgetClass(EnemyHealthWidgetClass);
 	HealthWidgetComponent->SetWidget(HeathWidget);
 	
-	
-	//HeathWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 

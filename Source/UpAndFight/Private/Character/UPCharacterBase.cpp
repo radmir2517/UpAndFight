@@ -4,6 +4,7 @@
 #include "Character/UPCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "UpFightGameplayTags.h"
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
@@ -91,6 +92,11 @@ bool AUPCharacterBase::IsDead_Implementation()
 AActor* AUPCharacterBase::GetActor_Implementation()
 {
 	return this;
+}
+
+UNiagaraSystem* AUPCharacterBase::GetBloodEffect_Implementation()
+{
+	return BloodEffect;
 }
 
 void AUPCharacterBase::MulticastHandleDeath_Implementation()

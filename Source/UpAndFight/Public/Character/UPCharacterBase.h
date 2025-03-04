@@ -11,6 +11,7 @@
 #include "UPCharacterBase.generated.h"
 
 
+class UNiagaraSystem;
 struct FGameplayTag;
 class UGameplayAbility;
 class UGameplayEffect;
@@ -42,6 +43,7 @@ public:
 	virtual void Die_Implementation() override;
 	virtual bool IsDead_Implementation() override;
 	virtual AActor* GetActor_Implementation() override;
+	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
 	/*end ICombatInterface*/
 	
 protected:
@@ -112,8 +114,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category="Dissolve")
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterial;
 
-	
-
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
+	TObjectPtr<UNiagaraSystem> BloodEffect;
 	
 	
 };
