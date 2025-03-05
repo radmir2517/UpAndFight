@@ -35,20 +35,27 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	UpFightGameplayTags.InputTag_3 = UpFightTagsManager.AddNativeGameplayTag("InputTag.3", "3 Button Input Tag");
 	/* end InputTag */
 
-	/*  Event Tags  */
-	UpFightGameplayTags.Event_MontageTag_FireBolt = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.FireBolt", "FireBolt Event Montage Tag");
-	UpFightGameplayTags.Event_MontageTag_Attack_Weapon = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.Attack.Weapon", "Weapon Attack Event Montage Tag");
+	/*  Socket Location Tags  */
+	UpFightGameplayTags.SocketLocation_Weapon = UpFightTagsManager.AddNativeGameplayTag("SocketLocation.Weapon", "Socket Location Tag");
+	UpFightGameplayTags.SocketLocation_LeftHand = UpFightTagsManager.AddNativeGameplayTag("SocketLocation.LeftHand", "Socket Location Tag");
+	UpFightGameplayTags.SocketLocation_RightHand = UpFightTagsManager.AddNativeGameplayTag("SocketLocation.RightHand", "RightHand Socket Location Tag");
+	/*  Socket Location Tags  */
 
-	UpFightGameplayTags.Event_MontageTag_Attack_LeftHand = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.Attack.LeftHand", "LeftHand Attack Event Montage Tag");
-	UpFightGameplayTags.Event_MontageTag_Attack_RightHand = UpFightTagsManager.AddNativeGameplayTag("Event.MontageTag.Attack.RightHand", "RightHand Attack Event Montage Tag");
-	/* end Event Tags */
-
+	/*  Montage Tags  */
+	UpFightGameplayTags.Montage_Attack_1 = UpFightTagsManager.AddNativeGameplayTag("Montage.Attack.1", "Montage Tag");
+	UpFightGameplayTags.Montage_Attack_2 = UpFightTagsManager.AddNativeGameplayTag("Montage.Attack.2", "Montage Tag");
+	UpFightGameplayTags.Montage_Attack_3 = UpFightTagsManager.AddNativeGameplayTag("Montage.Attack.3", "Montage Tag");
+	UpFightGameplayTags.Montage_Attack_4 = UpFightTagsManager.AddNativeGameplayTag("Montage.Attack.4", "Montage Tag");
+	/*  end Montage Tags  */
+	
 	/* Attack Tags */
 	UpFightGameplayTags.Abilities_Attack= UpFightTagsManager.AddNativeGameplayTag("Abilities.Attack", "Abilities Attack Tag");
 	/* end Attack Tags */
 	
 	UpFightGameplayTags.Effect_HitReact = UpFightTagsManager.AddNativeGameplayTag("Effect.HitReact", "HitReact Tag");
-
+	/* GameplayCue Tags */
+	UpFightGameplayTags.GameplayCue_MeleeAttack = UpFightTagsManager.AddNativeGameplayTag("GameplayCue.MeleeAttack", "GameplayCue MeleeAttack");
+	/* end GameplayCue Tags */
 	UpFightGameplayTags.Attribute_Resistance_Fire = UpFightTagsManager.AddNativeGameplayTag("Attribute.Resistance.Fire", "Fire Resistance Tag");
 	UpFightGameplayTags.Attribute_Resistance_Lightning = UpFightTagsManager.AddNativeGameplayTag("Attribute.Resistance.Lightning", "Lightning Resistance Tag");
 	UpFightGameplayTags.Attribute_Resistance_Arcane = UpFightTagsManager.AddNativeGameplayTag("Attribute.Resistance.Arcane", "Arcane Resistance Tag");
@@ -65,4 +72,7 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	UpFightGameplayTags.DamageTypesToResistances.Add(UpFightGameplayTags.Damage_Lightning,UpFightGameplayTags.Attribute_Resistance_Lightning);
 	UpFightGameplayTags.DamageTypesToResistances.Add(UpFightGameplayTags.Damage_Arcane,UpFightGameplayTags.Attribute_Resistance_Arcane);
 	UpFightGameplayTags.DamageTypesToResistances.Add(UpFightGameplayTags.Damage_Physical,UpFightGameplayTags.Attribute_Resistance_Physical);
+
+
+	
 }

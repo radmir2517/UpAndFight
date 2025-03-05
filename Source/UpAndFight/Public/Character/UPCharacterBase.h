@@ -44,6 +44,8 @@ public:
 	virtual bool IsDead_Implementation() override;
 	virtual AActor* GetActor_Implementation() override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
+	// вернем структуру с монтажем по его тегу
+	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& InMontageTag) override;
 	/*end ICombatInterface*/
 	
 protected:
@@ -86,7 +88,6 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category="Combat")
 	TObjectPtr<UMotionWarpingComponent> MotionWarping;
-	
 	
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

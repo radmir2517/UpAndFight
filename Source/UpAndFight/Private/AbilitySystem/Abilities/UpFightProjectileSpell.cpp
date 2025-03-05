@@ -18,7 +18,7 @@ void UUpFightProjectileSpell::SpawnProjectile(FVector InTargetLocation)
 	const FUpFightGameplayTags& GameplayTags = FUpFightGameplayTags::Get();
 	// создаем transform в посохе и пока направления игрока
 	FTransform ProjectileTransform;
-	const FVector SocketLocation = ICombatInterface::Execute_GetSocketLocation(GetAvatarActorFromActorInfo(),GameplayTags.Event_MontageTag_Attack_Weapon );
+	const FVector SocketLocation = ICombatInterface::Execute_GetSocketLocation(GetAvatarActorFromActorInfo(),GameplayTags.SocketLocation_Weapon);
 	ProjectileTransform.SetLocation(SocketLocation);
 	// получаем направление шарика к цели
 	FVector FromActorToTargetVector = InTargetLocation - SocketLocation;

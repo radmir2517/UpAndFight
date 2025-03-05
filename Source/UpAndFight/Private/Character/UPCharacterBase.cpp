@@ -47,15 +47,15 @@ void AUPCharacterBase::InitAbilityInfo()
 FVector AUPCharacterBase::GetSocketLocation_Implementation(const FGameplayTag& MontageTag)
 {	// вернем местоположения сокета в зависимости от тега монтажа
 	const FUpFightGameplayTags& UpTags = FUpFightGameplayTags::Get();
-	if(MontageTag.MatchesTagExact(UpTags.Event_MontageTag_Attack_Weapon))
+	if(MontageTag.MatchesTagExact(UpTags.SocketLocation_Weapon))
 	{
 		return Weapon->GetSocketLocation(WeaponSocketTipName);
 	}
-	else if(MontageTag.MatchesTagExact(UpTags.Event_MontageTag_Attack_LeftHand))
+	else if(MontageTag.MatchesTagExact(UpTags.SocketLocation_LeftHand))
 	{
 		return GetMesh()->GetSocketLocation(LeftHandSocketTipName);
 	}
-	else if(MontageTag.MatchesTagExact(UpTags.Event_MontageTag_Attack_RightHand))
+	else if(MontageTag.MatchesTagExact(UpTags.SocketLocation_RightHand))
 	{
 		return GetMesh()->GetSocketLocation(RightHandSocketTipName);
 	}
@@ -97,6 +97,18 @@ AActor* AUPCharacterBase::GetActor_Implementation()
 UNiagaraSystem* AUPCharacterBase::GetBloodEffect_Implementation()
 {
 	return BloodEffect;
+}
+
+FTaggedMontage AUPCharacterBase::GetTaggedMontageByTag_Implementation(const FGameplayTag& InMontageTag)
+{	// вернем структуру
+	for(FTaggedMontage Montage: AttackMontages)
+	{
+		if(Montage.MontageTag == InMontageTag)
+		{
+			return Montage;
+		}
+	}
+	return FTaggedMontage();
 }
 
 void AUPCharacterBase::MulticastHandleDeath_Implementation()

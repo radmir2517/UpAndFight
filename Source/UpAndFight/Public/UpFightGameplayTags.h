@@ -43,12 +43,16 @@ struct FUpFightGameplayTags
 	FGameplayTag InputTag_3;
 	/* end Input Tags */
 	
-	/* Event Tags */
-	FGameplayTag Event_MontageTag_FireBolt;
-	FGameplayTag Event_MontageTag_Attack_Weapon;
+	/* Montage Tags */
+	FGameplayTag Montage_Attack_1;
+	FGameplayTag Montage_Attack_2;
+	FGameplayTag Montage_Attack_3;
+	FGameplayTag Montage_Attack_4;
+	
+	FGameplayTag SocketLocation_Weapon;
 
-	FGameplayTag Event_MontageTag_Attack_LeftHand;
-	FGameplayTag Event_MontageTag_Attack_RightHand;
+	FGameplayTag SocketLocation_LeftHand;
+	FGameplayTag SocketLocation_RightHand;
 	/* end Event Tags */
 
 	/* Attack Tags */
@@ -64,6 +68,11 @@ struct FUpFightGameplayTags
 	FGameplayTag Damage_Lightning;
 	FGameplayTag Damage_Arcane;
 	FGameplayTag Damage_Physical;
+
+	FGameplayTag GameplayCue_MeleeAttack;
+
+	
+	
 
 	TMap<FGameplayTag,FGameplayTag > DamageTypesToResistances;
 
