@@ -130,6 +130,7 @@ void UUpFightAbilitySystemLibrary::GetLiveActorsFromRadius(const UObject* WorldC
 bool UUpFightAbilitySystemLibrary::AreTheyFriends( const AActor* SourceActor,
 	const AActor* TargetActor)
 {
+	if(TargetActor->Tags.Num() == 0) return false;
 	return SourceActor->Tags[0] == TargetActor->Tags[0];
 }
 

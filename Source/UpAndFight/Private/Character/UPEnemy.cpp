@@ -118,6 +118,15 @@ int32 AUPEnemy::GetPlayerLevel_Implementation()
 	return Level;
 }
 
+void AUPEnemy::MulticastHandleDeath_Implementation()
+{
+	Super::MulticastHandleDeath_Implementation();
+	if(IsValid(BlackBoardComponent))
+	{
+		BlackBoardComponent->SetValueAsBool("bDead", true);
+	}
+}
+
 
 UEnemyWidgetController* AUPEnemy::GetEnemyWidgetController()
 {

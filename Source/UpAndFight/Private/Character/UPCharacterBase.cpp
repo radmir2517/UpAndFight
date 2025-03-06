@@ -4,12 +4,11 @@
 #include "Character/UPCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
-#include "NiagaraFunctionLibrary.h"
 #include "UpFightGameplayTags.h"
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "Components/CapsuleComponent.h"
-
+#include "Kismet/GameplayStatics.h"
 
 
 AUPCharacterBase::AUPCharacterBase()
@@ -124,9 +123,17 @@ void AUPCharacterBase::MulticastHandleDeath_Implementation()
 	Weapon->SetCollisionResponseToChannel(ECC_WorldStatic,ECR_Block);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	Weapon->SetSimulatePhysics(true);
+	// ABP будет подтягивать это значение и проверять надо ли перейти в пустой state
 	bDead = true;
-
+	
+	// воспроивзедения звука смерти
+	if(IsValid(DeathSound))
+	{
+		UGameplayStatics::PlaySoundAtLocation(this,DeathSound,GetActorLocation(),FRotator::ZeroRotator);
+	}
 	Dissolve();
+
+	SetLifeSpan(2.f);
 }
 
 

@@ -52,21 +52,25 @@ void AUpFightProjectile::BeginPlay()
 void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
-	if(OtherActor->Implements<UCombatInterface>() && DamageEffectSpecHandle.Data->GetContext().GetSourceObject() !=OtherActor)
+	if(!DamageEffectSpecHandle.IsValid()) return;
+	if(DamageEffectSpecHandle.Data->GetContext().GetSourceObject() != OtherActor)
 	{
 		const AActor* SourceObject = Cast<AActor>(DamageEffectSpecHandle.Data->GetContext().GetSourceObject());
-		// звук удара и эффект удара
-		UGameplayStatics::PlaySoundAtLocation(this,ImpactSound,GetActorLocation(),FRotator::ZeroRotator);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactEffect,GetActorLocation());
-		// остановим звук шипения
-		if(IsValid(LoopingSoundComponent))
+		
+		// если друзья, то просто ничего делать не будем
+		if(UUpFightAbilitySystemLibrary::AreTheyFriends(SourceObject,OtherActor)) return;
+		if(!bHit)
 		{
-			LoopingSoundComponent->Stop();
+			// звук удара и эффект удара
+			UGameplayStatics::PlaySoundAtLocation(this,ImpactSound,GetActorLocation(),FRotator::ZeroRotator);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactEffect,GetActorLocation());
+			// остановим звук шипения
+			if(IsValid(LoopingSoundComponent)) LoopingSoundComponent->Stop();
+			bHit = true;
 		}
-
+		
 		// если сервер то уничтожим если клиент то bHit = true
-		if(HasAuthority() && !UUpFightAbilitySystemLibrary::AreTheyFriends(SourceObject,OtherActor))
+		if(HasAuthority())
 		{
 			if(UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{
@@ -79,17 +83,7 @@ void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 			bHit = true;
 		}
 	}
-	else if(!OtherActor->Implements<UCombatInterface>())
-	{
-		if(HasAuthority())
-		{
-			Destroy();
-		}
-		else
-		{
-			bHit = true;
-		}
-	}
+
 }
 
 void AUpFightProjectile::Destroyed()
@@ -102,6 +96,7 @@ void AUpFightProjectile::Destroyed()
 		{
 			LoopingSoundComponent->Stop();
 		}
+		bHit = true;
 	}
 	Super::Destroyed();
 }

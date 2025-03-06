@@ -55,7 +55,7 @@ protected:
 	// функция которая GiveAbility нашим StartedGameplayAbilities
 	void AddCharacterAbilities();
 	UFUNCTION(NetMulticast,Reliable)
-	void MulticastHandleDeath();
+	virtual void MulticastHandleDeath();
 
 	void Dissolve();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -117,6 +117,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly,Category="Combat")
 	TObjectPtr<UNiagaraSystem> BloodEffect;
+
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
+	TObjectPtr<USoundBase> DeathSound;
 	
 	
 };

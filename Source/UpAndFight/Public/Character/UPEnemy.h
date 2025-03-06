@@ -44,7 +44,7 @@ public:
 	//virtual void Die_Implementation() override;
 	/* end CombatInterface */
 
-	
+	virtual void MulticastHandleDeath_Implementation() override;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UWidgetComponent> HealthWidgetComponent;
 
