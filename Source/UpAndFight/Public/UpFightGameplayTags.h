@@ -53,6 +53,7 @@ struct FUpFightGameplayTags
 
 	FGameplayTag SocketLocation_LeftHand;
 	FGameplayTag SocketLocation_RightHand;
+	FGameplayTag SocketLocation_Tail;
 	/* end Event Tags */
 
 	/* Attack Tags */

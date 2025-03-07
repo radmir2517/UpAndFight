@@ -10,6 +10,7 @@
 
 void UEnemyWidgetController::BindCallBacksToDependencies()
 {
+	
 	UUpFightSystemComponent* ASC = CastChecked<UUpFightSystemComponent>(AbilitySystemComponent);
 	UUpFightAttributeSet* AS =  CastChecked<UUpFightAttributeSet>(AttributeSet);
 	ASC->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)

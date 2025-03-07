@@ -58,6 +58,10 @@ FVector AUPCharacterBase::GetSocketLocation_Implementation(const FGameplayTag& M
 	{
 		return GetMesh()->GetSocketLocation(RightHandSocketTipName);
 	}
+	else if(MontageTag.MatchesTagExact(UpTags.SocketLocation_Tail))
+	{
+		return GetMesh()->GetSocketLocation(TailSocketTipName);
+	}
 	UE_LOG(LogTemp,Error,TEXT("Check GetSocketLocation_Implementation, because it returns null"))
 	return FVector();
 }

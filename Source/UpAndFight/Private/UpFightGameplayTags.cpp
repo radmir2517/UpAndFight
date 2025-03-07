@@ -39,6 +39,7 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	UpFightGameplayTags.SocketLocation_Weapon = UpFightTagsManager.AddNativeGameplayTag("SocketLocation.Weapon", "Socket Location Tag");
 	UpFightGameplayTags.SocketLocation_LeftHand = UpFightTagsManager.AddNativeGameplayTag("SocketLocation.LeftHand", "Socket Location Tag");
 	UpFightGameplayTags.SocketLocation_RightHand = UpFightTagsManager.AddNativeGameplayTag("SocketLocation.RightHand", "RightHand Socket Location Tag");
+	UpFightGameplayTags.SocketLocation_Tail = UpFightTagsManager.AddNativeGameplayTag("SocketLocation.Tail", "Tail Socket Location Tag");
 	/*  Socket Location Tags  */
 
 	/*  Montage Tags  */

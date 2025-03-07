@@ -77,7 +77,8 @@ protected:
 	FName LeftHandSocketTipName = "LeftHandSocket";
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category="Character Class Default")
 	FName RightHandSocketTipName = "RightHandSocket";
-	
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category="Character Class Default")
+	FName TailSocketTipName = "TailSocket";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Character Class Default")
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;
@@ -107,7 +108,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category = "Combat")
 	TArray<FTaggedMontage> AttackMontages;
 	
-	UPROPERTY(EditDefaultsOnly,Category="Abilities")
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
 
 	UPROPERTY(EditDefaultsOnly,Category="Dissolve")
