@@ -42,7 +42,7 @@ public:
 	
 	/* Montage */
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
-	FVector GetSocketLocation(const FGameplayTag& MontageTag);
+	FVector GetSocketLocation(const FGameplayTag& SocketTag);
 	
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	void UpdateMotionWarping(const FVector& TargetLocation);
@@ -58,6 +58,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	FTaggedMontage GetTaggedMontageByTag(const FGameplayTag& InMontageTag);
+	
 	/* end Montage*/
 
 	// функция ICombatInterface по получению уровня

@@ -50,12 +50,15 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	/*  end Montage Tags  */
 	
 	/* Attack Tags */
-	UpFightGameplayTags.Abilities_Attack= UpFightTagsManager.AddNativeGameplayTag("Abilities.Attack", "Abilities Attack Tag");
+	UpFightGameplayTags.Abilities_Attack = UpFightTagsManager.AddNativeGameplayTag("Abilities.Attack", "Abilities Attack Tag");
 	/* end Attack Tags */
+
+	UpFightGameplayTags.Event_Ability_Ended = UpFightTagsManager.AddNativeGameplayTag("Event.Ability.Ended", "Ability Ended Tag");
 	
 	UpFightGameplayTags.Effect_HitReact = UpFightTagsManager.AddNativeGameplayTag("Effect.HitReact", "HitReact Tag");
 	/* GameplayCue Tags */
 	UpFightGameplayTags.GameplayCue_MeleeAttack = UpFightTagsManager.AddNativeGameplayTag("GameplayCue.MeleeAttack", "GameplayCue MeleeAttack");
+	UpFightGameplayTags.GameplayCue_SpawnEffect = UpFightTagsManager.AddNativeGameplayTag("GameplayCue.SpawnEffect", "GameplayCue SpawnEffect");
 	/* end GameplayCue Tags */
 	UpFightGameplayTags.Attribute_Resistance_Fire = UpFightTagsManager.AddNativeGameplayTag("Attribute.Resistance.Fire", "Fire Resistance Tag");
 	UpFightGameplayTags.Attribute_Resistance_Lightning = UpFightTagsManager.AddNativeGameplayTag("Attribute.Resistance.Lightning", "Lightning Resistance Tag");

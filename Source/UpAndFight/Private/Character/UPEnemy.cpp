@@ -51,7 +51,7 @@ void AUPEnemy::BeginPlay()
 	// инцилизируем систему способностей у врага
 	InitAbilityInfo();
 	InitEnemyWidget();
-	
+	StandartMaxSpeed = GetCharacterMovement()->GetMaxSpeed();
 }
 
 void AUPEnemy::PossessedBy(AController* NewController)
@@ -93,8 +93,8 @@ void AUPEnemy::InitAbilityInfo()
 void AUPEnemy::HitReactTagChanged(const FGameplayTag Tag, int32 Count)
 {
 	bHitReacting = Count >= 1;
-
-	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : 250.f;
+	// при получение HitReact мы будем назначать либо скорость 0 либо обратно возвращать стандартную
+	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : StandartMaxSpeed;
 	if(IsValid(BlackBoardComponent))
 	{
 		BlackBoardComponent->SetValueAsBool(("HitReacting"),bHitReacting);

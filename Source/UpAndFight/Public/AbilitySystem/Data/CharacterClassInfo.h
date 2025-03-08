@@ -15,7 +15,8 @@ enum class ECharacterClass : uint8
 {
 	Elementalist,
 	Ranger,
-	Warrior
+	Warrior,
+	Summoner
 };
 
 // структура для RPG - класса персонажей, содержит эффект главных атрибутов и атакующих абилок 

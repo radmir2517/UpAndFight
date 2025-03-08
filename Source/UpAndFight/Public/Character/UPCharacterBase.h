@@ -36,7 +36,7 @@ public:
 	// включим эффект первичных, вторичных и Vital атрибутов
 	virtual void InitializeDefaultAttributes();
 	/* ICombatInterface */
-	virtual FVector GetSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
+	virtual FVector GetSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
 	virtual void UpdateMotionWarping_Implementation(const FVector& TargetLocation) override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;

@@ -43,22 +43,22 @@ void AUPCharacterBase::InitAbilityInfo()
 {
 }
 
-FVector AUPCharacterBase::GetSocketLocation_Implementation(const FGameplayTag& MontageTag)
+FVector AUPCharacterBase::GetSocketLocation_Implementation(const FGameplayTag& SocketTag)
 {	// вернем местоположения сокета в зависимости от тега монтажа
 	const FUpFightGameplayTags& UpTags = FUpFightGameplayTags::Get();
-	if(MontageTag.MatchesTagExact(UpTags.SocketLocation_Weapon))
+	if(SocketTag.MatchesTagExact(UpTags.SocketLocation_Weapon))
 	{
 		return Weapon->GetSocketLocation(WeaponSocketTipName);
 	}
-	else if(MontageTag.MatchesTagExact(UpTags.SocketLocation_LeftHand))
+	else if(SocketTag.MatchesTagExact(UpTags.SocketLocation_LeftHand))
 	{
 		return GetMesh()->GetSocketLocation(LeftHandSocketTipName);
 	}
-	else if(MontageTag.MatchesTagExact(UpTags.SocketLocation_RightHand))
+	else if(SocketTag.MatchesTagExact(UpTags.SocketLocation_RightHand))
 	{
 		return GetMesh()->GetSocketLocation(RightHandSocketTipName);
 	}
-	else if(MontageTag.MatchesTagExact(UpTags.SocketLocation_Tail))
+	else if(SocketTag.MatchesTagExact(UpTags.SocketLocation_Tail))
 	{
 		return GetMesh()->GetSocketLocation(TailSocketTipName);
 	}

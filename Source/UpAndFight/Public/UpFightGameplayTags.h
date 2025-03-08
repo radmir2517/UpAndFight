@@ -48,6 +48,8 @@ struct FUpFightGameplayTags
 	FGameplayTag Montage_Attack_2;
 	FGameplayTag Montage_Attack_3;
 	FGameplayTag Montage_Attack_4;
+
+	FGameplayTag Event_Ability_Ended;
 	
 	FGameplayTag SocketLocation_Weapon;
 
@@ -71,6 +73,7 @@ struct FUpFightGameplayTags
 	FGameplayTag Damage_Physical;
 
 	FGameplayTag GameplayCue_MeleeAttack;
+	FGameplayTag GameplayCue_SpawnEffect;
 
 	
 	

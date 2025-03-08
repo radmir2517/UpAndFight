@@ -77,7 +77,9 @@ protected:
 
 	TObjectPtr<UBlackboardComponent> BlackBoardComponent;
 	
-	
 	bool bHitReacting = false;
+private:
+	// скорость которая будет получена с BP и потом использоваться в HitReact
+	float StandartMaxSpeed = 0.f;
 };
 
