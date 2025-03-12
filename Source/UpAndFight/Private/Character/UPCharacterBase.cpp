@@ -114,6 +114,21 @@ FTaggedMontage AUPCharacterBase::GetTaggedMontageByTag_Implementation(const FGam
 	return FTaggedMontage();
 }
 
+void AUPCharacterBase::IncreaseMinionsCount_Implementation(int32 Amount)
+{
+	MinionsCount += Amount;
+}
+
+int32 AUPCharacterBase::GetMinionsCount_Implementation()
+{
+	return MinionsCount;
+}
+
+int32 AUPCharacterBase::GetMaxMinionsCount_Implementation()
+{
+	return MaxMinionsCount;
+}
+
 void AUPCharacterBase::MulticastHandleDeath_Implementation()
 {
 	
@@ -129,6 +144,11 @@ void AUPCharacterBase::MulticastHandleDeath_Implementation()
 	Weapon->SetSimulatePhysics(true);
 	// ABP будет подтягивать это значение и проверять надо ли перейти в пустой state
 	bDead = true;
+	// если этот персонаж был призван суммонером, то при смерти он отправит ему уменьшение числа текущих миньонов
+	if(IsValid(GetInstigator()))
+	{
+		Execute_IncreaseMinionsCount(GetInstigator(),-1);
+	}
 	
 	// воспроивзедения звука смерти
 	if(IsValid(DeathSound))

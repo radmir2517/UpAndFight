@@ -2,6 +2,8 @@
 
 
 #include "AbilitySystem/Abilities/UpFIghtSummonGameplayAbility.h"
+
+#include "Interaction/CombatInterface.h"
 /*  Это мой старый вариант
 void UUpFIghtSummonGameplayAbility::SummonMinions(const int32 InCount, const float InDistance)
 {
@@ -42,16 +44,20 @@ void UUpFIghtSummonGameplayAbility::SummonMinions(const int32 InCount, const flo
 */
 TArray<FVector> UUpFIghtSummonGameplayAbility::GetSpawnLocations()
 {
+	const int32 MaxMinionsCount = ICombatInterface::Execute_GetMaxMinionsCount(GetAvatarActorFromActorInfo());
+	const int32 LifeMinionsCount = ICombatInterface::Execute_GetMinionsCount(GetAvatarActorFromActorInfo());
+	
+	DeltaNumMinions = MaxMinionsCount - LifeMinionsCount;
 	// получим вектор местоположения и вектор направленный вперед 
 	const FVector Forward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
 	const FVector Location = GetAvatarActorFromActorInfo()->GetActorLocation();
-	const float DeltaSpread = SpawnSpread / NumMinions;
+	const float DeltaSpread = SpawnSpread / DeltaNumMinions;
 
 	// определим левый угол
 	const FVector LeftOfSpread = Forward.RotateAngleAxis(-SpawnSpread / 2.f, FVector::UpVector);
 	TArray<FVector> SpawnLocations;
 	
-	for (int32 i = 0; i < NumMinions; i++)
+	for (int32 i = 0; i < DeltaNumMinions; i++)
 	{	// будем поворачивать вектор на дельту
 		const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
 		FVector ChosenSpawnLocation = Location + Direction * FMath::FRandRange(MinSpawnDistance, MaxSpawnDistance);
@@ -59,8 +65,8 @@ TArray<FVector> UUpFIghtSummonGameplayAbility::GetSpawnLocations()
 		FHitResult Hit;
 		GetWorld()->LineTraceSingleByChannel(Hit, ChosenSpawnLocation + FVector(0.f, 0.f, 400.f), ChosenSpawnLocation - FVector(0.f, 0.f, 400.f), ECC_Visibility);
 		if (Hit.bBlockingHit)
-		{
-			ChosenSpawnLocation = Hit.ImpactPoint;
+		{	// приподнимем чутка иначе немногу багуются
+			ChosenSpawnLocation = Hit.ImpactPoint + FVector(0.f, 0.f, 40.f);
 		}
 		SpawnLocations.Add(ChosenSpawnLocation);
 		DrawDebugSphere(GetAvatarActorFromActorInfo()->GetWorld(), ChosenSpawnLocation, 10.f, 10,  FColor::Red,false, 3.f);

@@ -46,6 +46,10 @@ public:
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
 	// вернем структуру с монтажем по его тегу
 	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& InMontageTag) override;
+	// функция для саммонера, будем увеличивать когда будем призывать и уменьшать когда будут умерать Minions
+	virtual void IncreaseMinionsCount_Implementation(int32 Amount) override;
+	virtual int32 GetMinionsCount_Implementation() override;
+	virtual int32 GetMaxMinionsCount_Implementation() override;
 	/*end ICombatInterface*/
 	
 protected:
@@ -121,6 +125,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly,Category="Combat")
 	TObjectPtr<USoundBase> DeathSound;
-	
-	
+
+	/* Minions*/
+	UPROPERTY(EditDefaultsOnly)
+	int32 MaxMinionsCount = 5;
+	UPROPERTY()
+	int32 MinionsCount = 0;
 };

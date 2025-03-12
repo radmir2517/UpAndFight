@@ -21,9 +21,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="Summoning")
 	TSubclassOf<APawn> GetRandomMinionClass();
-	
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Summoning")
-	int32 NumMinions = 5;
+	// кол-во миньонов которых нужно заспавнить в данный момент
+	UPROPERTY(BlueprintReadOnly, Category = "Summoning")
+	int32 DeltaNumMinions = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
 	TArray<TSubclassOf<APawn>> MinionClasses;
