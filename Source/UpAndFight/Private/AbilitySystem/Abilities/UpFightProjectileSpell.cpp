@@ -11,7 +11,7 @@
 
 
 
-void UUpFightProjectileSpell::SpawnProjectile(const FVector InTargetLocation, const FGameplayTag SocketTag)
+void UUpFightProjectileSpell::SpawnProjectile(const FVector InTargetLocation, const FGameplayTag SocketTag, const bool OverridePitch, const float InPitchOverride)
 {
 	// проверяем чтобы это делал сервер
 	if(!GetAvatarActorFromActorInfo()->HasAuthority()) return;
@@ -20,11 +20,17 @@ void UUpFightProjectileSpell::SpawnProjectile(const FVector InTargetLocation, co
 	FTransform ProjectileTransform;
 	const FVector SocketLocation = ICombatInterface::Execute_GetSocketLocation(GetAvatarActorFromActorInfo(),SocketTag);
 	ProjectileTransform.SetLocation(SocketLocation);
+	
 	// получаем направление шарика к цели
 	FVector FromActorToTargetVector = InTargetLocation - SocketLocation;
 	FromActorToTargetVector.Normalize();
 	FRotator FromActorToTargetRotation = FromActorToTargetVector.Rotation();
 	FromActorToTargetRotation.Pitch = 0.f;
+	// если bнаклон снаряда будет true то будем менять его по значению
+	if(OverridePitch)
+	{
+		FromActorToTargetRotation.Pitch = InPitchOverride;
+	}
 	ProjectileTransform.SetRotation(FromActorToTargetRotation.Quaternion());
 	
 	// создаем отложенное спавн шарика

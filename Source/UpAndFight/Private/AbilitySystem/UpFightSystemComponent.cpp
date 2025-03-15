@@ -21,6 +21,8 @@ void UUpFightSystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGameplay
 			GiveAbility(Spec);
 		}
 	}
+	
+	
 }
 
 

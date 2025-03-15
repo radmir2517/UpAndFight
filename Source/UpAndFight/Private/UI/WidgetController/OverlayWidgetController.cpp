@@ -9,7 +9,7 @@
 void UOverlayWidgetController::BindCallBacksToDependencies()
 {
 	Super::BindCallBacksToDependencies();
-	UUpFightSystemComponent* UpFightAbilitySystemComponent = Cast<UUpFightSystemComponent>(AbilitySystemComponent);
+	UUpFightSystemComponent* UpFightAbilitySystemComponent = CastChecked<UUpFightSystemComponent>(AbilitySystemComponent);
 	UUpFightAttributeSet* UpFightAttributeSet = Cast<UUpFightAttributeSet>(AttributeSet);
 
 	checkf(MessageWidgetDataTable, TEXT("Add a MessageWidgetDataTable to the OverlayWidgetController"));
@@ -30,7 +30,16 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 	{
 		MaxManaChangedDelegate.Broadcast(Data.NewValue);
 	});
-
+	// вывод на экран иконок абилок, проверим был ли законче процесс given
+	if(UpFightAbilitySystemComponent->bStartupAbilityGiven)
+	{
+		OnInitializeStartupAbilities(UpFightAbilitySystemComponent);
+	}
+	else
+	{ // если нет то подпишемся к делегату когда он закончет
+		UpFightAbilitySystemComponent->AbilityGivenDelegate.AddUObject(this, OnInitializeStartupAbilities);
+	}
+	
 	// после применения эффекта мы будем получать теги эффекта и если оно совпадет с зельями выведем на экран
 	UpFightAbilitySystemComponent->EffectAssetTagsDelegate.AddLambda([this](const FGameplayTagContainer& AssetTags)
 	{
@@ -51,4 +60,9 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	HealthChangedDelegate.Broadcast(UpFightAttributeSet->GetHealth());
 	MaxManaChangedDelegate.Broadcast(UpFightAttributeSet->GetMaxMana());
 	ManaChangedDelegate.Broadcast(UpFightAttributeSet->GetMana());
+}
+
+void UOverlayWidgetController::OnInitializeStartupAbilities(const UUpFightSystemComponent* UpASC)
+{
+	//TODO: сделать перебор Activable абилок и если они есть в AbilityDataAsset то вывестин а экран
 }

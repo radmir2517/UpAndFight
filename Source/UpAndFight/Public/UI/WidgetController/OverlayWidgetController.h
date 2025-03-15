@@ -53,9 +53,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FEffectMessageSignature EffectMessageDelegate;
 
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
+	
+	void OnInitializeStartupAbilities(const UUpFightSystemComponent* UpASC);
 };
 
 template <typename T>

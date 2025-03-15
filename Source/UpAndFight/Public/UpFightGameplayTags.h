@@ -61,6 +61,7 @@ struct FUpFightGameplayTags
 	/* Attack Tags */
 	FGameplayTag Abilities_Attack;
 	FGameplayTag Abilities_Summon;
+	FGameplayTag Abilities_FireBolt;
 	/* end Attack Tags */
 
 	FGameplayTag Attribute_Resistance_Fire;

@@ -5,8 +5,14 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
 #include "UpFightSystemComponent.generated.h"
+
+class UUpFightSystemComponent; // временно чтобы ошибка не мазолила глаза и чтобы обьявление не опускать после класса
+
 // делегат котоырй будет передавать Asset теги эффектов в Overlay Controller там если совпадают тег с тегом EffectMessage то вызовется он
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagsSignature,const FGameplayTagContainer& /*AssetTags*/)
+
+// делегат котоырй будет передавать AbilitySystem в Overlay Controller там будет запускаться Инцилизация стартовых абилок для вывода их иконок на экран
+DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityGivenSignature,const UUpFightSystemComponent*)
 
 UCLASS()
 class UPANDFIGHT_API UUpFightSystemComponent : public UAbilitySystemComponent
@@ -25,9 +31,13 @@ public:
 
 	// экземпляр делегата передающий теги эффекта
 	FEffectAssetTagsSignature EffectAssetTagsDelegate;
+	// экземпляр делегата передающий UUpFightSystemComponent в OverlayController
+	FAbilityGivenSignature AbilityGivenDelegate;
 
-
+	// булевая которая будет проверяться в OverlayController для вывода иконок абилок
+	bool bStartupAbilityGiven = false;
 protected:
 	// функция передающий через делегат EffectAssetTagsDelegate в OverlayController теги примененного эффекта для вызова EffectMessage если надо
 	void EffectApplied (UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle);
+	
 };

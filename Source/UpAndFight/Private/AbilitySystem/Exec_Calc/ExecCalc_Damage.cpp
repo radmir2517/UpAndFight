@@ -77,7 +77,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		checkf(TagsToCaptureDef.Contains(ResistanceTypeTag), TEXT("TagsToCaptureDefs doesn't contain Tag: [%s] in ExecCal_Damage"), *ResistanceTypeTag.ToString());
 		const FGameplayEffectAttributeCaptureDefinition CaptureDef = TagsToCaptureDef[ResistanceTypeTag];
 		// получим значение урона, т.к у нас он SetByCaller, то мы можем вызвать его по тегу
-		float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag);
+		float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag,false);
 		// если данный тип урона наносит 0 то начнем след.цикл, мини оптимизация
 		if(DamageTypeValue <= 0.f) continue;
 		
