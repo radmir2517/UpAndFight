@@ -57,10 +57,12 @@ void AUPCharacter::OnRep_PlayerState()
 // сообщаем кто avatar actor и кто Owner
 void AUPCharacter::InitAbilityInfo()
 {
+	
 	UpFightPlayerState = GetPlayerState<AUpFightPlayerState>();
 	check(UpFightPlayerState);
 	AbilitySystemComponent = UpFightPlayerState->GetAbilitySystemComponent();
 	AttributeSet = UpFightPlayerState->GetAttributeSet();
+	InitOverlay();
 	// вызов привязки делегата OnGameplayEffectAppliedToSelf к нашей функции в AbilitySystemComponent
 	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 	// сообщаем кто avatar actor и кто Owner
@@ -68,7 +70,7 @@ void AUPCharacter::InitAbilityInfo()
 	// применения эффекта с атрибутами Primary and Secondary
 	InitializeDefaultAttributes();
 	// инцилизация оверлея, создания контроллера в HUD и создания выведения Overlay виджета на экран
-	InitOverlay();
+	
 }
 
 int32 AUPCharacter::GetPlayerLevel_Implementation()

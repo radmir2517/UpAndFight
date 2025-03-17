@@ -21,10 +21,9 @@ void UUpFightSystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGameplay
 			GiveAbility(Spec);
 		}
 	}
-	
-	
+	bStartupAbilityGiven = true;
+	AbilityGivenDelegate.Broadcast();
 }
-
 
 void UUpFightSystemComponent::AbilityInputTagHeld(FGameplayTag& GameplayTag)
 {// переберем все GetActivatableAbilities и активируем заклинания
@@ -56,10 +55,52 @@ void UUpFightSystemComponent::AbilityInputTagReleased(FGameplayTag& GameplayTag)
 	}
 }
 
+FGameplayTag UUpFightSystemComponent::GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+{	// получем тег из спецификации
+	if(AbilitySpec.Ability)
+	{
+		for(FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		{
+			if(Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities"))))
+			{
+				return Tag;
+			}
+		}
+	}
+	return FGameplayTag();
+}
+
+FGameplayTag UUpFightSystemComponent::GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+{	// получем тег из спецификации 
+	if(AbilitySpec.Ability)
+	{
+		for(FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		{
+			if(Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input"))))
+			{
+				return Tag;
+			}
+		}
+	}
+	return FGameplayTag();
+}
+
 void UUpFightSystemComponent::EffectApplied(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec,FActiveGameplayEffectHandle EffectHandle)
 {	// вытащим теги и передадим в OverlayController
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer);
 
 	EffectAssetTagsDelegate.Broadcast(TagContainer);
+}
+
+void UUpFightSystemComponent::OnRep_ActivateAbilities()
+{
+	Super::OnRep_ActivateAbilities();
+
+	if (!bStartupAbilityGiven)
+	{
+		bStartupAbilityGiven = true;
+		AbilityGivenDelegate.Broadcast();
+	}
+
 }

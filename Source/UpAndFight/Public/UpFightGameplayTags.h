@@ -41,6 +41,7 @@ struct FUpFightGameplayTags
 	FGameplayTag InputTag_1;
 	FGameplayTag InputTag_2;
 	FGameplayTag InputTag_3;
+	FGameplayTag InputTag_4;
 	/* end Input Tags */
 	
 	/* Montage Tags */

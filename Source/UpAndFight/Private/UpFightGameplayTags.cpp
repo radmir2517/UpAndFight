@@ -33,6 +33,7 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	UpFightGameplayTags.InputTag_1 = UpFightTagsManager.AddNativeGameplayTag("InputTag.1", "1 Button Input Tag");
 	UpFightGameplayTags.InputTag_2 = UpFightTagsManager.AddNativeGameplayTag("InputTag.2", "2 Button Input Tag");
 	UpFightGameplayTags.InputTag_3 = UpFightTagsManager.AddNativeGameplayTag("InputTag.3", "3 Button Input Tag");
+	UpFightGameplayTags.InputTag_4 = UpFightTagsManager.AddNativeGameplayTag("InputTag.4", "4 Button Input Tag");
 	/* end InputTag */
 
 	/*  Socket Location Tags  */

@@ -5,6 +5,8 @@
 
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
+#include "AbilitySystem/Data/AbilityDataAsset.h"
+
 
 void UOverlayWidgetController::BindCallBacksToDependencies()
 {
@@ -31,15 +33,8 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 		MaxManaChangedDelegate.Broadcast(Data.NewValue);
 	});
 	// вывод на экран иконок абилок, проверим был ли законче процесс given
-	if(UpFightAbilitySystemComponent->bStartupAbilityGiven)
-	{
-		OnInitializeStartupAbilities(UpFightAbilitySystemComponent);
-	}
-	else
-	{ // если нет то подпишемся к делегату когда он закончет
-		UpFightAbilitySystemComponent->AbilityGivenDelegate.AddUObject(this, OnInitializeStartupAbilities);
-	}
-	
+	UpFightAbilitySystemComponent->AbilityGivenDelegate.AddUObject(this, &UOverlayWidgetController::OnInitializeStartupAbilities);
+		
 	// после применения эффекта мы будем получать теги эффекта и если оно совпадет с зельями выведем на экран
 	UpFightAbilitySystemComponent->EffectAssetTagsDelegate.AddLambda([this](const FGameplayTagContainer& AssetTags)
 	{
@@ -62,7 +57,22 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	ManaChangedDelegate.Broadcast(UpFightAttributeSet->GetMana());
 }
 
-void UOverlayWidgetController::OnInitializeStartupAbilities(const UUpFightSystemComponent* UpASC)
-{
-	//TODO: сделать перебор Activable абилок и если они есть в AbilityDataAsset то вывестин а экран
+void UOverlayWidgetController::OnInitializeStartupAbilities()
+{// получим GameMode где мы достанем UAbilityDataAsset
+	//const AUpFightGameMode* UpGameMode = Cast<AUpFightGameMode>(UGameplayStatics::GetGameMode(UpASC->GetAvatarActor()));
+	//if(!IsValid(UpGameMode)) return;
+	//UAbilityDataAsset* AbilityDataInfoAsset = UpGameMode->AbilityInfo;
+	
+	UUpFightSystemComponent* UpASC = CastChecked<UUpFightSystemComponent>(AbilitySystemComponent);
+	if(!UpASC->bStartupAbilityGiven) return;
+	// заблокируем список способностей, чтобы предотвратить их одновременное изменение
+	FScopedAbilityListLock ActiveScopeLock(*UpASC);
+	for(const FGameplayAbilitySpec AbilitySpec: UpASC->GetActivatableAbilities())
+	{	// найдем структуру в AbilityInfo с нашим способностью
+		FAbilityInfo AbilityInfo  = AbilityDataInfoAsset->FindAbilityInfoByTag(UpASC->GetAbilityTagFromSpec(AbilitySpec));
+		if(AbilityInfo.AbilityTag.IsValid())
+		{
+			AbilityInfoDelegate.Broadcast(AbilityInfo);
+		}
+	}
 }

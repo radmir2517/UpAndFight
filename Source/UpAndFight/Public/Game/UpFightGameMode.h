@@ -7,6 +7,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "UpFightGameMode.generated.h"
 
+class UAbilityDataAsset;
 /**
  * 
  */
@@ -18,4 +19,5 @@ class UPANDFIGHT_API AUpFightGameMode : public AGameModeBase
 public:
 	UPROPERTY(EditDefaultsOnly, Category="GameMode")
 	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;
+	
 };

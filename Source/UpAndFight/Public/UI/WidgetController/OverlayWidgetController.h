@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/Data/AbilityDataAsset.h"
 #include "UI/WidgetController/UpFightWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
+class UUpFightSystemComponent;
 class UUpFightUserWidget;
 
 // структура которая будет хранить для виджета сообщения его тег для вызова и сам класс виджета
@@ -29,6 +31,8 @@ struct FUIWidgetRow : public FTableRowBase
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeChandedSignature, float, AttributeValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEffectMessageSignature, FUIWidgetRow, Row);
+// делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, FAbilityInfo, Info);
 
 UCLASS()
 class UPANDFIGHT_API UOverlayWidgetController : public UUpFightWidgetController
@@ -52,13 +56,19 @@ public:
 	// делегат отправляющий строку из MessageWidgetDataTable в виджет
 	UPROPERTY(BlueprintAssignable)
 	FEffectMessageSignature EffectMessageDelegate;
+	// делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
+	UPROPERTY(BlueprintAssignable)
+	FAbilityInfoSignature AbilityInfoDelegate;
 
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
-	
-	void OnInitializeStartupAbilities(const UUpFightSystemComponent* UpASC);
+	UFUNCTION(BlueprintCallable)
+	void OnInitializeStartupAbilities();
+
+	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
+	TObjectPtr<UAbilityDataAsset> AbilityDataInfoAsset;
 };
 
 template <typename T>

@@ -9,7 +9,8 @@
 
 class UGameplayAbility;
 
-USTRUCT(BlueprintType)
+// структура которая хранит Абилки персонажа 
+USTRUCT(BlueprintType,Blueprintable)
 struct FAbilityInfo
 {
 	GENERATED_BODY()
@@ -23,10 +24,10 @@ struct FAbilityInfo
 	TSubclassOf<UGameplayAbility> AbilityClass;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TObjectPtr<UTexture2D> AbilityIcon;
+	TObjectPtr<UTexture2D> AbilityIcon = nullptr;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TObjectPtr<UMaterialInstance> BackgroundImage;
+	TObjectPtr<UMaterialInstance> BackgroundImage = nullptr;;
 };
 
 
@@ -38,7 +39,7 @@ class UPANDFIGHT_API UAbilityDataAsset : public UDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TArray<FAbilityInfo> AbilitiesInfo;
-
+	// найдем из массива абилок нужный по его тегу
 	UFUNCTION(BlueprintCallable)
-	FAbilityInfo FindAbilityInfoByTag(FGameplayTag AbilityTag, bool bLogNotFound = false);
+	FAbilityInfo FindAbilityInfoByTag(const FGameplayTag AbilityTag, bool bLogNotFound = false);
 };
