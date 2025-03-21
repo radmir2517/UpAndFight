@@ -34,7 +34,7 @@ void UTargetDataUnderCursor::Activate()
 	{// действие для сервера
 		const FGameplayAbilitySpecHandle SpecHandle = GetAbilitySpecHandle();
 		const FPredictionKey ActivationPredictionKey = GetActivationPredictionKey();
-		// делегат отвечает за установку данных о целях для способности. Оно будет вызвано в сервере
+		// Делегат отвечает за установку данных о целях для способности. Оно будет вызвано в сервере
 		AbilitySystemComponent->AbilityTargetDataSetDelegate(SpecHandle,ActivationPredictionKey).AddUObject(this, &UTargetDataUnderCursor::OnTargetDataReplicatedCallback);
 		// далее проверяем была ли привяз делегат, если все ок, то он осуществляет Broadcast целевых данных TargetData и ТегАктивации
 		const bool bCalledDelegate = AbilitySystemComponent->CallReplicatedTargetDataDelegatesIfSet(SpecHandle,ActivationPredictionKey);
@@ -66,7 +66,8 @@ void UTargetDataUnderCursor::SendMouseCursorData()
 	AbilitySystemComponent->ServerSetReplicatedTargetData(
 		GetAbilitySpecHandle(),
 		GetActivationPredictionKey(),
-		DataHandle, FGameplayTag(),
+		DataHandle,
+		FGameplayTag(),
 		AbilitySystemComponent->ScopedPredictionKey);
 	// Эта функция должна быть вызвана перед передачей делегатов обратно в граф способностей. Это позволяет убедиться, что способность все еще активна.
 	if (ShouldBroadcastAbilityTaskDelegates())

@@ -19,6 +19,9 @@ struct FAbilityInfo
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	FGameplayTag InputTag;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	FGameplayTag CooldownTag;
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TSubclassOf<UGameplayAbility> AbilityClass;
@@ -27,7 +30,9 @@ struct FAbilityInfo
 	TObjectPtr<UTexture2D> AbilityIcon = nullptr;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TObjectPtr<UMaterialInstance> BackgroundImage = nullptr;;
+	TObjectPtr<UMaterialInstance> BackgroundImage = nullptr;
+
+	
 };
 
 

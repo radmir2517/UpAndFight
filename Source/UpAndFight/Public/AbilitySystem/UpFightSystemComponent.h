@@ -10,7 +10,6 @@ class UUpFightSystemComponent; // временно чтобы ошибка не 
 
 // делегат котоырй будет передавать Asset теги эффектов в Overlay Controller там если совпадают тег с тегом EffectMessage то вызовется он
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagsSignature,const FGameplayTagContainer& /*AssetTags*/)
-
 // делегат котоырй будет передавать в Overlay Controller там будет запускаться Инцилизация стартовых абилок для вывода их иконок на экран
 DECLARE_MULTICAST_DELEGATE(FAbilityGivenSignature)
 

@@ -49,39 +49,50 @@ struct FUpFightGameplayTags
 	FGameplayTag Montage_Attack_2;
 	FGameplayTag Montage_Attack_3;
 	FGameplayTag Montage_Attack_4;
-
-	FGameplayTag Event_Ability_Ended;
+	/* end Montage Tags */
 	
+	/* Event Tags */
+	FGameplayTag Event_Ability_Ended;
+	/* end Event Tags */
+	
+	/* Montage Tags */
 	FGameplayTag SocketLocation_Weapon;
-
 	FGameplayTag SocketLocation_LeftHand;
 	FGameplayTag SocketLocation_RightHand;
 	FGameplayTag SocketLocation_Tail;
-	/* end Event Tags */
-
+	/* end Montage Tags */
+	
 	/* Attack Tags */
 	FGameplayTag Abilities_Attack;
 	FGameplayTag Abilities_Summon;
 	FGameplayTag Abilities_FireBolt;
 	/* end Attack Tags */
 
-	FGameplayTag Attribute_Resistance_Fire;
-	FGameplayTag Attribute_Resistance_Lightning;
-	FGameplayTag Attribute_Resistance_Arcane;
-	FGameplayTag Attribute_Resistance_Physical;
+	/* Cooldown Tags */
+	FGameplayTag Cooldown_Fire_FireBolt;
+	/* end Cooldown Tags */
 	
+	/* Damage Type Tags */
 	FGameplayTag Damage_Fire;
 	FGameplayTag Damage_Lightning;
 	FGameplayTag Damage_Arcane;
 	FGameplayTag Damage_Physical;
-
+	/* end Damage Type Tags */
+	
+	/* Resistance Tags */
+	FGameplayTag Attribute_Resistance_Fire;
+	FGameplayTag Attribute_Resistance_Lightning;
+	FGameplayTag Attribute_Resistance_Arcane;
+	FGameplayTag Attribute_Resistance_Physical;
+	/* end Resistance Tags */
+	
+	/* GameplayCue Tags */
 	FGameplayTag GameplayCue_MeleeAttack;
 	FGameplayTag GameplayCue_SpawnEffect;
-
+	/* end GameplayCue Tags */
 	
-	
-
-	TMap<FGameplayTag,FGameplayTag > DamageTypesToResistances;
+	// Карта где будут находиться тип урона и тип соответствующего для него Резиста
+	TMap<FGameplayTag,FGameplayTag> DamageTypesToResistances;
 
 	FGameplayTag Effect_HitReact;
 

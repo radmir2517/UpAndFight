@@ -18,7 +18,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
 	static UTargetDataUnderCursor* CreateTargetDataUnderMouse(UGameplayAbility* OwningAbility);
 
-	// делегат который будет передавать координаты под курсором
+	// делегат, который будет передавать координаты под курсором
 	UPROPERTY(BlueprintAssignable)
 	FMouseTargetDataSignature TargetDataCursorTrace;
 
@@ -26,7 +26,7 @@ public:
 	void OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FGameplayTag GameplayTag );
 
 private:
-	// функция которая будет активироваться при вызова нода этого класса
+	// функция, которая будет активироваться при вызова нода этого класса
 	virtual void Activate() override;
 	virtual void OnDestroy(bool bInOwnerFinished) override;
 	void SendMouseCursorData();
