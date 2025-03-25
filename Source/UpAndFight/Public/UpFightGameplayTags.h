@@ -78,6 +78,8 @@ struct FUpFightGameplayTags
 	FGameplayTag Damage_Arcane;
 	FGameplayTag Damage_Physical;
 	/* end Damage Type Tags */
+	// тег для мета атрибута опыта
+	FGameplayTag Attribute_Meta_IncomingXP;
 	
 	/* Resistance Tags */
 	FGameplayTag Attribute_Resistance_Fire;

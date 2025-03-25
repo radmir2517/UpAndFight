@@ -7,8 +7,11 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectExtension.h"
 #include "UpFightGameplayTags.h"
+#include "AbilitySystem/UpFightAbilitySystemLibrary.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/EnemyInterface.h"
 #include "Interaction/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/UpFightPlayerController.h"
@@ -119,6 +122,8 @@ void UUpFightAttributeSet::OnRep_PhysicalResistance(const FGameplayAttributeData
 }
 
 
+
+
 void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
@@ -183,10 +188,29 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 		}
 		else //(bDead)
 		{
+			// отправления ивента получения опыта со значением опыта
+			SendXPEvent(Props);
 			ICombatInterface::Execute_Die(Props.TargetCharacter);
 		}
 	}
 	
+}
+
+void UUpFightAttributeSet::SendXPEvent(FEffectProperties& Props)
+{
+	if (!Props.TargetCharacter->Implements<UCombatInterface>()) return;
+	
+	ECharacterClass CharacterClass = IEnemyInterface::Execute_GetCharacterClass(Props.TargetCharacter);
+	int32 CharacterLevel = ICombatInterface::Execute_GetPlayerLevel(Props.TargetCharacter);
+	int32 XPReward = UUpFightAbilitySystemLibrary::GetXPRewardForClassAndLevel(Props.TargetCharacter,CharacterClass,CharacterLevel);
+	
+	FUpFightGameplayTags& UpGameplayTags = FUpFightGameplayTags::Get();
+	// создадим Payload, вложим в него наш тег опыта и также значения опыта
+	FGameplayEventData Payload;
+	Payload.EventTag = UpGameplayTags.Attribute_Meta_IncomingXP;
+	Payload.EventMagnitude = XPReward;
+	// далее отправим ивент, котоырый активирует WaitGameplayEvent в GA_ListenForEvent
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter,UpGameplayTags.Attribute_Meta_IncomingXP,Payload);
 }
 
 void UUpFightAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)

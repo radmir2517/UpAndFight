@@ -70,6 +70,8 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	UpFightGameplayTags.Damage_Arcane = UpFightTagsManager.AddNativeGameplayTag("Damage.Arcane", "Arcane Damage Tag");
 	UpFightGameplayTags.Damage_Physical = UpFightTagsManager.AddNativeGameplayTag("Damage.Physical", "Physical Damage Tag");
 	/* end Damage Type Tags */
+
+	UpFightGameplayTags.Attribute_Meta_IncomingXP = UpFightTagsManager.AddNativeGameplayTag("Attribute.Meta.IncomingXP", "IncomingXP Damage Tag");
 	
 	/* Resistance Tags */
 	UpFightGameplayTags.Attribute_Resistance_Fire = UpFightTagsManager.AddNativeGameplayTag("Attribute.Resistance.Fire", "Fire Resistance Tag");

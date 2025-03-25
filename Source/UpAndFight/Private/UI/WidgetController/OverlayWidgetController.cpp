@@ -6,6 +6,8 @@
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "AbilitySystem/Data/AbilityDataAsset.h"
+#include "AbilitySystem/Data/LevelUpInfo.h"
+#include "Player/UpFightPlayerState.h"
 
 
 void UOverlayWidgetController::BindCallBacksToDependencies()
@@ -13,7 +15,8 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 	Super::BindCallBacksToDependencies();
 	UUpFightSystemComponent* UpFightAbilitySystemComponent = CastChecked<UUpFightSystemComponent>(AbilitySystemComponent);
 	UUpFightAttributeSet* UpFightAttributeSet = Cast<UUpFightAttributeSet>(AttributeSet);
-
+	AUpFightPlayerState* UpFightPlayerState = Cast<AUpFightPlayerState>(PlayerState);
+	
 	checkf(MessageWidgetDataTable, TEXT("Add a MessageWidgetDataTable to the OverlayWidgetController"));
 	
 	UpFightAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpFightAttributeSet->GetHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
@@ -32,7 +35,27 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 	{
 		MaxManaChangedDelegate.Broadcast(Data.NewValue);
 	});
-	// вывод на экран иконок абилок, проверим был ли законче процесс given
+	// привяжемся к делегату который активируется при изменении опыта
+	UpFightPlayerState->OnXPChangedDelegate.AddLambda([this](int32 NewXP)
+	{
+		const int32 PlayerLevel = LevelUpIfInfoAsset->GetLevelByXp(NewXP);
+		const int32 MaxLevel = LevelUpIfInfoAsset->LevelUpInfos.Num();
+		
+		if (PlayerLevel <= MaxLevel)
+		{	// получим опыт для повышения предыдущего и след. уровня
+		   const int32 NextLevelUPXP = LevelUpIfInfoAsset->LevelUpInfos[PlayerLevel+1].XPForThisLevel;
+		   const int32 CurrentLevelUPXP = LevelUpIfInfoAsset->LevelUpInfos[PlayerLevel].XPForThisLevel;
+			// рассчитаем процент, для этого надо разницу медлу макс. след уровня и текущего	
+		   const int32 DeltaLevelRequirement = NextLevelUPXP - CurrentLevelUPXP;
+		   const int32 XPForThisLevel = NewXP - CurrentLevelUPXP;
+		   // суть такая, нам нужно узнать какой сейчас процент опыта относительно текущего уровня и следующего,
+		   // чтобы посчитать текущий процент, нужно отнять от нашего опыта, опыт который нужен для текущего и поделить на опыт следующего уровня
+		   float XPBarPercent = static_cast<float>(XPForThisLevel) / static_cast<float>(DeltaLevelRequirement);
+		   OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
+		}
+	});
+	
+	// вывод на экран иконок абилок, проверим был ли закончен процесс given
 	UpFightAbilitySystemComponent->AbilityGivenDelegate.AddUObject(this, &UOverlayWidgetController::OnInitializeStartupAbilities);
 		
 	// после применения эффекта мы будем получать теги эффекта и если оно совпадет с зельями выведем на экран

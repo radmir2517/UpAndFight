@@ -24,4 +24,7 @@ public:
 	// функция убирания выделения актера
 	UFUNCTION(BlueprintNativeEvent)
 	void UnHighlightActor();
+
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+	ECharacterClass GetCharacterClass();
 };

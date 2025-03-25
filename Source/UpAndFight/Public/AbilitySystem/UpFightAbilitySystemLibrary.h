@@ -23,6 +23,7 @@ class UPANDFIGHT_API UUpFightAbilitySystemLibrary : public UBlueprintFunctionLib
 public:
 	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|WidgetController")
 	static UOverlayWidgetController* GetOverlayWidgetController(const UObject* WorldContextObject);
+	
 	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|WidgetController")
 	static UUpFightAttributeMenuController* GetAttributeMenuController(const UObject* WorldContextObject);
 
@@ -50,5 +51,10 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
 	static void UpFightApplyGameplayEffect(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceActor, AActor* TargetActor, TMap<FGameplayTag, FScalableFloat> EffectTypes, float Level);
+	/*
+	 * Gameplay Mechanics
+	 */
+	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayMechanics")
+	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, const ECharacterClass& Class, const int32 Level);
 };
 

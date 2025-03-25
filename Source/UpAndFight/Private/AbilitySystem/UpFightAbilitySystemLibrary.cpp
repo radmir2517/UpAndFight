@@ -123,8 +123,6 @@ void UUpFightAbilitySystemLibrary::GetLiveActorsFromRadius(const UObject* WorldC
 			}
 		}
 	}
-	
-	
 }
 
 bool UUpFightAbilitySystemLibrary::AreTheyFriends( const AActor* SourceActor,
@@ -154,4 +152,12 @@ void UUpFightAbilitySystemLibrary::UpFightApplyGameplayEffect(TSubclassOf<UGamep
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(),TargetASC);
 	
+}
+
+int32 UUpFightAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* WorldContextObject,const  ECharacterClass& Class, const int32 Level)
+{	// получим информацию о классах и вытащим оттуда структуру с нашим классом
+	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
+	FCharacterClassDefaultInfo Info = CharacterClassInfo->GetCharacterClassInfoByEnum(Class);
+	// вернем кол-во опыта от врага
+	return static_cast<int32>(Info.XPReward.GetValueAtLevel(Level));
 }
