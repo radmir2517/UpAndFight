@@ -36,9 +36,37 @@ void AUpFightPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AUpFightPlayerState,Level);
+	DOREPLIFETIME(AUpFightPlayerState,XP);
+}
+
+
+void AUpFightPlayerState::SetPlayerLevel(int32 InLevel)
+{
+	Level = InLevel;
+	OnLevelHangedDelegate.Broadcast(Level);
+}
+
+void AUpFightPlayerState::SetXP(int32 InXP)
+{
+	XP = InXP;
+	OnXPChangedDelegate.Broadcast(XP);
+}
+
+void AUpFightPlayerState::AddXP(int32 InXP)
+{
+	XP += InXP;
+	OnXPChangedDelegate.Broadcast(XP);
 }
 
 void AUpFightPlayerState::OnRep_Level(const int32& OldValue) const
 {
+	// Это работает лишь в AttributeSet, тут задача как передать ее клиенту, передадим через делегат.
 	//GAMEPLAYATTRIBUTE_REPNOTIFY(AUpFightPlayerState,Level,OldValue);
+
+	OnLevelHangedDelegate.Broadcast(Level);
+}
+
+void AUpFightPlayerState::OnRep_XP(const int32& OldValue) const
+{
+	OnXPChangedDelegate.Broadcast(XP);
 }

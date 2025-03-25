@@ -65,7 +65,6 @@ public:
 	int32 GetMaxMinionsCount();
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	void IncreaseMinionsCount(int32 Amount);
-	
 	/* end Montage*/
 
 	// функция ICombatInterface по получению уровня
@@ -74,7 +73,7 @@ public:
 	// проверка bool Dead, оно меняется когда Health = 0 в AttributeSet и применение функции Die
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	bool IsDead();
-
+	
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	AActor* GetActor();
 	

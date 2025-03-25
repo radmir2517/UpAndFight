@@ -10,6 +10,9 @@
 class UAttributeSet;
 class UAbilitySystemComponent;
 
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FPlayerStateChangedSignature,int32);
+
 UCLASS()
 class UPANDFIGHT_API AUpFightPlayerState : public APlayerState, public IAbilitySystemInterface
 {
@@ -17,6 +20,7 @@ class UPANDFIGHT_API AUpFightPlayerState : public APlayerState, public IAbilityS
 public:
 
 	AUpFightPlayerState();
+	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const;
 
@@ -28,12 +32,24 @@ public:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
-	void SetPlayerLevel(int32 InLevel) {Level = InLevel;}
-	int32 GetPlayerLevel() const {return Level;}
+	FPlayerStateChangedSignature OnLevelHangedDelegate;
+	FPlayerStateChangedSignature OnXPChangedDelegate;
+		
+	FORCEINLINE int32 GetPlayerLevel() const {return Level;}
+	FORCEINLINE int32 GetXP() const {return XP;}
+
+	void SetPlayerLevel(int32 InLevel) ;
+	void SetXP(int32 InXP);
+	UFUNCTION(BlueprintCallable)
+	void AddXP(int32 InXP);
 protected:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Level)
 	int32 Level = 1;
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_XP)
+	int32 XP = 0;
 	
 	UFUNCTION()
 	void OnRep_Level(const int32& OldValue) const ;
+	UFUNCTION()
+	void OnRep_XP(const int32& OldValue) const ;
 };

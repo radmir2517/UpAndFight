@@ -7,6 +7,7 @@
 #include "UI/WidgetController/UpFightWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
+class ULevelUpInfo;
 class UUpFightSystemComponent;
 class UUpFightUserWidget;
 
@@ -34,6 +35,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEffectMessageSignature, FUIWidgetRo
 // делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, FAbilityInfo, Info);
 
+
 UCLASS()
 class UPANDFIGHT_API UOverlayWidgetController : public UUpFightWidgetController
 {
@@ -59,7 +61,8 @@ public:
 	// делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
 	UPROPERTY(BlueprintAssignable)
 	FAbilityInfoSignature AbilityInfoDelegate;
-
+	UPROPERTY(BlueprintAssignable)
+	FAttributeChandedSignature OnXPPercentChangedDelegate;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
@@ -69,6 +72,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
 	TObjectPtr<UAbilityDataAsset> AbilityDataInfoAsset;
+	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
+	TObjectPtr<ULevelUpInfo> LevelUpIfInfoAsset;
 };
 
 template <typename T>

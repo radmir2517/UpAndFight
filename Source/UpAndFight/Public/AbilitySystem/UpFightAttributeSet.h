@@ -113,7 +113,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")
 	FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(UUpFightAttributeSet,Damage);
-
+	
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")
+	FGameplayAttributeData IncomingXP;
+	ATTRIBUTE_ACCESSORS(UUpFightAttributeSet,IncomingXP);
 	/*end Meta attributes*/
 	
 	// карта в которой тег атрибута и указатель функция получения самого атрибута
@@ -154,5 +157,6 @@ public:
 	UFUNCTION()
 	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldValue) const;
 	
-
+	// отправления ивента получения опыта со значением опыта в GA_ListenForEvent
+	auto SendXPEvent(FEffectProperties& Props) -> void;
 };

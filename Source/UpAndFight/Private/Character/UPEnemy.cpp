@@ -118,6 +118,11 @@ int32 AUPEnemy::GetPlayerLevel_Implementation()
 	return Level;
 }
 
+ECharacterClass AUPEnemy::GetCharacterClass_Implementation()
+{
+	return CharacterClass;
+}
+
 void AUPEnemy::MulticastHandleDeath_Implementation()
 {
 	Super::MulticastHandleDeath_Implementation();
