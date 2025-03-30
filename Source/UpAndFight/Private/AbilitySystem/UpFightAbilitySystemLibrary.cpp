@@ -47,8 +47,14 @@ UCharacterClassInfo* UUpFightAbilitySystemLibrary::GetCharacterClassInfo(const U
 	
 }
 
+ULevelUpInfo* UUpFightAbilitySystemLibrary::GetLevelUpInfo(const UObject* WorldContextObject)
+{
+	AUpFightGameMode* UpFightGameMode = Cast<AUpFightGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
+	return UpFightGameMode->LevelUpInfo;
+}
+
 void UUpFightAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject,
-	ECharacterClass CharacterClass, UAbilitySystemComponent* ASC, float Level)
+                                                               ECharacterClass CharacterClass, UAbilitySystemComponent* ASC, float Level)
 {
 
 	// получим доступ к UpFightGameModeBase чтобы взять оттуда ассут с Primary attributes,Secondary,Vital;

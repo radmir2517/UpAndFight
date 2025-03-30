@@ -45,6 +45,7 @@ void AUPCharacter::PossessedBy(AController* NewController)
 	InitAbilityInfo();
 	// сделаем give ability для стартовых ability
 	AddCharacterAbilities();
+	GiveAndActivatePassiveAbilities();
 }
 
 void AUPCharacter::OnRep_PlayerState()
@@ -57,7 +58,6 @@ void AUPCharacter::OnRep_PlayerState()
 // сообщаем кто avatar actor и кто Owner
 void AUPCharacter::InitAbilityInfo()
 {
-	
 	UpFightPlayerState = GetPlayerState<AUpFightPlayerState>();
 	check(UpFightPlayerState);
 	AbilitySystemComponent = UpFightPlayerState->GetAbilitySystemComponent();
@@ -76,4 +76,45 @@ void AUPCharacter::InitAbilityInfo()
 int32 AUPCharacter::GetPlayerLevel_Implementation()
 {
 	return Cast<AUpFightPlayerState>(GetPlayerState())->GetPlayerLevel();
+}
+
+int32 AUPCharacter::GetXP_Implementation()
+{
+	return Cast<AUpFightPlayerState>(GetPlayerState())->GetXP();
+}
+
+void AUPCharacter::AddXPReward_Implementation(float Reward)
+{
+	UpFightPlayerState->AddXP(Reward);
+}
+
+void AUPCharacter::AddPlayerLevel_Implementation(int32 InLevel)
+{
+	UpFightPlayerState->AddPlayerLevel(InLevel);
+}
+
+void AUPCharacter::AddToAttributePoints_Implementation(int32 Points)
+{
+	UpFightPlayerState->AddAttributePoints(Points);
+}
+
+void AUPCharacter::AddToSpellPoints_Implementation(int32 Points)
+{
+	UpFightPlayerState->AddSpellPoints(Points);
+}
+
+int32 AUPCharacter::GetAttributePoints_Implementation()
+{
+	return UpFightPlayerState->GetAttributePoints();
+}
+
+int32 AUPCharacter::GetSpellPoints_Implementation()
+{
+	return UpFightPlayerState->GetSpellPoints();
+}
+
+void AUPCharacter::GiveAndActivatePassiveAbilities()
+{
+	if (!HasAuthority()) return;
+	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AddAndActivatePassiveAbilities(PassiveGameplayAbilities);
 }

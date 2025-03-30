@@ -29,17 +29,30 @@ public:
 	void InitAbilityInfo() override;
 
 	/* CombatInterface */
-	
 	// функция ICombatInterface по получению уровня
 	virtual int32 GetPlayerLevel_Implementation() override;
 	
 	/* end CombatInterface*/
+
+	/* PlayerInterface */
+	virtual int32 GetXP_Implementation() override;
+	virtual void AddXPReward_Implementation(float Reward) override;
+	virtual void AddPlayerLevel_Implementation(int32 InLevel) override;
+	virtual void AddToAttributePoints_Implementation(int32 Points) override;
+	virtual void AddToSpellPoints_Implementation(int32 Points) override;
+	virtual int32 GetAttributePoints_Implementation() override;
+	virtual int32 GetSpellPoints_Implementation() override;
+	/* end PlayerInterface */
+
+	void GiveAndActivatePassiveAbilities();
 protected:
 	
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AUpFightPlayerState> UpFightPlayerState;
 
-	
+	// способности которые должны быть вначале у игрока/врага
+	UPROPERTY(EditDefaultsOnly,Category="Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> PassiveGameplayAbilities;
 	
 };
 

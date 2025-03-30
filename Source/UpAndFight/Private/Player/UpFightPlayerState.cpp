@@ -58,6 +58,25 @@ void AUpFightPlayerState::AddXP(int32 InXP)
 	OnXPChangedDelegate.Broadcast(XP);
 }
 
+void AUpFightPlayerState::AddPlayerLevel(int32 InLevel)
+{
+	Level += InLevel;
+	OnLevelHangedDelegate.Broadcast(Level);
+	GEngine->AddOnScreenDebugMessage(5,3.f,FColor::Green,FString::Printf(TEXT("Player Level: %i"),Level));
+}
+
+void AUpFightPlayerState::AddAttributePoints(int32 InAttributePoints)
+{
+	AttributePoints += InAttributePoints;
+	OnAttributePointsDelegate.Broadcast(AttributePoints);
+}
+
+void AUpFightPlayerState::AddSpellPoints(int32 InSpellPoints)
+{
+	SpellPoints += InSpellPoints;
+	OnSpellPointsDelegate.Broadcast(SpellPoints);
+}
+
 void AUpFightPlayerState::OnRep_Level(const int32& OldValue) const
 {
 	// Это работает лишь в AttributeSet, тут задача как передать ее клиенту, передадим через делегат.
@@ -69,4 +88,14 @@ void AUpFightPlayerState::OnRep_Level(const int32& OldValue) const
 void AUpFightPlayerState::OnRep_XP(const int32& OldValue) const
 {
 	OnXPChangedDelegate.Broadcast(XP);
+}
+
+void AUpFightPlayerState::OnRep_SpellPoints(const int32& OldValue) const
+{
+	OnSpellPointsDelegate.Broadcast(SpellPoints);
+}
+
+void AUpFightPlayerState::OnRep_AttributePoints(const int32& OldValue) const
+{
+	OnAttributePointsDelegate.Broadcast(AttributePoints);
 }

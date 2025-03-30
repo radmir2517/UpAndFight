@@ -34,6 +34,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeChandedSignature, float, A
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEffectMessageSignature, FUIWidgetRow, Row);
 // делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, FAbilityInfo, Info);
+// делегат который будет возвращать spell points и attribute point, Level
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerStatChangedSignature, int32, Points);
 
 
 UCLASS()
@@ -63,6 +65,13 @@ public:
 	FAbilityInfoSignature AbilityInfoDelegate;
 	UPROPERTY(BlueprintAssignable)
 	FAttributeChandedSignature OnXPPercentChangedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FPlayerStatChangedSignature OnPlayerLevelChangedDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FPlayerStatChangedSignature AttributePointsChangedDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FPlayerStatChangedSignature SpellPointsChangedDelegate;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Widget Data")

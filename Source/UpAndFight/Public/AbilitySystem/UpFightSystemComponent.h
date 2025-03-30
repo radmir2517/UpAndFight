@@ -23,6 +23,7 @@ public:
 	void AbilityActorInfoSet();
 	// переберем классы всех GameplayAbilities стартовых для игрока/врага и сделаем GiveAbility
 	void AddCharacterAbilities(TArray<TSubclassOf<UGameplayAbility>> StartedGameplayAbilities);
+	void AddAndActivatePassiveAbilities(TArray<TSubclassOf<UGameplayAbility>> PassiveGameplayAbilities);
 
 	void AbilityInputTagHeld(FGameplayTag& GameplayTag);
 	void AbilityInputTagReleased(FGameplayTag& GameplayTag);

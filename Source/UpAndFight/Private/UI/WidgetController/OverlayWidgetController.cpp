@@ -42,10 +42,10 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 		const int32 MaxLevel = LevelUpIfInfoAsset->LevelUpInfos.Num();
 		
 		if (PlayerLevel <= MaxLevel)
-		{	// получим опыт для повышения предыдущего и след. уровня
+		{	// Получим опыт для повышения предыдущего и след. уровня
 		   const int32 NextLevelUPXP = LevelUpIfInfoAsset->LevelUpInfos[PlayerLevel+1].XPForThisLevel;
 		   const int32 CurrentLevelUPXP = LevelUpIfInfoAsset->LevelUpInfos[PlayerLevel].XPForThisLevel;
-			// рассчитаем процент, для этого надо разницу медлу макс. след уровня и текущего	
+			// Рассчитаем процент, для этого надо разницу медлу макс. след уровня и текущего	
 		   const int32 DeltaLevelRequirement = NextLevelUPXP - CurrentLevelUPXP;
 		   const int32 XPForThisLevel = NewXP - CurrentLevelUPXP;
 		   // суть такая, нам нужно узнать какой сейчас процент опыта относительно текущего уровня и следующего,
@@ -54,6 +54,17 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 		   OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
 		}
 	});
+	UpFightPlayerState->OnLevelHangedDelegate.AddLambda([this](int32 NewLevel)
+	{
+		OnPlayerLevelChangedDelegate.Broadcast(NewLevel);
+	});
+	
+	UpFightPlayerState->OnSpellPointsDelegate.AddLambda([this](int32 NewSpellPoints)
+	{
+		SpellPointsChangedDelegate.Broadcast(NewSpellPoints);
+	});
+	
+
 	
 	// вывод на экран иконок абилок, проверим был ли закончен процесс given
 	UpFightAbilitySystemComponent->AbilityGivenDelegate.AddUObject(this, &UOverlayWidgetController::OnInitializeStartupAbilities);

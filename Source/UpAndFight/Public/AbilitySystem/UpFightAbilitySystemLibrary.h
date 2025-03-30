@@ -7,6 +7,8 @@
 #include "UpFightAbilitySystemLibrary.generated.h"
 
 
+class ULevelUpInfo;
+class UGameplayEffect;
 struct FScalableFloat;
 struct FGameplayTag;
 class UAbilitySystemComponent;
@@ -29,6 +31,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|CharacterInfo")
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|CharacterInfo")
+	static ULevelUpInfo* GetLevelUpInfo(const UObject* WorldContextObject);
 
 	/*
 	 * Ability System Startup
@@ -56,5 +61,7 @@ public:
 	 */
 	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayMechanics")
 	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, const ECharacterClass& Class, const int32 Level);
+
+	
 };
 

@@ -50,8 +50,6 @@ void UUpFightProjectileSpell::SpawnProjectile(const FVector InTargetLocation, co
 	{	
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle,Pair.Key,Pair.Value.GetValueAtLevel(GetAbilityLevel()));
 	}
-
-	
 	
 	// досоздаем шарик
 	UGameplayStatics::FinishSpawningActor(CreatedActor,ProjectileTransform);

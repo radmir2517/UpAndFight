@@ -25,6 +25,17 @@ void UUpFightSystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGameplay
 	AbilityGivenDelegate.Broadcast();
 }
 
+void UUpFightSystemComponent::AddAndActivatePassiveAbilities(
+	TArray<TSubclassOf<UGameplayAbility>> PassiveGameplayAbilities)
+{
+	for(const TSubclassOf<UGameplayAbility>& Ability : PassiveGameplayAbilities)
+	{
+		FGameplayAbilitySpec Spec = BuildAbilitySpecFromClass(Ability,1);
+		GiveAbilityAndActivateOnce(Spec);
+	}
+
+}
+
 void UUpFightSystemComponent::AbilityInputTagHeld(FGameplayTag& GameplayTag)
 {// переберем все GetActivatableAbilities и активируем заклинания
 	FScopedAbilityListLock ActiveScopeLock(*this);

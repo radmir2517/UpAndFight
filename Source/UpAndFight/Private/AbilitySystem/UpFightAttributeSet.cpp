@@ -9,6 +9,7 @@
 #include "UpFightGameplayTags.h"
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
+#include "AbilitySystem/Data/LevelUpInfo.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "Interaction/EnemyInterface.h"
@@ -182,15 +183,53 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 				{
 					UpPLayerController->ShowDamageNumber(Props.TargetCharacter,LocalDamage);
 				}
-				
 			}
-			
 		}
 		else //(bDead)
 		{
 			// отправления ивента получения опыта со значением опыта
 			SendXPEvent(Props);
 			ICombatInterface::Execute_Die(Props.TargetCharacter);
+		}
+	}
+	if(Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+	{
+		if (Data.EvaluatedData.Magnitude == 0.f) return;
+		
+		ULevelUpInfo* LevelUpAsset = UUpFightAbilitySystemLibrary::GetLevelUpInfo(Props.SourceCharacter);
+		const int32 PreviousCharacterLevel = ICombatInterface::Execute_GetPlayerLevel(Props.SourceCharacter);
+		
+		
+		// полученный опыт присвоим в PlayerState и отправим через делегат в OverlayController
+		const float XPValue = GetIncomingXP();
+		SetIncomingXP(0);
+		IPlayerInterface::Execute_AddXPReward(Props.SourceCharacter,XPValue);
+		
+		const int32 CurrentXP = IPlayerInterface::Execute_GetXP(Props.SourceCharacter);
+		// рассчитаем текущий уровень после повышения опыта
+		const int32 CurrentCharacterLevel = LevelUpAsset->GetLevelByXp(CurrentXP);
+		// если прошлый уровень отличается от текущего, то будем прибавлять его через For чтобы несколько раз срабатывал broadcast,
+		// если несколько уровней повыситься, потом привяжем к нему эффект повышения уровня
+		if (PreviousCharacterLevel != CurrentCharacterLevel)
+		{
+			int32 SpellPointCount = 0;
+			int32 AttributePointCount = 0;
+			
+			const int32 DeltaLevels = CurrentCharacterLevel - PreviousCharacterLevel;
+			for (int i = 1; i <= DeltaLevels; i++)
+			{
+				SpellPointCount = LevelUpAsset->LevelUpInfos[PreviousCharacterLevel + i ].SpellPointReward;
+				AttributePointCount = LevelUpAsset->LevelUpInfos[PreviousCharacterLevel + i ].AttributePointReward;
+				if (SpellPointCount > 0)
+				{
+					IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointCount);
+				}
+				if (AttributePointCount > 0)
+				{
+					IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointCount);
+				}
+				IPlayerInterface::Execute_AddPlayerLevel(Props.SourceCharacter,1);
+			}
 		}
 	}
 	
@@ -229,9 +268,14 @@ void UUpFightAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackD
 			{
 				Props.SourceController = Pawn->GetController();
 			}
-			if(Props.SourceController)
+
+		}
+		if(Props.SourceController)
+		{
+			Props.SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn());
+			if (!IsValid(Props.SourceCharacter))
 			{
-				Props.SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn());
+				Props.SourceCharacter = Cast<ACharacter>(Props.SourceAvatarActor);
 			}
 		}
 	}
