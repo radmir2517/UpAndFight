@@ -37,6 +37,8 @@ void AUpFightPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AUpFightPlayerState,Level);
 	DOREPLIFETIME(AUpFightPlayerState,XP);
+	DOREPLIFETIME(AUpFightPlayerState,AttributePoints);
+	DOREPLIFETIME(AUpFightPlayerState,SpellPoints);
 }
 
 

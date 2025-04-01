@@ -8,6 +8,8 @@
 #include "Interaction/PlayerInterface.h"
 #include "UPCharacter.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
 class AUpFightPlayerState;
 class UGameplayEffect;
 /**
@@ -44,15 +46,23 @@ public:
 	virtual int32 GetSpellPoints_Implementation() override;
 	/* end PlayerInterface */
 
-	void GiveAndActivatePassiveAbilities();
+
 protected:
 	
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AUpFightPlayerState> UpFightPlayerState;
 
-	// способности которые должны быть вначале у игрока/врага
-	UPROPERTY(EditDefaultsOnly,Category="Abilities")
-	TArray<TSubclassOf<UGameplayAbility>> PassiveGameplayAbilities;
+	// эффект повышения уровня
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	TObjectPtr<UNiagaraSystem> LevelUpEffect;
+
+	// эффект повышения уровня
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	// эффект повышения уровня
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	TObjectPtr<UCameraComponent> CameraComponent;
 	
 };
 

@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/UpFightSystemComponent.h"
 
+#include "UpFightGameplayTags.h"
 #include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
 
 void UUpFightSystemComponent::AbilityActorInfoSet()
@@ -28,10 +29,13 @@ void UUpFightSystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGameplay
 void UUpFightSystemComponent::AddAndActivatePassiveAbilities(
 	TArray<TSubclassOf<UGameplayAbility>> PassiveGameplayAbilities)
 {
-	for(const TSubclassOf<UGameplayAbility>& Ability : PassiveGameplayAbilities)
+	for(const TSubclassOf<UGameplayAbility> AbilityClass : PassiveGameplayAbilities)
 	{
-		FGameplayAbilitySpec Spec = BuildAbilitySpecFromClass(Ability,1);
-		GiveAbilityAndActivateOnce(Spec);
+		FGameplayAbilitySpec Spec = FGameplayAbilitySpec(AbilityClass,1);
+		GiveAbility(Spec);
+		FGameplayTagContainer PassiveGameplayTags;
+		PassiveGameplayTags.AddTag(FUpFightGameplayTags::Get().Abilities_ListenAbility);
+		TryActivateAbilitiesByTag(PassiveGameplayTags);
 	}
 
 }

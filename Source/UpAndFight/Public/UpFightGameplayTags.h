@@ -66,6 +66,7 @@ struct FUpFightGameplayTags
 	FGameplayTag Abilities_Attack;
 	FGameplayTag Abilities_Summon;
 	FGameplayTag Abilities_FireBolt;
+	FGameplayTag Abilities_ListenAbility;
 	/* end Attack Tags */
 
 	/* Cooldown Tags */

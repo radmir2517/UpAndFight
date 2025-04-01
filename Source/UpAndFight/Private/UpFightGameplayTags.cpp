@@ -58,6 +58,7 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	UpFightGameplayTags.Abilities_Attack = UpFightTagsManager.AddNativeGameplayTag("Abilities.Attack", "Abilities Attack Tag");
 	UpFightGameplayTags.Abilities_Summon = UpFightTagsManager.AddNativeGameplayTag("Abilities.Summon", "Abilities Summon Tag");
 	UpFightGameplayTags.Abilities_FireBolt = UpFightTagsManager.AddNativeGameplayTag("Abilities.FireBolt", "Abilities_FireBolt Tag");
+	UpFightGameplayTags.Abilities_ListenAbility = UpFightTagsManager.AddNativeGameplayTag("Abilities.ListenAbility", "Abilities ListenAbility Tag");
 	/* end Attack Tags */
 
 	/* end Cooldown Tags */

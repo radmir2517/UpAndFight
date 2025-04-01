@@ -58,6 +58,7 @@ protected:
 	// применения эффекта с атрибутами Primary and Secondary, Vital
 	// функция которая GiveAbility нашим StartedGameplayAbilities
 	void AddCharacterAbilities();
+	void GiveAndActivatePassiveAbilities();
 	UFUNCTION(NetMulticast,Reliable)
 	virtual void MulticastHandleDeath();
 
@@ -108,6 +109,10 @@ protected:
 	// способности которые должны быть вначале у игрока/врага
 	UPROPERTY(EditDefaultsOnly,Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartedGameplayAbilities;
+	
+	// способности которые должны быть вначале у игрока/врага
+	UPROPERTY(EditDefaultsOnly,Category="Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> PassiveGameplayAbilities;
 	
 	UPROPERTY(EditDefaultsOnly,Category = "Combat")
 	TArray<FTaggedMontage> AttackMontages;

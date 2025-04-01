@@ -174,6 +174,13 @@ void AUPCharacterBase::AddCharacterAbilities()
 	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AddCharacterAbilities(StartedGameplayAbilities);
 }
 
+void AUPCharacterBase::GiveAndActivatePassiveAbilities()
+{
+	if (!HasAuthority()) return;
+	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AddAndActivatePassiveAbilities(PassiveGameplayAbilities);
+}
+
+
 void AUPCharacterBase::Dissolve()
 {
 	if(IsValid(BodyDissolveMaterial))

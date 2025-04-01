@@ -11,7 +11,7 @@ class UAttributeSet;
 class UAbilitySystemComponent;
 
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FPlayerStateChangedSignature,int32);
+DECLARE_MULTICAST_DELEGATE_OneParam(FPlayerStateChangedSignature,int32 /*Value*/);
 
 UCLASS()
 class UPANDFIGHT_API AUpFightPlayerState : public APlayerState, public IAbilitySystemInterface
@@ -33,8 +33,11 @@ public:
 	TObjectPtr<UAttributeSet> AttributeSet;
 
 	FPlayerStateChangedSignature OnLevelHangedDelegate;
+
 	FPlayerStateChangedSignature OnXPChangedDelegate;
+
 	FPlayerStateChangedSignature OnAttributePointsDelegate;
+
 	FPlayerStateChangedSignature OnSpellPointsDelegate;
 		
 	FORCEINLINE int32 GetPlayerLevel() const {return Level;}

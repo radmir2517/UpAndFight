@@ -35,6 +35,7 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 	{
 		MaxManaChangedDelegate.Broadcast(Data.NewValue);
 	});
+	
 	// привяжемся к делегату который активируется при изменении опыта
 	UpFightPlayerState->OnXPChangedDelegate.AddLambda([this](int32 NewXP)
 	{
@@ -54,6 +55,7 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 		   OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
 		}
 	});
+
 	UpFightPlayerState->OnLevelHangedDelegate.AddLambda([this](int32 NewLevel)
 	{
 		OnPlayerLevelChangedDelegate.Broadcast(NewLevel);

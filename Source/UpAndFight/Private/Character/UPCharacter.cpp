@@ -5,7 +5,10 @@
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Player/UpFightPlayerController.h"
 #include "Player/UpFightPlayerState.h"
 #include "UI/HUD/UpFightHUD.h"
@@ -13,6 +16,18 @@
 
 AUPCharacter::AUPCharacter()
 {
+
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArmComponent->SetupAttachment(GetRootComponent());
+	SpringArmComponent->TargetArmLength = 350.f;
+	SpringArmComponent->SetRelativeRotation(FRotator(-30, 90, 0));
+	SpringArmComponent->bInheritPitch = false;
+	SpringArmComponent->bInheritRoll = false;
+	SpringArmComponent->bInheritYaw = false;
+	
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	CameraComponent->SetupAttachment(SpringArmComponent);
+	
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; 
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
@@ -91,6 +106,7 @@ void AUPCharacter::AddXPReward_Implementation(float Reward)
 void AUPCharacter::AddPlayerLevel_Implementation(int32 InLevel)
 {
 	UpFightPlayerState->AddPlayerLevel(InLevel);
+	UNiagaraFunctionLibrary::SpawnSystemAttached(LevelUpEffect,GetMesh(),FName("pelvis"),GetMesh()->GetComponentLocation(),FRotator(),EAttachLocation::KeepWorldPosition,true);
 }
 
 void AUPCharacter::AddToAttributePoints_Implementation(int32 Points)
@@ -113,8 +129,3 @@ int32 AUPCharacter::GetSpellPoints_Implementation()
 	return UpFightPlayerState->GetSpellPoints();
 }
 
-void AUPCharacter::GiveAndActivatePassiveAbilities()
-{
-	if (!HasAuthority()) return;
-	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AddAndActivatePassiveAbilities(PassiveGameplayAbilities);
-}
