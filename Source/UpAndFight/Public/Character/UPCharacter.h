@@ -63,7 +63,9 @@ protected:
 	// эффект повышения уровня
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TObjectPtr<UCameraComponent> CameraComponent;
-	
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastLevelUpEffect();
 };
 
 

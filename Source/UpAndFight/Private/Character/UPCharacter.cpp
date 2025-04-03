@@ -77,6 +77,7 @@ void AUPCharacter::InitAbilityInfo()
 	check(UpFightPlayerState);
 	AbilitySystemComponent = UpFightPlayerState->GetAbilitySystemComponent();
 	AttributeSet = UpFightPlayerState->GetAttributeSet();
+	// инцилизация оверлея, создания контроллера в HUD и создания выведения Overlay виджета на экран
 	InitOverlay();
 	// вызов привязки делегата OnGameplayEffectAppliedToSelf к нашей функции в AbilitySystemComponent
 	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
@@ -84,8 +85,6 @@ void AUPCharacter::InitAbilityInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(UpFightPlayerState, this);
 	// применения эффекта с атрибутами Primary and Secondary
 	InitializeDefaultAttributes();
-	// инцилизация оверлея, создания контроллера в HUD и создания выведения Overlay виджета на экран
-	
 }
 
 int32 AUPCharacter::GetPlayerLevel_Implementation()
@@ -103,10 +102,15 @@ void AUPCharacter::AddXPReward_Implementation(float Reward)
 	UpFightPlayerState->AddXP(Reward);
 }
 
+void AUPCharacter::MulticastLevelUpEffect_Implementation()
+{
+	UNiagaraFunctionLibrary::SpawnSystemAttached(LevelUpEffect,GetMesh(),FName("pelvis"),GetMesh()->GetComponentLocation(),FRotator(),EAttachLocation::KeepWorldPosition,true);
+}
+
 void AUPCharacter::AddPlayerLevel_Implementation(int32 InLevel)
 {
 	UpFightPlayerState->AddPlayerLevel(InLevel);
-	UNiagaraFunctionLibrary::SpawnSystemAttached(LevelUpEffect,GetMesh(),FName("pelvis"),GetMesh()->GetComponentLocation(),FRotator(),EAttachLocation::KeepWorldPosition,true);
+	MulticastLevelUpEffect();
 }
 
 void AUPCharacter::AddToAttributePoints_Implementation(int32 Points)
@@ -128,4 +132,6 @@ int32 AUPCharacter::GetSpellPoints_Implementation()
 {
 	return UpFightPlayerState->GetSpellPoints();
 }
+
+
 
