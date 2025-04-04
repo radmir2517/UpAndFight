@@ -3,7 +3,10 @@
 
 #include "UI/WidgetController/UpFightAttributeMenuController.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/UpFightAttributeSet.h"
+#include "AbilitySystem/UpFightSystemComponent.h"
+#include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
 #include "Player/UpFightPlayerState.h"
 
 void UUpFightAttributeMenuController::BindCallBacksToDependencies()
@@ -53,5 +56,14 @@ void UUpFightAttributeMenuController::BroadcastInitialValues()
 	}
 	// получим очки свободные очки атрибутов
 	AttributePointsDelegate.Broadcast(UpPlayerState->GetAttributePoints());
+}
+
+void UUpFightAttributeMenuController::UpgradeAttributes(const FGameplayTag& AttributeTag)
+{
+	if (UUpFightSystemComponent* UpASC = CastChecked<UUpFightSystemComponent>(AbilitySystemComponent))
+	{
+		UpASC->UpgradeAttributes(AttributeTag);
+		BroadcastInitialValues();
+	}
 }
 

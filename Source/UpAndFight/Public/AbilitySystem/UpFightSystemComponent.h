@@ -28,6 +28,9 @@ public:
 	void AbilityInputTagHeld(FGameplayTag& GameplayTag);
 	void AbilityInputTagReleased(FGameplayTag& GameplayTag);
 
+	void UpgradeAttributes(const FGameplayTag& AttributeTag);
+	void ServerUpgradeAttributes(const FGameplayTag& AttributeTag);
+	
 	FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	

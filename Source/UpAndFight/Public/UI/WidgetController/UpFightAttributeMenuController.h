@@ -19,6 +19,9 @@ class UPANDFIGHT_API UUpFightAttributeMenuController : public UUpFightWidgetCont
 public:
 	virtual void BindCallBacksToDependencies() override;
 	virtual void BroadcastInitialValues() override;
+	// функция прибавления атрибута
+	UFUNCTION(BlueprintCallable)
+	void UpgradeAttributes(const FGameplayTag& AttributeTag);
 
 	// экземпляр делегата который вернет структуру с описанием и название атрибута
 	UPROPERTY(BlueprintAssignable)

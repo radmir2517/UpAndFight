@@ -3,8 +3,10 @@
 
 #include "AbilitySystem/UpFightSystemComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "UpFightGameplayTags.h"
 #include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
+#include "Interaction/PlayerInterface.h"
 
 void UUpFightSystemComponent::AbilityActorInfoSet()
 { // привяжемся к делегату которые при применения эффекта будет вызывать функцию EffectApplied
@@ -68,6 +70,25 @@ void UUpFightSystemComponent::AbilityInputTagReleased(FGameplayTag& GameplayTag)
 			GEngine->AddOnScreenDebugMessage(3,3.f,FColor::Red,FString::Printf(TEXT("AbilityInputTagReleased InputTag: %s"),*GameplayTag.ToString()));
 		}
 	}
+}
+
+void UUpFightSystemComponent::UpgradeAttributes(const FGameplayTag& AttributeTag)
+{
+	if (GetAvatarActor()->Implements<UPlayerInterface>())
+	{
+		ServerUpgradeAttributes(AttributeTag);
+	}
+}
+
+void UUpFightSystemComponent::ServerUpgradeAttributes(const FGameplayTag& AttributeTag)
+{
+	// создадим Payload, загрузим туда тег атрибута и значение и отправляем эвент в GA_ListenForEvent
+	// не забываем добавить аттрибуты EventBasedEffect
+	FGameplayEventData EventData;
+	EventData.EventTag = AttributeTag;
+	EventData.EventMagnitude = 1.f;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(),AttributeTag,EventData);
+	IPlayerInterface::Execute_AddToAttributePoints(GetAvatarActor(),-1);
 }
 
 FGameplayTag UUpFightSystemComponent::GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
