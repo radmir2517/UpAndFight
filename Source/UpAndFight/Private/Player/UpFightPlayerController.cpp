@@ -52,7 +52,7 @@ void AUpFightPlayerController::CursorTrace()
 		{
 			// ничего не делаем
 		}
-		else //(ThisActor != LastActor)
+		else if (IsValid(LastActor)) //(ThisActor != LastActor)
 		{
 			IEnemyInterface::Execute_UnHighlightActor(LastActor);
 		}

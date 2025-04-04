@@ -4,6 +4,7 @@
 #include "UI/WidgetController/UpFightAttributeMenuController.h"
 
 #include "AbilitySystem/UpFightAttributeSet.h"
+#include "Player/UpFightPlayerState.h"
 
 void UUpFightAttributeMenuController::BindCallBacksToDependencies()
 {	// проверим указатель на DataAsset AttributeInfo
@@ -24,6 +25,12 @@ void UUpFightAttributeMenuController::BindCallBacksToDependencies()
 			}
 		});
 	}
+	// при изменения очков атрибутов вернется их количество
+	UpPlayerState = CastChecked<AUpFightPlayerState>(PlayerState);
+	UpPlayerState->OnAttributePointsDelegate.AddLambda([this](const int32 NewPoints)
+	{
+		AttributePointsDelegate.Broadcast(NewPoints);
+	});
 
 }
 
@@ -44,5 +51,7 @@ void UUpFightAttributeMenuController::BroadcastInitialValues()
 			AttributeInfoDelegate.Broadcast(Info);
 		}
 	}
+	// получим очки свободные очки атрибутов
+	AttributePointsDelegate.Broadcast(UpPlayerState->GetAttributePoints());
 }
 
