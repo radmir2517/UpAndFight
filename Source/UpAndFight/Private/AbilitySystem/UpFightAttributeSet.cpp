@@ -232,7 +232,20 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 			}
 		}
 	}
-	
+}
+
+void UUpFightAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+	// если изменятся максимальные значения атрибутов т.е при повышения уровня, то восстановим хп и ману
+	if (Attribute == GetMaxHealthAttribute())
+	{
+		SetHealth(NewValue);
+	}
+	if (Attribute == GetMaxManaAttribute())
+	{
+		SetMana(NewValue);
+	}
 }
 
 void UUpFightAttributeSet::SendXPEvent(FEffectProperties& Props)

@@ -6,7 +6,6 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
-#include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
 #include "Player/UpFightPlayerState.h"
 
 void UUpFightAttributeMenuController::BindCallBacksToDependencies()

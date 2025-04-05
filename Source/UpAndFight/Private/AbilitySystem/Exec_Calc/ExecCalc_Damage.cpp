@@ -33,7 +33,7 @@ static UpFightDamageStatics& DamageStatics()
 
 
 UExecCalc_Damage::UExecCalc_Damage()
-{	// в массив для захвата мы должны добавить атрибут, для примера это будет броня
+{	// в массив для захвата мы должны добавить атрибут, для примера это будет резисты
 	RelevantAttributesToCapture.Add(DamageStatics().FireResistanceDef);
 	RelevantAttributesToCapture.Add(DamageStatics().LightningResistanceDef);
 	RelevantAttributesToCapture.Add(DamageStatics().ArcaneResistanceDef);
@@ -45,7 +45,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
                                               FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDef;
-
 	
 	FUpFightGameplayTags& GameplayTags = FUpFightGameplayTags::Get();
 	TagsToCaptureDef.Add(GameplayTags.Attribute_Resistance_Fire,DamageStatics().FireResistanceDef);
