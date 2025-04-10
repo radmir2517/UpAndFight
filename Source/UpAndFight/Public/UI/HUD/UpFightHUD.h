@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "UpFightHUD.generated.h"
 
+class USpellWidgetController;
 class UUpFightAttributeMenuController;
 class UAttributeSet;
 class UAbilitySystemComponent;
@@ -27,6 +28,8 @@ public:
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
 	UFUNCTION(BlueprintCallable)
 	UUpFightAttributeMenuController* GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
+	UFUNCTION(BlueprintCallable)
+	USpellWidgetController* GetSpellMenuWidgetController(const FWidgetControllerParams& WCParams);
 	
 	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 
@@ -37,6 +40,7 @@ private:
 
 	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;
 	TObjectPtr<UUpFightAttributeMenuController> AttributeMenuWidgetController;
+	TObjectPtr<USpellWidgetController> SpellMenuWidgetController;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> OverlayWidgetClass;
@@ -44,5 +48,7 @@ private:
 	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUpFightAttributeMenuController> AttributeMenuWidgetControllerClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<USpellWidgetController> SpellMenuWidgetControllerClass;
 	
 };

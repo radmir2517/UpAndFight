@@ -14,30 +14,30 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 {
 	Super::BindCallBacksToDependencies();
 	UUpFightSystemComponent* UpFightAbilitySystemComponent = CastChecked<UUpFightSystemComponent>(AbilitySystemComponent);
-	UUpFightAttributeSet* UpFightAttributeSet = Cast<UUpFightAttributeSet>(AttributeSet);
-	AUpFightPlayerState* UpFightPlayerState = Cast<AUpFightPlayerState>(PlayerState);
+	UpAttributeSet = GetUpAttributeSet();
+	UpPlayerState = GetUpPlayerState();
 	
 	checkf(MessageWidgetDataTable, TEXT("Add a MessageWidgetDataTable to the OverlayWidgetController"));
 	
-	UpFightAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpFightAttributeSet->GetHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
+	UpFightAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpAttributeSet->GetHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
 	{
 		HealthChangedDelegate.Broadcast(Data.NewValue);
 	});
-		UpFightAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpFightAttributeSet->GetMaxHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
+		UpFightAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpAttributeSet->GetMaxHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
 	{
 		MaxHealthChangedDelegate.Broadcast(Data.NewValue);
 	});
-		UpFightAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpFightAttributeSet->GetManaAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
+		UpFightAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpAttributeSet->GetManaAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
 	{
 		ManaChangedDelegate.Broadcast(Data.NewValue);
 	});
-		UpFightAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpFightAttributeSet->GetMaxManaAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
+		UpFightAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpAttributeSet->GetMaxManaAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
 	{
 		MaxManaChangedDelegate.Broadcast(Data.NewValue);
 	});
 	
 	// привяжемся к делегату который активируется при изменении опыта
-	UpFightPlayerState->OnXPChangedDelegate.AddLambda([this](int32 NewXP)
+	UpPlayerState->OnXPChangedDelegate.AddLambda([this](int32 NewXP)
 	{
 		const int32 PlayerLevel = LevelUpIfInfoAsset->GetLevelByXp(NewXP);
 		const int32 MaxLevel = LevelUpIfInfoAsset->LevelUpInfos.Num();
@@ -56,17 +56,15 @@ void UOverlayWidgetController::BindCallBacksToDependencies()
 		}
 	});
 
-	UpFightPlayerState->OnLevelHangedDelegate.AddLambda([this](int32 NewLevel)
+	UpPlayerState->OnLevelHangedDelegate.AddLambda([this](int32 NewLevel)
 	{
 		OnPlayerLevelChangedDelegate.Broadcast(NewLevel);
 	});
 	
-	UpFightPlayerState->OnSpellPointsDelegate.AddLambda([this](int32 NewSpellPoints)
+	UpPlayerState->OnSpellPointsDelegate.AddLambda([this](int32 NewSpellPoints)
 	{
 		SpellPointsChangedDelegate.Broadcast(NewSpellPoints);
 	});
-	
-
 	
 	// вывод на экран иконок абилок, проверим был ли закончен процесс given
 	UpFightAbilitySystemComponent->AbilityGivenDelegate.AddUObject(this, &UOverlayWidgetController::OnInitializeStartupAbilities);
@@ -92,7 +90,7 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	MaxManaChangedDelegate.Broadcast(UpFightAttributeSet->GetMaxMana());
 	ManaChangedDelegate.Broadcast(UpFightAttributeSet->GetMana());
 }
-
+/*  убрали в базовый класс
 void UOverlayWidgetController::OnInitializeStartupAbilities()
 {// получим GameMode где мы достанем UAbilityDataAsset
 	//const AUpFightGameMode* UpGameMode = Cast<AUpFightGameMode>(UGameplayStatics::GetGameMode(UpASC->GetAvatarActor()));
@@ -112,3 +110,4 @@ void UOverlayWidgetController::OnInitializeStartupAbilities()
 		}
 	}
 }
+*/

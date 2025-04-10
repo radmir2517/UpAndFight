@@ -32,8 +32,7 @@ struct FUIWidgetRow : public FTableRowBase
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeChandedSignature, float, AttributeValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEffectMessageSignature, FUIWidgetRow, Row);
-// делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, FAbilityInfo, Info);
+
 // делегат который будет возвращать spell points и attribute point, Level
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerStatChangedSignature, int32, Points);
 
@@ -60,9 +59,7 @@ public:
 	// делегат отправляющий строку из MessageWidgetDataTable в виджет
 	UPROPERTY(BlueprintAssignable)
 	FEffectMessageSignature EffectMessageDelegate;
-	// делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
-	UPROPERTY(BlueprintAssignable)
-	FAbilityInfoSignature AbilityInfoDelegate;
+
 	UPROPERTY(BlueprintAssignable)
 	FAttributeChandedSignature OnXPPercentChangedDelegate;
 
@@ -76,13 +73,9 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
-	UFUNCTION(BlueprintCallable)
-	void OnInitializeStartupAbilities();
 
-	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
-	TObjectPtr<UAbilityDataAsset> AbilityDataInfoAsset;
-	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
-	TObjectPtr<ULevelUpInfo> LevelUpIfInfoAsset;
+
+	
 };
 
 template <typename T>

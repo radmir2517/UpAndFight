@@ -7,6 +7,7 @@
 #include "UpFightAbilitySystemLibrary.generated.h"
 
 
+class USpellWidgetController;
 class ULevelUpInfo;
 class UGameplayEffect;
 struct FScalableFloat;
@@ -23,16 +24,19 @@ class UPANDFIGHT_API UUpFightAbilitySystemLibrary : public UBlueprintFunctionLib
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|WidgetController")
+	UFUNCTION(BlueprintPure, meta = (HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"), Category="UPFightAbilitySystemLibrary|WidgetController")
 	static UOverlayWidgetController* GetOverlayWidgetController(const UObject* WorldContextObject);
 	
-	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|WidgetController")
+	UFUNCTION(BlueprintPure, meta = (HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"), Category="UPFightAbilitySystemLibrary|WidgetController")
 	static UUpFightAttributeMenuController* GetAttributeMenuController(const UObject* WorldContextObject);
 
-	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|CharacterInfo")
+	UFUNCTION(BlueprintPure, meta = (HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"), Category="UPFightAbilitySystemLibrary|WidgetController")
+	static USpellWidgetController* GetSpellMenuController(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, meta = (HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"), Category="UPFightAbilitySystemLibrary|CharacterInfo")
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);
 
-	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|CharacterInfo")
+	UFUNCTION(BlueprintPure,meta = (HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"), Category="UPFightAbilitySystemLibrary|CharacterInfo")
 	static ULevelUpInfo* GetLevelUpInfo(const UObject* WorldContextObject);
 
 	/*

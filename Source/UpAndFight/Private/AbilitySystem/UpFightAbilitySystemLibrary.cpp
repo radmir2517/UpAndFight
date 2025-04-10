@@ -40,6 +40,26 @@ UUpFightAttributeMenuController* UUpFightAbilitySystemLibrary::GetAttributeMenuC
 	return nullptr;
 }
 
+USpellWidgetController* UUpFightAbilitySystemLibrary::GetSpellMenuController(const UObject* WorldContextObject)
+{
+	APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject,0);
+	
+	if (IsValid(PC))
+	{
+		AUpFightHUD* UpHUD = Cast<AUpFightHUD>(PC->GetHUD());
+		if (IsValid(UpHUD))
+		{
+			UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(PC->GetPawn());
+			AUpFightPlayerState* PS = PC->GetPlayerState<AUpFightPlayerState>();
+			UAttributeSet* AS = PS->GetAttributeSet();
+			
+			FWidgetControllerParams WCParams(PC,PS,ASC,AS);
+			return UpHUD->GetSpellMenuWidgetController(WCParams);
+		}
+	}
+	return nullptr;
+}
+
 UCharacterClassInfo* UUpFightAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
 {
 	AUpFightGameMode* UpFightGameMode = Cast<AUpFightGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));

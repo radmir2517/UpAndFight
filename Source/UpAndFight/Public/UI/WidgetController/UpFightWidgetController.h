@@ -4,8 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/Data/AbilityDataAsset.h"
 #include "UpFightWidgetController.generated.h"
 
+class AUpFightPlayerController;
+class AUpFightPlayerState;
+class UUpFightAttributeSet;
+class UUpFightSystemComponent;
+class ULevelUpInfo;
 class UAttributeSet;
 class UAbilitySystemComponent;
 
@@ -32,6 +38,9 @@ struct FWidgetControllerParams
 	TObjectPtr<APlayerController> PlayerController;
 };
 
+// делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, FAbilityInfo, Info);
+
 UCLASS(BlueprintType,Blueprintable)
 class UPANDFIGHT_API UUpFightWidgetController : public UObject
 {
@@ -42,9 +51,32 @@ public:
 	virtual void BindCallBacksToDependencies();
 	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialValues();
-	
+	// функция получения GetActivatableAbilities и получения структуры с AbilityDataAsset по тегу и отправлению струтктуры через делегат в виджет
+	UFUNCTION(BlueprintCallable)
+	virtual void OnInitializeStartupAbilities();
 	// сеттер который назначает переменные из структуры Params
 	void SetWidgetControllerParams(const FWidgetControllerParams& Params);
+
+	// геттера для указателей
+	UFUNCTION(BlueprintCallable)
+	UUpFightSystemComponent* GetUpAbilitySystemComponent();
+	UFUNCTION(BlueprintCallable)
+	UUpFightAttributeSet* GetUpAttributeSet();
+	UFUNCTION(BlueprintCallable)
+	AUpFightPlayerState* GetUpPlayerState();
+	UFUNCTION(BlueprintCallable)
+	AUpFightPlayerController* GetUpPlayerController();
+	
+
+	// делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
+	UPROPERTY(BlueprintAssignable)
+	FAbilityInfoSignature AbilityInfoDelegate;
+
+	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
+	TObjectPtr<UAbilityDataAsset> AbilityDataInfoAsset;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
+	TObjectPtr<ULevelUpInfo> LevelUpIfInfoAsset;
 
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
@@ -57,4 +89,17 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<APlayerController> PlayerController;
+
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UUpFightSystemComponent> UpAbilitySystemComponent;
+	
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UUpFightAttributeSet> UpAttributeSet;
+	
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<AUpFightPlayerState> UpPlayerState;
+	
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<AUpFightPlayerController> UpPlayerController;
 };

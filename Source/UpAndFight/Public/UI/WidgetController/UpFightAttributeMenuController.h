@@ -35,5 +35,5 @@ public:
 	TObjectPtr<UAttributeDataAsset> AttributeInfo;
 
 private:
-	TObjectPtr<AUpFightPlayerState> UpPlayerState;
+	
 };

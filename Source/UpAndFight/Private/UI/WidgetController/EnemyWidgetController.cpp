@@ -11,13 +11,14 @@
 void UEnemyWidgetController::BindCallBacksToDependencies()
 {
 	
-	UUpFightSystemComponent* ASC = CastChecked<UUpFightSystemComponent>(AbilitySystemComponent);
-	UUpFightAttributeSet* AS =  CastChecked<UUpFightAttributeSet>(AttributeSet);
-	ASC->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
+	UpAbilitySystemComponent = GetUpAbilitySystemComponent();
+	UpAttributeSet = GetUpAttributeSet();
+	// привяжемся к делегатам изменения атрибутов здоровья врага
+	UpAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpAttributeSet->GetHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
 	{
 		HeathChangedDelegate.Broadcast(Data.NewValue);
 	});
-	ASC->GetGameplayAttributeValueChangeDelegate(AS->GetMaxHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
+	UpAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UpAttributeSet->GetMaxHealthAttribute()).AddLambda([this](const FOnAttributeChangeData& Data)
 	{
 		MaxHeathChangedDelegate.Broadcast(Data.NewValue);
 	});
@@ -25,8 +26,8 @@ void UEnemyWidgetController::BindCallBacksToDependencies()
 
 void UEnemyWidgetController::BroadcastInitialValues()
 {
-	UUpFightAttributeSet* AS =  CastChecked<UUpFightAttributeSet>(AttributeSet);
-	
-	HeathChangedDelegate.Broadcast(AS->GetHealth());
-	MaxHeathChangedDelegate.Broadcast(AS->GetMaxHealth());
+	UpAttributeSet = GetUpAttributeSet();
+	// передадим начальные значения врага
+	HeathChangedDelegate.Broadcast(UpAttributeSet->GetHealth());
+	MaxHeathChangedDelegate.Broadcast(UpAttributeSet->GetMaxHealth());
 }

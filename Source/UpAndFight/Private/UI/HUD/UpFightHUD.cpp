@@ -6,6 +6,7 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/Widget/UpFightUserWidget.h"
+#include "UI/WidgetController/SpellWidgetController.h"
 #include "UI/WidgetController/UpFightAttributeMenuController.h"
 
 UOverlayWidgetController* AUpFightHUD::GetOverlayWidgetController(const FWidgetControllerParams& WCParams)
@@ -30,6 +31,17 @@ UUpFightAttributeMenuController* AUpFightHUD::GetAttributeMenuWidgetController(c
 		AttributeMenuWidgetController->BindCallBacksToDependencies();
 	}
 	return AttributeMenuWidgetController;
+}
+
+USpellWidgetController* AUpFightHUD::GetSpellMenuWidgetController(const FWidgetControllerParams& WCParams)
+{
+	if (SpellMenuWidgetController == nullptr)
+	{
+		SpellMenuWidgetController = NewObject<USpellWidgetController>(this,SpellMenuWidgetControllerClass);
+		SpellMenuWidgetController->SetWidgetControllerParams(WCParams);
+		SpellMenuWidgetController->BindCallBacksToDependencies();
+	}
+	return SpellMenuWidgetController;
 }
 
 void AUpFightHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)

@@ -11,15 +11,15 @@
 void UUpFightAttributeMenuController::BindCallBacksToDependencies()
 {	// проверим указатель на DataAsset AttributeInfo
 	check(AttributeInfo);
-	UUpFightAttributeSet* UpFightAS = CastChecked<UUpFightAttributeSet>(AttributeSet);
+	UpAttributeSet = GetUpAttributeSet();
 
-	for(auto Pair : UpFightAS->TagToAttributeFunc)
+	for(auto Pair : UpAttributeSet->TagToAttributeFunc)
 	{
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Value()).AddLambda([this, Pair, UpFightAS](const FOnAttributeChangeData&)
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Value()).AddLambda([this, Pair](const FOnAttributeChangeData&)
 		{
 			FAttributeInfo Info = AttributeInfo->GetAttributeInfoByTag(Pair.Key);
 			// заменим значение на настоящее текущее
-			Info.AttributeValue = Pair.Value().GetNumericValue(UpFightAS);
+			Info.AttributeValue = Pair.Value().GetNumericValue(UpAttributeSet);
 			// и отправим виджету строки со значением
 			if(Info.AttributeTag.IsValid())
 			{	
@@ -28,7 +28,7 @@ void UUpFightAttributeMenuController::BindCallBacksToDependencies()
 		});
 	}
 	// при изменения очков атрибутов вернется их количество
-	UpPlayerState = CastChecked<AUpFightPlayerState>(PlayerState);
+	UpPlayerState = GetUpPlayerState();
 	UpPlayerState->OnAttributePointsDelegate.AddLambda([this](const int32 NewPoints)
 	{
 		AttributePointsDelegate.Broadcast(NewPoints);
