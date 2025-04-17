@@ -73,6 +73,16 @@ ULevelUpInfo* UUpFightAbilitySystemLibrary::GetLevelUpInfo(const UObject* WorldC
 	return UpFightGameMode->LevelUpInfo;
 }
 
+UAbilityDataAsset* UUpFightAbilitySystemLibrary::GetAbilityInfo(const UObject* WorldContextObject)
+{
+	AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(WorldContextObject);
+	if (AUpFightGameMode* UpFightGameMode = Cast<AUpFightGameMode>(BaseGameMode))
+	{
+		return UpFightGameMode->AbilityDataInfoAsset;
+	}
+	return nullptr;
+}
+
 void UUpFightAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject,
                                                                ECharacterClass CharacterClass, UAbilitySystemComponent* ASC, float Level)
 {

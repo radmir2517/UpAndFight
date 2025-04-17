@@ -71,10 +71,7 @@ public:
 	// делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
 	UPROPERTY(BlueprintAssignable)
 	FAbilityInfoSignature AbilityInfoDelegate;
-
-	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
-	TObjectPtr<UAbilityDataAsset> AbilityDataInfoAsset;
-	
+		
 	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
 	TObjectPtr<ULevelUpInfo> LevelUpIfInfoAsset;
 

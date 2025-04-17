@@ -250,7 +250,7 @@ void UUpFightAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribu
 
 void UUpFightAttributeSet::SendXPEvent(FEffectProperties& Props)
 {
-	if (!Props.TargetCharacter->Implements<UCombatInterface>()) return;
+	if (!Props.SourceCharacter->Implements<UPlayerInterface>()) return;
 	
 	ECharacterClass CharacterClass = IEnemyInterface::Execute_GetCharacterClass(Props.TargetCharacter);
 	int32 CharacterLevel = ICombatInterface::Execute_GetPlayerLevel(Props.TargetCharacter);

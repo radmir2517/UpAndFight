@@ -19,8 +19,9 @@ void UUpFightSystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGameplay
 	{
 		FGameplayAbilitySpec Spec = BuildAbilitySpecFromClass(Ability,1);
 		if(const UUpFightGameplayAbility* GameplayAbility = Cast<UUpFightGameplayAbility>(Spec.Ability))
-		{
+		{	// добавим тег input и тег, что он Equipped
 			Spec.GetDynamicSpecSourceTags().AddTag(GameplayAbility->SetupInputTag);
+			Spec.GetDynamicSpecSourceTags().AddTag(FUpFightGameplayTags::Get().Abilities_Status_Equipped);
 			GiveAbility(Spec);
 		}
 	}
@@ -113,6 +114,21 @@ FGameplayTag UUpFightSystemComponent::GetInputTagFromSpec(const FGameplayAbility
 		for(FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
 		{
 			if(Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input"))))
+			{
+				return Tag;
+			}
+		}
+	}
+	return FGameplayTag();
+}
+
+FGameplayTag UUpFightSystemComponent::GetStatusTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	if (IsValid(AbilitySpec.Ability))
+	{
+		for (FGameplayTag Tag : AbilitySpec.GetDynamicSpecSourceTags())
+		{
+			if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities.Status"))))
 			{
 				return Tag;
 			}

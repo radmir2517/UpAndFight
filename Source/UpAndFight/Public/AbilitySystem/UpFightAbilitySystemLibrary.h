@@ -39,6 +39,9 @@ public:
 	UFUNCTION(BlueprintPure,meta = (HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"), Category="UPFightAbilitySystemLibrary|CharacterInfo")
 	static ULevelUpInfo* GetLevelUpInfo(const UObject* WorldContextObject);
 
+	UFUNCTION(BlueprintPure,meta = (HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"), Category="UPFightAbilitySystemLibrary|CharacterInfo")
+	static UAbilityDataAsset* GetAbilityInfo(const UObject* WorldContextObject);
+
 	/*
 	 * Ability System Startup
 	 */
@@ -66,6 +69,7 @@ public:
 	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayMechanics")
 	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, const ECharacterClass& Class, const int32 Level);
 
+	
 	
 };
 

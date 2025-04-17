@@ -57,12 +57,21 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	/* Attack Tags */
 	UpFightGameplayTags.Abilities_Attack = UpFightTagsManager.AddNativeGameplayTag("Abilities.Attack", "Abilities Attack Tag");
 	UpFightGameplayTags.Abilities_Summon = UpFightTagsManager.AddNativeGameplayTag("Abilities.Summon", "Abilities Summon Tag");
-	UpFightGameplayTags.Abilities_FireBolt = UpFightTagsManager.AddNativeGameplayTag("Abilities.FireBolt", "Abilities_FireBolt Tag");
 	UpFightGameplayTags.Abilities_ListenAbility = UpFightTagsManager.AddNativeGameplayTag("Abilities.ListenAbility", "Abilities ListenAbility Tag");
+	UpFightGameplayTags.Abilities_Fire_FireBolt = UpFightTagsManager.AddNativeGameplayTag("Abilities.Fire.FireBolt", "Abilities_Fire_FireBolt Tag");
+	UpFightGameplayTags.Abilities_Lightning_Electrocute = UpFightTagsManager.AddNativeGameplayTag("Abilities.Lightning.Electrocute", "Abilities_Lightning_Electrocute Tag");
 	/* end Attack Tags */
 
+	/* Status Tags */
+	UpFightGameplayTags.Abilities_Status_Locked = UpFightTagsManager.AddNativeGameplayTag("Abilities.Status.Locked", "Ability Status - Locked  Tag");
+	UpFightGameplayTags.Abilities_Status_Eligible = UpFightTagsManager.AddNativeGameplayTag("Abilities.Status.Eligible", "Ability Status - Eligible Tag");
+	UpFightGameplayTags.Abilities_Status_Unlocked = UpFightTagsManager.AddNativeGameplayTag("Abilities.Status.Unlocked", "Ability Status - Unlocked  Tag");
+	UpFightGameplayTags.Abilities_Status_Equipped = UpFightTagsManager.AddNativeGameplayTag("Abilities.Status.Equipped", "Ability Status - Equipped  Tag");
+	/* end Status Tags */
+	
 	/* end Cooldown Tags */
 	UpFightGameplayTags.Cooldown_Fire_FireBolt = UpFightTagsManager.AddNativeGameplayTag("Cooldown.Fire.FireBolt", "Cooldown FireBolt Tag");
+	UpFightGameplayTags.Cooldown_Lightning_Electrocute= UpFightTagsManager.AddNativeGameplayTag("Cooldown.Lightning.Electrocute", "Cooldown Lightning_Electrocute Tag");
 	/* Cooldown Tags */
 	
 	/* Damage Type Tags */

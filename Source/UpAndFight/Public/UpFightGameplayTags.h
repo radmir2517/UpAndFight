@@ -65,12 +65,21 @@ struct FUpFightGameplayTags
 	/* Attack Tags */
 	FGameplayTag Abilities_Attack;
 	FGameplayTag Abilities_Summon;
-	FGameplayTag Abilities_FireBolt;
+	FGameplayTag Abilities_Fire_FireBolt;
+	FGameplayTag Abilities_Lightning_Electrocute;
 	FGameplayTag Abilities_ListenAbility;
 	/* end Attack Tags */
 
+	/* Status Tags */
+	FGameplayTag Abilities_Status_Locked;
+	FGameplayTag Abilities_Status_Eligible;
+	FGameplayTag Abilities_Status_Unlocked;
+	FGameplayTag Abilities_Status_Equipped;
+	/* end Status Tags */
+
 	/* Cooldown Tags */
 	FGameplayTag Cooldown_Fire_FireBolt;
+	FGameplayTag Cooldown_Lightning_Electrocute;
 	/* end Cooldown Tags */
 	
 	/* Damage Type Tags */

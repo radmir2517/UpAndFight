@@ -33,6 +33,7 @@ public:
 	
 	FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+	FGameplayTag GetStatusTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	
 	// экземпляр делегата передающий теги эффекта
 	FEffectAssetTagsSignature EffectAssetTagsDelegate;

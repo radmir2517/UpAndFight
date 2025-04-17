@@ -3,6 +3,7 @@
 
 #include "UI/WidgetController/UpFightWidgetController.h"
 
+#include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "AbilitySystem/Data/AbilityDataAsset.h"
@@ -71,6 +72,9 @@ void UUpFightWidgetController::OnInitializeStartupAbilities()
 	//const AUpFightGameMode* UpGameMode = Cast<AUpFightGameMode>(UGameplayStatics::GetGameMode(UpASC->GetAvatarActor()));
 	//if(!IsValid(UpGameMode)) return;
 	//UAbilityDataAsset* AbilityDataInfoAsset = UpGameMode->AbilityInfo;*/
+
+	// будем получать AbilityDataAsset теперь из Gamemode
+	UAbilityDataAsset* AbilityDataInfoAsset = UUpFightAbilitySystemLibrary::GetAbilityInfo(PlayerState);
 	
 	UpAbilitySystemComponent = GetUpAbilitySystemComponent();
 	if(!UpAbilitySystemComponent->bStartupAbilityGiven) return;
@@ -81,6 +85,8 @@ void UUpFightWidgetController::OnInitializeStartupAbilities()
 		FAbilityInfo AbilityInfo  = AbilityDataInfoAsset->FindAbilityInfoByTag(UpAbilitySystemComponent->GetAbilityTagFromSpec(AbilitySpec));
 		if(AbilityInfo.AbilityTag.IsValid())
 		{
+			// назначим тег статуса в эту структуру и отправим ее в виджеты
+			AbilityInfo.StatusTag = UpAbilitySystemComponent->GetStatusTagFromSpec(AbilitySpec);
 			AbilityInfoDelegate.Broadcast(AbilityInfo);
 		}
 	}
