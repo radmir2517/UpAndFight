@@ -57,7 +57,7 @@ protected:
 	
 	// применения эффекта с атрибутами Primary and Secondary, Vital
 	// функция которая GiveAbility нашим StartedGameplayAbilities
-	void AddCharacterAbilities();
+	void AddCharacterStartupAbilities();
 	void GiveAndActivatePassiveAbilities();
 	UFUNCTION(NetMulticast,Reliable)
 	virtual void MulticastHandleDeath();

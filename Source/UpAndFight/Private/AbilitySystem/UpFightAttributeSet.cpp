@@ -8,6 +8,8 @@
 #include "GameplayEffectExtension.h"
 #include "UpFightGameplayTags.h"
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
+#include "AbilitySystem/UpFightSystemComponent.h"
+#include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
 #include "GameFramework/Character.h"

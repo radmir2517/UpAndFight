@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerState.h"
 #include "UpFightPlayerState.generated.h"
 
+class UUpFightSystemComponent;
 class UAttributeSet;
 class UAbilitySystemComponent;
 
@@ -27,7 +28,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<UUpFightSystemComponent> AbilitySystemComponent;
 	
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;

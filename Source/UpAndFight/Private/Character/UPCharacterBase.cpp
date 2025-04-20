@@ -168,10 +168,10 @@ void AUPCharacterBase::InitializeDefaultAttributes()
 	UUpFightAbilitySystemLibrary::InitializeDefaultAttributes(this,CharacterClass,AbilitySystemComponent,Level);
 }
 
-void AUPCharacterBase::AddCharacterAbilities()
+void AUPCharacterBase::AddCharacterStartupAbilities()
 {	// проверим что это выполняет сервер и сделаем give ability
 	if(!HasAuthority()) return;
-	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AddCharacterAbilities(StartedGameplayAbilities);
+	Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AddCharacterStartupAbilities(StartedGameplayAbilities);
 }
 
 void AUPCharacterBase::GiveAndActivatePassiveAbilities()

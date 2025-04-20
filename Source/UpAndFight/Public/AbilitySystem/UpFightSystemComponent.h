@@ -22,18 +22,24 @@ public:
 	UFUNCTION()
 	void AbilityActorInfoSet();
 	// переберем классы всех GameplayAbilities стартовых для игрока/врага и сделаем GiveAbility
-	void AddCharacterAbilities(TArray<TSubclassOf<UGameplayAbility>> StartedGameplayAbilities);
+	void AddCharacterStartupAbilities(TArray<TSubclassOf<UGameplayAbility>> StartedGameplayAbilities);
 	void AddAndActivatePassiveAbilities(TArray<TSubclassOf<UGameplayAbility>> PassiveGameplayAbilities);
-
+	void AddCharacterAbilities(TSubclassOf<UGameplayAbility> GameplayAbility);
+	
 	void AbilityInputTagHeld(FGameplayTag& GameplayTag);
 	void AbilityInputTagReleased(FGameplayTag& GameplayTag);
 
 	void UpgradeAttributes(const FGameplayTag& AttributeTag);
 	void ServerUpgradeAttributes(const FGameplayTag& AttributeTag);
+
+	void UpdateStatusAbilities(const int32 Level);
+
 	
 	FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	FGameplayTag GetStatusTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+
+	FGameplayAbilitySpec* GetAbilitySpecByAbilityTag (const FGameplayTag AbilityTag);
 	
 	// экземпляр делегата передающий теги эффекта
 	FEffectAssetTagsSignature EffectAssetTagsDelegate;

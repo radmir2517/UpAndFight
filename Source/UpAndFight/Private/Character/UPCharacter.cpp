@@ -7,8 +7,11 @@
 #include "AbilitySystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
+#include "AbilitySystem/Data/AbilityDataAsset.h"
 #include "Camera/CameraComponent.h"
+#include "Game/UpFightGameMode.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/UpFightPlayerController.h"
 #include "Player/UpFightPlayerState.h"
 #include "UI/HUD/UpFightHUD.h"
@@ -59,8 +62,9 @@ void AUPCharacter::PossessedBy(AController* NewController)
 	// также там проводит инициализацию OverlayWidget и OverlayWidgetController
 	InitAbilityInfo();
 	// сделаем give ability для стартовых ability
-	AddCharacterAbilities();
+	AddCharacterStartupAbilities();
 	GiveAndActivatePassiveAbilities();
+	AddCharacterAbilitiesFromAbilityInfo();
 }
 
 void AUPCharacter::OnRep_PlayerState()
@@ -131,6 +135,18 @@ int32 AUPCharacter::GetAttributePoints_Implementation()
 int32 AUPCharacter::GetSpellPoints_Implementation()
 {
 	return UpFightPlayerState->GetSpellPoints();
+}
+
+void AUPCharacter::AddCharacterAbilitiesFromAbilityInfo()
+{
+	AUpFightGameMode* UpGameMode = Cast<AUpFightGameMode> (UGameplayStatics::GetGameMode(this));
+	if (IsValid(UpGameMode))
+	{
+		for (FAbilityInfo& Info : UpGameMode->AbilityDataInfoAsset->AbilitiesInfo)
+		{
+			Cast<UUpFightSystemComponent>(AbilitySystemComponent)->AddCharacterAbilities(Info.AbilityClass);
+		}
+	}
 }
 
 

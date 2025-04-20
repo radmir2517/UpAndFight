@@ -24,6 +24,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="GameMode")
 	TObjectPtr<ULevelUpInfo> LevelUpInfo;
 
-	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
+	UPROPERTY(EditDefaultsOnly, Category="GameMode")
 	TObjectPtr<UAbilityDataAsset> AbilityDataInfoAsset;
 };

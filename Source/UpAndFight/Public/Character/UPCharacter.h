@@ -33,7 +33,6 @@ public:
 	/* CombatInterface */
 	// функция ICombatInterface по получению уровня
 	virtual int32 GetPlayerLevel_Implementation() override;
-	
 	/* end CombatInterface*/
 
 	/* PlayerInterface */
@@ -46,7 +45,7 @@ public:
 	virtual int32 GetSpellPoints_Implementation() override;
 	/* end PlayerInterface */
 
-
+	
 protected:
 	
 	UPROPERTY(BlueprintReadOnly)
@@ -66,6 +65,8 @@ protected:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastLevelUpEffect();
+
+	void AddCharacterAbilitiesFromAbilityInfo();
 };
 
 

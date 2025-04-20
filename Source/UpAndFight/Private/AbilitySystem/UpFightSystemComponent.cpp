@@ -5,7 +5,9 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "UpFightGameplayTags.h"
+#include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
+#include "AbilitySystem/Data/AbilityDataAsset.h"
 #include "Interaction/PlayerInterface.h"
 
 void UUpFightSystemComponent::AbilityActorInfoSet()
@@ -13,7 +15,7 @@ void UUpFightSystemComponent::AbilityActorInfoSet()
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this,&UUpFightSystemComponent::EffectApplied);
 }
 
-void UUpFightSystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGameplayAbility>> StartedGameplayAbilities)
+void UUpFightSystemComponent::AddCharacterStartupAbilities(TArray<TSubclassOf<UGameplayAbility>> StartedGameplayAbilities)
 {	// переберем классы всех GameplayAbilities и сделаем GiveAbility
 	for(const TSubclassOf<UGameplayAbility>& Ability : StartedGameplayAbilities)
 	{
@@ -41,6 +43,26 @@ void UUpFightSystemComponent::AddAndActivatePassiveAbilities(
 		TryActivateAbilitiesByTag(PassiveGameplayTags);
 	}
 
+}
+
+void UUpFightSystemComponent::AddCharacterAbilities(TSubclassOf<UGameplayAbility> GameplayAbility)
+{
+	FGameplayAbilitySpec Spec = BuildAbilitySpecFromClass(GameplayAbility,1);
+	// если уже такая абилка уже добавлена другим способом ,то не добавляем ее заново
+	for (auto Ability : GetActivatableAbilities())
+	{
+		if (Ability.Ability->AbilityTags.First() == Spec.Ability->AbilityTags.First())
+		{
+			return;
+		}
+	}
+	// проверяем что что кастится и делаем GiveAbility
+	if(const UUpFightGameplayAbility* GameplayAbility = Cast<UUpFightGameplayAbility>(Spec.Ability))
+	{	// добавим status тег, что он Eligible
+		Spec.GetDynamicSpecSourceTags().AddTag(FUpFightGameplayTags::Get().Abilities_Status_Locked);
+		GiveAbility(Spec);
+	}
+	
 }
 
 void UUpFightSystemComponent::AbilityInputTagHeld(FGameplayTag& GameplayTag)
@@ -92,6 +114,30 @@ void UUpFightSystemComponent::ServerUpgradeAttributes(const FGameplayTag& Attrib
 	IPlayerInterface::Execute_AddToAttributePoints(GetAvatarActor(),-1);
 }
 
+void UUpFightSystemComponent::UpdateStatusAbilities(const int32 Level)
+{
+	UAbilityDataAsset* AbilityDataAsset = UUpFightAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+
+	for (auto Info : AbilityDataAsset->AbilitiesInfo)
+	{
+		// если тега нет, то стартуем слудующий цикл
+		if (!Info.AbilityTag.IsValid()) continue;
+		// Если требования уровня больше чем у нас то следующий цикл
+		if (Level < Info.LevelRequirement) continue;
+		// если этого заклинания еще нет в Give то следующий цикл
+		FGameplayAbilitySpec* AbilitySpec = GetAbilitySpecByAbilityTag(Info.AbilityTag);
+		if (AbilitySpec == nullptr ) continue;
+
+		if (AbilitySpec->GetDynamicSpecSourceTags().HasTagExact(FUpFightGameplayTags::Get().Abilities_Status_Locked))
+		{
+			AbilitySpec->GetDynamicSpecSourceTags().RemoveTag(FUpFightGameplayTags::Get().Abilities_Status_Locked);
+			AbilitySpec->GetDynamicSpecSourceTags().AddTag(FUpFightGameplayTags::Get().Abilities_Status_Eligible);
+		}
+		MarkAbilitySpecDirty(*AbilitySpec);
+	}
+	
+}
+
 FGameplayTag UUpFightSystemComponent::GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
 {	// получем тег из спецификации
 	if(AbilitySpec.Ability)
@@ -135,6 +181,18 @@ FGameplayTag UUpFightSystemComponent::GetStatusTagFromSpec(const FGameplayAbilit
 		}
 	}
 	return FGameplayTag();
+}
+
+FGameplayAbilitySpec* UUpFightSystemComponent::GetAbilitySpecByAbilityTag(const FGameplayTag AbilityTag)
+{
+	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	{
+		if (Spec.Ability->AbilityTags.First().MatchesTagExact(AbilityTag))
+		{
+			return &Spec;
+		}
+	}
+	return nullptr;
 }
 
 void UUpFightSystemComponent::EffectApplied(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec,FActiveGameplayEffectHandle EffectHandle)

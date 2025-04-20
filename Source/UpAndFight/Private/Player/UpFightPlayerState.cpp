@@ -65,6 +65,8 @@ void AUpFightPlayerState::AddPlayerLevel(int32 InLevel)
 	Level += InLevel;
 	OnLevelHangedDelegate.Broadcast(Level);
 	GEngine->AddOnScreenDebugMessage(5,3.f,FColor::Green,FString::Printf(TEXT("Player Level: %i"),Level));
+	// выполним функцию обновления Status тегов с Locked и Eligible если уровень позволяет
+	AbilitySystemComponent->UpdateStatusAbilities(Level);
 }
 
 void AUpFightPlayerState::AddAttributePoints(int32 InAttributePoints)

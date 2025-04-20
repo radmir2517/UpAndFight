@@ -27,7 +27,7 @@ struct FAbilityInfo
 	FGameplayTag StatusTag;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	int32 LevelRequirement;
+	int32 LevelRequirement = 1;
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TSubclassOf<UGameplayAbility> AbilityClass;
@@ -37,6 +37,7 @@ struct FAbilityInfo
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> BackgroundImage = nullptr;
+	
 	
 };
 
