@@ -75,6 +75,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
 	TObjectPtr<ULevelUpInfo> LevelUpIfInfoAsset;
 
+	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
+	TObjectPtr<UAbilityDataAsset> AbilityDataAsset;
+
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 	

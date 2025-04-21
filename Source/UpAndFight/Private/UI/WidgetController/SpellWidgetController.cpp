@@ -36,7 +36,7 @@ void USpellWidgetController::BroadcastInitialValues()
 	}
 }
 
-void USpellWidgetController::ClickOnSpellGlobeButton(const FGameplayTag AbilityTag)
+void USpellWidgetController::ClickOnSpellGlobeButton(const FGameplayTag AbilityTag, UUpFightUserWidget* WBP_SpellWidget)
 {
 	GetUpAbilitySystemComponent();
 	CurrentSpellGlobe.AbilitySpec = UpAbilitySystemComponent->GetAbilitySpecByAbilityTag(AbilityTag);
@@ -46,15 +46,15 @@ void USpellWidgetController::ClickOnSpellGlobeButton(const FGameplayTag AbilityT
 
 		if (CurrentSpellGlobe.StatusTag == FUpFightGameplayTags::Get().Abilities_Status_Locked)
 		{
-			OnSpellGlobeClickedDelegate.Broadcast(false);
+			OnSpellGlobeClickedDelegate.Broadcast(false,WBP_SpellWidget);
 		}
 		else 
 		{
-			OnSpellGlobeClickedDelegate.Broadcast(true);
+			OnSpellGlobeClickedDelegate.Broadcast(true,WBP_SpellWidget);
 		}
 	}
 	else 
 	{
-		OnSpellGlobeClickedDelegate.Broadcast(false);
+		OnSpellGlobeClickedDelegate.Broadcast(false,WBP_SpellWidget);
 	}
 }

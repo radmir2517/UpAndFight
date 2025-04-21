@@ -74,7 +74,8 @@ void UUpFightWidgetController::OnInitializeStartupAbilities()
 	//UAbilityDataAsset* AbilityDataInfoAsset = UpGameMode->AbilityInfo;*/
 
 	// будем получать AbilityDataAsset теперь из Gamemode
-	UAbilityDataAsset* AbilityDataInfoAsset = UUpFightAbilitySystemLibrary::GetAbilityInfo(GetUpPlayerController());
+	//if (!GetUpPlayerController()->HasAuthority()) return;
+	UAbilityDataAsset* AbilityDataInfoAsset = AbilityDataAsset;
 	
 	UpAbilitySystemComponent = GetUpAbilitySystemComponent();
 	if(!UpAbilitySystemComponent->bStartupAbilityGiven) return;
