@@ -43,18 +43,34 @@ void USpellWidgetController::ClickOnSpellGlobeButton(const FGameplayTag AbilityT
 	if (CurrentSpellGlobe.AbilitySpec)
 	{
 		CurrentSpellGlobe.StatusTag = UpAbilitySystemComponent->GetStatusTagFromSpec(*CurrentSpellGlobe.AbilitySpec);
-
+		CurrentSpellGlobe.AbilityTag = AbilityTag;
 		if (CurrentSpellGlobe.StatusTag == FUpFightGameplayTags::Get().Abilities_Status_Locked)
 		{
 			OnSpellGlobeClickedDelegate.Broadcast(false,WBP_SpellWidget);
 		}
 		else 
-		{
-			OnSpellGlobeClickedDelegate.Broadcast(true,WBP_SpellWidget);
+		{	// если тег не Locked и SpellPoints > 0, то кнопка активна
+			if (GetUpPlayerState()->GetSpellPoints() > 0)
+			{
+				OnSpellGlobeClickedDelegate.Broadcast(true,WBP_SpellWidget);
+			}
+			else
+			{ // если очки == 0 и тег не Locked
+				OnSpellGlobeClickedDelegate.Broadcast(false,WBP_SpellWidget);
+			}
 		}
 	}
-	else 
+	else // если что-то не так, то на всякий отправляем не активировать кнопку
 	{
 		OnSpellGlobeClickedDelegate.Broadcast(false,WBP_SpellWidget);
+	}
+}
+
+void USpellWidgetController::ClickOnSpendButton()
+{	// проверим на всякий, что все валидно
+	if (CurrentSpellGlobe.AbilitySpec && CurrentSpellGlobe.StatusTag != FUpFightGameplayTags::Get().Abilities_Status_Locked )
+	{
+		GetUpAbilitySystemComponent()->ServerUpgradeSpellPoint(CurrentSpellGlobe.AbilityTag, CurrentSpellGlobe.StatusTag);
+		BroadcastInitialValues();
 	}
 }

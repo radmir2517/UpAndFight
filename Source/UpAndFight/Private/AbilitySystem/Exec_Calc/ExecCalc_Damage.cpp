@@ -20,9 +20,7 @@ struct UpFightDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UUpFightAttributeSet,LightningResistance,Target,false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UUpFightAttributeSet,ArcaneResistance,Target,false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UUpFightAttributeSet,PhysicalResistance,Target,false);
-		
 	}
-	
 };
 // статическая  функция которая будет вовзращать синглтон структуры выше
 static UpFightDamageStatics& DamageStatics()
@@ -30,7 +28,6 @@ static UpFightDamageStatics& DamageStatics()
 	static UpFightDamageStatics DStatics;
 	return DStatics;
 }
-
 
 UExecCalc_Damage::UExecCalc_Damage()
 {	// в массив для захвата мы должны добавить атрибут, для примера это будет резисты

@@ -8,6 +8,7 @@
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
 #include "AbilitySystem/Data/AbilityDataAsset.h"
+#include "Interaction/CombatInterface.h"
 #include "Interaction/PlayerInterface.h"
 
 void UUpFightSystemComponent::AbilityActorInfoSet()
@@ -103,7 +104,7 @@ void UUpFightSystemComponent::UpgradeAttributes(const FGameplayTag& AttributeTag
 	}
 }
 
-void UUpFightSystemComponent::ServerUpgradeAttributes(const FGameplayTag& AttributeTag)
+void UUpFightSystemComponent::ServerUpgradeAttributes_Implementation(const FGameplayTag& AttributeTag)
 {
 	// создадим Payload, загрузим туда тег атрибута и значение и отправляем эвент в GA_ListenForEvent
 	// не забываем добавить аттрибуты EventBasedEffect
@@ -112,6 +113,25 @@ void UUpFightSystemComponent::ServerUpgradeAttributes(const FGameplayTag& Attrib
 	EventData.EventMagnitude = 1.f;
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(),AttributeTag,EventData);
 	IPlayerInterface::Execute_AddToAttributePoints(GetAvatarActor(),-1);
+}
+
+
+void UUpFightSystemComponent::ServerUpgradeSpellPoint_Implementation(const FGameplayTag& AbilityTag,
+	const FGameplayTag& StatusTag)
+{
+	FGameplayAbilitySpec* AbilitySpec = GetAbilitySpecByAbilityTag(AbilityTag);
+	
+	if (IsValid(AbilitySpec->Ability))
+	{
+		AbilitySpec->Level += 1;
+		IPlayerInterface::Execute_AddToSpellPoints(GetAvatarActor(),-1);
+		if (StatusTag == FUpFightGameplayTags::Get().Abilities_Status_Eligible)
+		{
+			AbilitySpec->GetDynamicSpecSourceTags().RemoveTag(FUpFightGameplayTags::Get().Abilities_Status_Eligible);
+			AbilitySpec->GetDynamicSpecSourceTags().AddTag(FUpFightGameplayTags::Get().Abilities_Status_Unlocked);
+		}
+		MarkAbilitySpecDirty(*AbilitySpec);
+	}
 }
 
 void UUpFightSystemComponent::UpdateStatusAbilities(const int32 Level)

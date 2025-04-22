@@ -30,8 +30,11 @@ public:
 	void AbilityInputTagReleased(FGameplayTag& GameplayTag);
 
 	void UpgradeAttributes(const FGameplayTag& AttributeTag);
+	UFUNCTION(Server,Reliable)
 	void ServerUpgradeAttributes(const FGameplayTag& AttributeTag);
-
+	UFUNCTION(Server,Reliable)
+	void ServerUpgradeSpellPoint(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag);
+	
 	void UpdateStatusAbilities(const int32 Level);
 
 	

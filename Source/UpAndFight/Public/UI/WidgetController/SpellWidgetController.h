@@ -16,7 +16,11 @@ struct FCurrentSpellGlobe
 
 	FGameplayTag StatusTag;
 
+	FGameplayTag AbilityTag;
+
 	FGameplayAbilitySpec* AbilitySpec;
+
+	
 };
 // делегат, который передаст новое состояния кнопки Spend после ClickOnSpellGlobeButton()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpellGlobeClickedSignature, bool, isNeedToActivateButton, UUpFightUserWidget*, WBP_SpellWidget);
@@ -37,7 +41,10 @@ public:
 	// Функция, срабатываемая при нажатии на SpellGlobe в SPellMenu
 	UFUNCTION(BlueprintCallable)
 	void ClickOnSpellGlobeButton(const FGameplayTag AbilityTag, UUpFightUserWidget* WBP_SpellWidget);
-
+	// Функция, срабатываемая при нажатии на Spend в SPellMenu
+	UFUNCTION(BlueprintCallable)
+	void ClickOnSpendButton();
+	
 	FCurrentSpellGlobe CurrentSpellGlobe;
 
 	
