@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "Data/AbilityDataAsset.h"
 #include "UpFightSystemComponent.generated.h"
 
 class UUpFightSystemComponent; // временно чтобы ошибка не мазолила глаза и чтобы обьявление не опускать после класса
@@ -12,6 +13,10 @@ class UUpFightSystemComponent; // временно чтобы ошибка не 
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagsSignature,const FGameplayTagContainer& /*AssetTags*/)
 // делегат котоырй будет передавать в Overlay Controller там будет запускаться Инцилизация стартовых абилок для вывода их иконок на экран
 DECLARE_MULTICAST_DELEGATE(FAbilityGivenSignature)
+// делегат который будет сообщать, что нужно сделать BroadCast для SpellMenu
+DECLARE_MULTICAST_DELEGATE(FSpellMenuUpdateDataSignature)
+// делегат который будет передавать AbilityInfo с заклинанием
+DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityInfoServerSignature,const FAbilityInfo& AbilityInfo /*AssetTags*/)
 
 UCLASS()
 class UPANDFIGHT_API UUpFightSystemComponent : public UAbilitySystemComponent
@@ -34,9 +39,16 @@ public:
 	void ServerUpgradeAttributes(const FGameplayTag& AttributeTag);
 	UFUNCTION(Server,Reliable)
 	void ServerUpgradeSpellPoint(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag);
-	
-	void UpdateStatusAbilities(const int32 Level);
+	UFUNCTION(Client,Reliable)
+	void ClientUpgradeSpellMenu();
+	UFUNCTION(Server,Reliable)
+	void InitializeAbilitiesForMenuControllers();
 
+	UFUNCTION(Client,Reliable)
+	void InitializeAbilitiesForMenuControllersForClient(const FAbilityInfo& AbilityInfo);
+	void UpdateStatusAbilities(const int32 Level);
+	
+	FAbilityInfoServerSignature AbilityInfoServerDelegate;
 	
 	FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
@@ -48,6 +60,8 @@ public:
 	FEffectAssetTagsSignature EffectAssetTagsDelegate;
 	// экземпляр делегата передающий UUpFightSystemComponent в OverlayController
 	FAbilityGivenSignature AbilityGivenDelegate;
+	// экземпляр делегата который будет сообщать, что нужно сделать BroadCast для SpellMenu
+	FSpellMenuUpdateDataSignature SpellMenuUpdateDelegate;
 
 	// булевая которая будет проверяться в OverlayController для вывода иконок абилок
 	bool bStartupAbilityGiven = false;
@@ -58,3 +72,4 @@ protected:
 	// функция из AbilityComponent которая реплицируется после применения GetActivatableAbilities
 	virtual void OnRep_ActivateAbilities() override;
 };
+

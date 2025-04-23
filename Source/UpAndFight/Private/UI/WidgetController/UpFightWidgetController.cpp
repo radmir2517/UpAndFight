@@ -3,7 +3,7 @@
 
 #include "UI/WidgetController/UpFightWidgetController.h"
 
-#include "AbilitySystem/UpFightAbilitySystemLibrary.h"
+
 #include "AbilitySystem/UpFightAttributeSet.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "AbilitySystem/Data/AbilityDataAsset.h"
@@ -13,6 +13,11 @@
 
 void UUpFightWidgetController::BindCallBacksToDependencies()
 {
+	UpAbilitySystemComponent = GetUpAbilitySystemComponent();
+	UpAbilitySystemComponent->AbilityInfoServerDelegate.AddLambda([&](const FAbilityInfo& AbilityInfo)
+{
+	AbilityInfoDelegate.Broadcast(AbilityInfo);
+});
 	
 }
 
@@ -79,8 +84,12 @@ void UUpFightWidgetController::OnInitializeStartupAbilities()
 	
 	UpAbilitySystemComponent = GetUpAbilitySystemComponent();
 	if(!UpAbilitySystemComponent->bStartupAbilityGiven) return;
+	
+	UpAbilitySystemComponent->InitializeAbilitiesForMenuControllers();
+	/*
 	// заблокируем список способностей, чтобы предотвратить их одновременное изменение
 	FScopedAbilityListLock ActiveScopeLock(*UpAbilitySystemComponent);
+	
 	for(const FGameplayAbilitySpec AbilitySpec: UpAbilitySystemComponent->GetActivatableAbilities())
 	{	// найдем структуру в AbilityInfo с нашим способностью
 		FAbilityInfo AbilityInfo  = AbilityDataInfoAsset->FindAbilityInfoByTag(UpAbilitySystemComponent->GetAbilityTagFromSpec(AbilitySpec));
@@ -91,4 +100,5 @@ void UUpFightWidgetController::OnInitializeStartupAbilities()
 			AbilityInfoDelegate.Broadcast(AbilityInfo);
 		}
 	}
+	*/
 }

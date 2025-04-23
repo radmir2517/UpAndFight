@@ -63,7 +63,7 @@ protected:
 	int32 XP = 0;
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_SpellPoints)
-	int32 SpellPoints = 0;
+	int32 SpellPoints = 1;
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_AttributePoints)
 	int32 AttributePoints = 0;
 	

@@ -22,6 +22,11 @@ void USpellWidgetController::BindCallBacksToDependencies()
 	{
 		OnInitializeStartupAbilities();
 	});
+
+	UpAbilitySystemComponent->SpellMenuUpdateDelegate.AddLambda([this]()
+	{
+		BroadcastInitialValues();
+	});
 }
 
 void USpellWidgetController::BroadcastInitialValues()
@@ -71,6 +76,5 @@ void USpellWidgetController::ClickOnSpendButton()
 	if (CurrentSpellGlobe.AbilitySpec && CurrentSpellGlobe.StatusTag != FUpFightGameplayTags::Get().Abilities_Status_Locked )
 	{
 		GetUpAbilitySystemComponent()->ServerUpgradeSpellPoint(CurrentSpellGlobe.AbilityTag, CurrentSpellGlobe.StatusTag);
-		BroadcastInitialValues();
 	}
 }

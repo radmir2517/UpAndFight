@@ -39,7 +39,7 @@ struct FWidgetControllerParams
 };
 
 // делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, FAbilityInfo, Info);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature,const FAbilityInfo&, Info);
 
 UCLASS(BlueprintType,Blueprintable)
 class UPANDFIGHT_API UUpFightWidgetController : public UObject

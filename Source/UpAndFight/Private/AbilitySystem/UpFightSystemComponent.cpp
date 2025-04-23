@@ -8,8 +8,10 @@
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
 #include "AbilitySystem/Data/AbilityDataAsset.h"
+#include "Game/UpFightGameMode.h"
 #include "Interaction/CombatInterface.h"
 #include "Interaction/PlayerInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 void UUpFightSystemComponent::AbilityActorInfoSet()
 { // привяжемся к делегату которые при применения эффекта будет вызывать функцию EffectApplied
@@ -131,8 +133,43 @@ void UUpFightSystemComponent::ServerUpgradeSpellPoint_Implementation(const FGame
 			AbilitySpec->GetDynamicSpecSourceTags().AddTag(FUpFightGameplayTags::Get().Abilities_Status_Unlocked);
 		}
 		MarkAbilitySpecDirty(*AbilitySpec);
+		ClientUpgradeSpellMenu();
 	}
 }
+
+void UUpFightSystemComponent::ClientUpgradeSpellMenu_Implementation()
+{
+	SpellMenuUpdateDelegate.Broadcast();
+}
+
+void UUpFightSystemComponent::InitializeAbilitiesForMenuControllers_Implementation()
+{
+	AUpFightGameMode* UpFightGameMode = Cast<AUpFightGameMode>(UGameplayStatics::GetGameMode(GetAvatarActor()));
+	UAbilityDataAsset* AbilityDataInfoAsset = UpFightGameMode->AbilityDataInfoAsset;
+	
+	// заблокируем список способностей, чтобы предотвратить их одновременное изменение
+	FScopedAbilityListLock ActiveScopeLock(*this);
+	
+	for(const FGameplayAbilitySpec AbilitySpec: GetActivatableAbilities())
+	{	// найдем структуру в AbilityInfo с нашим способностью
+		FAbilityInfo AbilityInfo  = AbilityDataInfoAsset->FindAbilityInfoByTag(GetAbilityTagFromSpec(AbilitySpec));
+		if(AbilityInfo.AbilityTag.IsValid())
+		{
+			// назначим тег статуса в эту структуру и отправим ее в виджеты
+			AbilityInfo.StatusTag = GetStatusTagFromSpec(AbilitySpec);
+			InitializeAbilitiesForMenuControllersForClient(AbilityInfo);
+		}
+	}
+}
+
+
+void UUpFightSystemComponent::InitializeAbilitiesForMenuControllersForClient_Implementation(
+	const FAbilityInfo& AbilityInfo)
+{
+	AbilityInfoServerDelegate.Broadcast(AbilityInfo);
+}
+
+
 
 void UUpFightSystemComponent::UpdateStatusAbilities(const int32 Level)
 {
