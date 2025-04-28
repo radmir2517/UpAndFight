@@ -18,7 +18,11 @@ void UUpFightWidgetController::BindCallBacksToDependencies()
 {
 	AbilityInfoDelegate.Broadcast(AbilityInfo);
 });
-	
+
+	UpAbilitySystemComponent->ClearOldGlobeServerDelegate.AddLambda([&](const FGameplayTag PastInputTag)
+	{
+		ClearOldGlobeDelegate.Broadcast(PastInputTag);
+	});
 }
 
 void UUpFightWidgetController::BroadcastInitialValues()

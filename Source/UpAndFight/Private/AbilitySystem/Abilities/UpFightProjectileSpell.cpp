@@ -54,3 +54,26 @@ void UUpFightProjectileSpell::SpawnProjectile(const FVector InTargetLocation, co
 	// досоздаем шарик
 	UGameplayStatics::FinishSpawningActor(CreatedActor,ProjectileTransform);
 }
+
+FString UUpFightProjectileSpell::GetSpellDescription(int32 Level)
+{
+	const int32 Damage = DamageTypes[FUpFightGameplayTags::Get().Damage_Fire].GetValueAtLevel(Level);
+
+	if (Level == 1)
+	{
+		return FString::Printf(TEXT("<Title> FIRE BOLT</> \n\n <Default> Launches a bolt of fire, exploding on impact and dealing</> <Damage>%d</><Default> fire damage with a chance to burn</>\n\n <Small> Level: </><Level>%d</>"),Damage, Level);
+	}
+	else
+	{
+		return FString::Printf(TEXT("<Title> FIRE BOLT</> \n\n <Default> Launches %d boltes of fire, exploding on impact and dealing</> <Damage>%d</><Default> fire damage with a chance to burn</>\n\n <Small> Level: </><Level>%d</>"), FMath::Min(Level, NumProjectiles),Damage, Level);
+	}
+	
+}
+
+FString UUpFightProjectileSpell::GetNextLevelSpellDescription(int32 Level)
+{
+	const int32 Damage = DamageTypes[FUpFightGameplayTags::Get().Damage_Fire].GetValueAtLevel(Level);
+	
+	return FString::Printf(TEXT("<Title> FIRE BOLT</> \n\n <Default> Launches %d boltes of fire, exploding on impact and dealing</> <Damage>%d</><Default> fire damage with a chance to burn</>\n\n <Small> Level: </><Level>%d</>"), FMath::Min(Level, NumProjectiles),Damage, Level);
+	
+}

@@ -65,11 +65,15 @@ struct FUpFightGameplayTags
 	/* Attack Tags */
 	FGameplayTag Abilities_Attack;
 	FGameplayTag Abilities_Summon;
-	FGameplayTag Abilities_Fire_FireBolt;
-	FGameplayTag Abilities_Lightning_Electrocute;
+	FGameplayTag Abilities_Offensive_Fire_FireBolt;
+	FGameplayTag Abilities_Offensive_Lightning_Electrocute;
 	FGameplayTag Abilities_ListenAbility;
 	/* end Attack Tags */
-
+	
+	/* Passive Tags */
+	FGameplayTag Abilities_Passive_1;
+	/* end Passive Tags */
+	
 	/* Status Tags */
 	FGameplayTag Abilities_Status_Locked;
 	FGameplayTag Abilities_Status_Eligible;

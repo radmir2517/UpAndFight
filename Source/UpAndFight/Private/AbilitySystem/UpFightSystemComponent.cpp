@@ -9,7 +9,6 @@
 #include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
 #include "AbilitySystem/Data/AbilityDataAsset.h"
 #include "Game/UpFightGameMode.h"
-#include "Interaction/CombatInterface.h"
 #include "Interaction/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -51,8 +50,8 @@ void UUpFightSystemComponent::AddAndActivatePassiveAbilities(
 void UUpFightSystemComponent::AddCharacterAbilities(TSubclassOf<UGameplayAbility> GameplayAbility)
 {
 	FGameplayAbilitySpec Spec = BuildAbilitySpecFromClass(GameplayAbility,1);
-	// если уже такая абилка уже добавлена другим способом ,то не добавляем ее заново
-	for (auto Ability : GetActivatableAbilities())
+	// если уже такая абилка уже добавлена другим способом,то не добавляем ее заново
+	for (FGameplayAbilitySpec Ability : GetActivatableAbilities())
 	{
 		if (Ability.Ability->AbilityTags.First() == Spec.Ability->AbilityTags.First())
 		{
@@ -157,6 +156,7 @@ void UUpFightSystemComponent::InitializeAbilitiesForMenuControllers_Implementati
 		{
 			// назначим тег статуса в эту структуру и отправим ее в виджеты
 			AbilityInfo.StatusTag = GetStatusTagFromSpec(AbilitySpec);
+			AbilityInfo.InputTag = GetInputTagFromSpec(AbilitySpec); 
 			InitializeAbilitiesForMenuControllersForClient(AbilityInfo);
 		}
 	}
@@ -195,6 +195,86 @@ void UUpFightSystemComponent::UpdateStatusAbilities(const int32 Level)
 	
 }
 
+void UUpFightSystemComponent::ServerSpendEquipAbility_Implementation(const FGameplayTag AbilityTag, const FGameplayTag NewInputTag)
+{
+	/*TODO:  1) если мы заменяем заклинание на глобус где уже есть, то у старого надо обнулить inputTag  
+	 *		2)А если мы перемещаем заклинание на пустой глобус но при этом это заклинание уже есть на глобусах то надо убрать его со старого место  DONE
+	 */
+	if (AbilityTag.IsValid() && NewInputTag.IsValid())
+	{	// получаем спецификацию абилки и меняем в нем теги 
+		FGameplayAbilitySpec* AbilitySpec = GetAbilitySpecByAbilityTag(AbilityTag);
+		// получим предыдущий InputTag если он уже был на глобусах
+		const FGameplayTag PastInputTag = GetInputTagFromSpec(*AbilitySpec);
+
+		// если в том глобусе на который мы будем переносить заклинание уже есть заклинание, то очистим заклинание от inputTag и обновим SpellGlobe
+		if (FGameplayAbilitySpec* OldAbilitySpec = GetAbilitySpecByInputTag(NewInputTag))
+		{
+			OldAbilitySpec->GetDynamicSpecSourceTags().RemoveTag(NewInputTag);
+			OldAbilitySpec->GetDynamicSpecSourceTags().RemoveTag(FUpFightGameplayTags::Get().Abilities_Status_Equipped);
+			OldAbilitySpec->GetDynamicSpecSourceTags().AddTag(FUpFightGameplayTags::Get().Abilities_Status_Unlocked);
+			
+			// чистим старый глобус 
+			ClientClearOldGlobe(NewInputTag);
+			// отмечаем ее для обновления
+			MarkAbilitySpecDirty(*OldAbilitySpec);
+		}
+		
+		// если заклинание уже имеет InputTag, т.е находится на виджетах, то очистим его и SpellGlobe, дадим новый тег и отправим все виджеты на обновление
+		if (PastInputTag.IsValid())
+		{
+			AbilitySpec->GetDynamicSpecSourceTags().RemoveTag(PastInputTag);
+			AbilitySpec->GetDynamicSpecSourceTags().AddTag(NewInputTag);
+			
+			ClientClearOldGlobe(PastInputTag);
+			// отмечаем ее для обновления
+			MarkAbilitySpecDirty(*AbilitySpec);
+			// запускаем клиентскую функцию
+			ClientSpendEquipAbility();
+		}
+		// если заклинание еще не было  (GetStatusTagFromSpec(*AbilitySpec) == FUpFightGameplayTags::Get().Abilities_Status_Unlocked)
+		else 
+		{
+			AbilitySpec->GetDynamicSpecSourceTags().RemoveTag(FUpFightGameplayTags::Get().Abilities_Status_Unlocked);
+			AbilitySpec->GetDynamicSpecSourceTags().AddTag(FUpFightGameplayTags::Get().Abilities_Status_Equipped);
+			AbilitySpec->GetDynamicSpecSourceTags().AddTag(NewInputTag);
+			
+			// отмечаем ее для обновления
+			MarkAbilitySpecDirty(*AbilitySpec);
+			// запускаем клиентскую функцию
+			ClientSpendEquipAbility();
+		}
+	}
+}
+
+void UUpFightSystemComponent::ClientSpendEquipAbility_Implementation()
+{
+	SpellMenuUpdateDelegate.Broadcast();
+}
+
+void UUpFightSystemComponent::ClientClearOldGlobe_Implementation(const FGameplayTag PastInputTag)
+{
+	ClearOldGlobeServerDelegate.Broadcast(PastInputTag);
+}
+
+bool UUpFightSystemComponent::GetSpellDescriptions(const FGameplayTag& AbilityTag, FString& OutSpellDescription,
+                                                   FString& OutNextLevelSpellDescription)
+{// если способность глобуса есть в Give, то достанем инфу о нем
+	FGameplayAbilitySpec* AbilitySpec = GetAbilitySpecByAbilityTag(AbilityTag);
+	if (AbilitySpec && GetStatusTagFromSpec(*AbilitySpec) != FUpFightGameplayTags::Get().Abilities_Status_Eligible)
+	{
+		UUpFightGameplayAbility* UpAbility = Cast<UUpFightGameplayAbility>(AbilitySpec->Ability);
+		OutSpellDescription = UpAbility->GetSpellDescription(AbilitySpec->Level);
+		OutNextLevelSpellDescription = UpAbility->GetNextLevelSpellDescription(AbilitySpec->Level + 1);
+		return true;
+	}
+	// если ее нет, то достанем уровень из AbilityDataAsset и вернем строку с требуемым уровнем
+	UAbilityDataAsset* AbilityInfoDataAsset = UUpFightAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+	FAbilityInfo Info = AbilityInfoDataAsset->FindAbilityInfoByTag(AbilityTag);
+	OutSpellDescription = UUpFightGameplayAbility::GetLockedSpellDescription(Info.LevelRequirement);
+	OutNextLevelSpellDescription = FString();
+	return false;
+}
+
 FGameplayTag UUpFightSystemComponent::GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
 {	// получем тег из спецификации
 	if(AbilitySpec.Ability)
@@ -212,11 +292,11 @@ FGameplayTag UUpFightSystemComponent::GetAbilityTagFromSpec(const FGameplayAbili
 
 FGameplayTag UUpFightSystemComponent::GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
 {	// получем тег из спецификации 
-	if(AbilitySpec.Ability)
+	if(IsValid(AbilitySpec.Ability))
 	{
-		for(FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		for(FGameplayTag Tag : AbilitySpec.GetDynamicSpecSourceTags())
 		{
-			if(Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input"))))
+			if(Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("InputTag"))))
 			{
 				return Tag;
 			}
@@ -247,6 +327,21 @@ FGameplayAbilitySpec* UUpFightSystemComponent::GetAbilitySpecByAbilityTag(const 
 		if (Spec.Ability->AbilityTags.First().MatchesTagExact(AbilityTag))
 		{
 			return &Spec;
+		}
+	}
+	return nullptr;
+}
+
+FGameplayAbilitySpec* UUpFightSystemComponent::GetAbilitySpecByInputTag(const FGameplayTag InInputTag)
+{
+	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	{
+		for (FGameplayTag InputTag  : Spec.GetDynamicSpecSourceTags())
+		{
+			if (InputTag == InInputTag)
+			{
+				return &Spec;
+			}
 		}
 	}
 	return nullptr;

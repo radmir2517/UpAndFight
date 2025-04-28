@@ -17,7 +17,8 @@ DECLARE_MULTICAST_DELEGATE(FAbilityGivenSignature)
 DECLARE_MULTICAST_DELEGATE(FSpellMenuUpdateDataSignature)
 // делегат который будет передавать AbilityInfo с заклинанием
 DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityInfoServerSignature,const FAbilityInfo& AbilityInfo /*AssetTags*/)
-
+// делегат который будет передавать старый inputTag в контроллер overlay и SpellMenu, чтобы чистить старые глобусы
+DECLARE_MULTICAST_DELEGATE_OneParam(FClearOldSpellGLobeServerSignatyre, const FGameplayTag PastInputTag)
 UCLASS()
 class UPANDFIGHT_API UUpFightSystemComponent : public UAbilitySystemComponent
 {
@@ -47,6 +48,15 @@ public:
 	UFUNCTION(Client,Reliable)
 	void InitializeAbilitiesForMenuControllersForClient(const FAbilityInfo& AbilityInfo);
 	void UpdateStatusAbilities(const int32 Level);
+	// перетаскивания SpellGlobe на новое место 
+	UFUNCTION(Server,Reliable)
+	void ServerSpendEquipAbility(const FGameplayTag AbilityTag, const FGameplayTag NewInputTag);
+	UFUNCTION(Client,Reliable)
+	void ClientSpendEquipAbility();
+	UFUNCTION(Client,Reliable)
+	void ClientClearOldGlobe(FGameplayTag PastInputTag);
+
+	bool GetSpellDescriptions(const FGameplayTag& AbilityTag, FString& OutSpellDescription,FString& OutNextLevelSpellDescription);
 	
 	FAbilityInfoServerSignature AbilityInfoServerDelegate;
 	
@@ -55,6 +65,7 @@ public:
 	FGameplayTag GetStatusTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 
 	FGameplayAbilitySpec* GetAbilitySpecByAbilityTag (const FGameplayTag AbilityTag);
+	FGameplayAbilitySpec* GetAbilitySpecByInputTag (const FGameplayTag InInputTag);
 	
 	// экземпляр делегата передающий теги эффекта
 	FEffectAssetTagsSignature EffectAssetTagsDelegate;
@@ -62,6 +73,7 @@ public:
 	FAbilityGivenSignature AbilityGivenDelegate;
 	// экземпляр делегата который будет сообщать, что нужно сделать BroadCast для SpellMenu
 	FSpellMenuUpdateDataSignature SpellMenuUpdateDelegate;
+	FClearOldSpellGLobeServerSignatyre ClearOldGlobeServerDelegate;
 
 	// булевая которая будет проверяться в OverlayController для вывода иконок абилок
 	bool bStartupAbilityGiven = false;

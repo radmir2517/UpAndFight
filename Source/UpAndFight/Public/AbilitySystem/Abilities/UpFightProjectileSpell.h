@@ -17,7 +17,9 @@ class UPANDFIGHT_API UUpFightProjectileSpell : public UDamageGameplayAbility
 public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnProjectile(const FVector InTargetLocation, const FGameplayTag SocketTag, const bool OverridePitch, const float InPitchOverride);
-	
+
+	virtual FString GetSpellDescription(int32 Level) override;
+	virtual FString GetNextLevelSpellDescription(int32 Level) override;
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AActor> ProjectileClass;
@@ -27,5 +29,8 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float PitchOverride = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 NumProjectiles = 1;
 		
 };

@@ -40,6 +40,8 @@ struct FWidgetControllerParams
 
 // делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature,const FAbilityInfo&, Info);
+// делегат который будет возвращать старый inputTag чтобы очистить старый глобус
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FClearOldGlobeSignature,const FGameplayTag, PastInputTag);
 
 UCLASS(BlueprintType,Blueprintable)
 class UPANDFIGHT_API UUpFightWidgetController : public UObject
@@ -71,6 +73,8 @@ public:
 	// делегат который будет возвращать информацию об абилках готовых к активации в OverlayController
 	UPROPERTY(BlueprintAssignable)
 	FAbilityInfoSignature AbilityInfoDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FClearOldGlobeSignature ClearOldGlobeDelegate;
 		
 	UPROPERTY(EditDefaultsOnly, Category="Widget Data")
 	TObjectPtr<ULevelUpInfo> LevelUpIfInfoAsset;

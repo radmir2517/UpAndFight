@@ -14,18 +14,26 @@ struct FCurrentSpellGlobe
 {
 	GENERATED_BODY()
 
+	bool isEquipButtonPressed = false;
+
 	FGameplayTag StatusTag;
 
 	FGameplayTag AbilityTag;
 
+	FGameplayTag InputTag;
+
 	FGameplayAbilitySpec* AbilitySpec;
 
-	
+	FString SpellDescription = FString();
+
+	FString NextLevelSpellDescription = FString();
 };
+
 // делегат, который передаст новое состояния кнопки Spend после ClickOnSpellGlobeButton()
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpellGlobeClickedSignature, bool, isNeedToActivateButton, UUpFightUserWidget*, WBP_SpellWidget);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnSpellGlobeClickedSignature, bool, isNeedToActivateButton, UUpFightUserWidget*, WBP_SpellWidget, FString, SpellDescription, FString, NextLevelSpellDescription );
 // делегат, который передаст значение SpellPoints
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSpellPointsSignature, int32, Points);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSelectionActivateSignature, bool, isNeedToActivate, const FGameplayTag&, AbilityTag );
 
 
 UCLASS()
@@ -40,10 +48,14 @@ public:
 	virtual void BroadcastInitialValues();
 	// Функция, срабатываемая при нажатии на SpellGlobe в SPellMenu
 	UFUNCTION(BlueprintCallable)
-	void ClickOnSpellGlobeButton(const FGameplayTag AbilityTag, UUpFightUserWidget* WBP_SpellWidget);
+	void ClickOnSpellGlobeButton(const FGameplayTag AbilityTag,const FGameplayTag CurrentInputTag, UUpFightUserWidget* WBP_SpellWidget);
 	// Функция, срабатываемая при нажатии на Spend в SPellMenu
 	UFUNCTION(BlueprintCallable)
 	void ClickOnSpendButton();
+	UFUNCTION(BlueprintCallable)
+	void ClickOnEquipButton();
+	UFUNCTION(BlueprintCallable)
+	void ClickOnEquippedSpellGlobe(const FGameplayTag& NewInputTag);
 	
 	FCurrentSpellGlobe CurrentSpellGlobe;
 
@@ -53,4 +65,7 @@ public:
 	// делегат для передачи SPell points в SpellPointsRow
 	UPROPERTY(BlueprintAssignable)
 	FSpellPointsSignature SpellPointsDelegate;
+	// делегат который будет активировать подсказку-выделение для SpellGlobe
+	UPROPERTY(BlueprintAssignable)
+	FSelectionActivateSignature SelectionActivateDelegate;
 };
