@@ -23,18 +23,18 @@ void USpellWidgetController::BindCallBacksToDependencies()
 		OnInitializeStartupAbilities();
 	});
 
-	UpAbilitySystemComponent->SpellMenuUpdateDelegate.AddLambda([this]()
+	UpAbilitySystemComponent->SpellWidgetsUpdateDelegate.AddLambda([this]()
 	{
 		BroadcastInitialValues();
 	});
 }
 
 void USpellWidgetController::BroadcastInitialValues()
-{
+{	
 	Super::BroadcastInitialValues();
 
 	if (IsValid(UpAbilitySystemComponent))
-	{
+	{ // пройдемся по AbilityInfo, если наши заклинания есть в Give то вытащим inputTag и Status, назначим в AbilityInfo и отправим во все SpellWidget(что в Overlay, что в SpellMenu)
 		OnInitializeStartupAbilities();
 		// обновим очки SPellPoints
 		SpellPointsDelegate.Broadcast(UpPlayerState->GetSpellPoints());
@@ -46,7 +46,7 @@ void USpellWidgetController::ClickOnSpellGlobeButton(const FGameplayTag AbilityT
 {
 	GetUpAbilitySystemComponent();
 	CurrentSpellGlobe.AbilitySpec = UpAbilitySystemComponent->GetAbilitySpecByAbilityTag(AbilityTag);
-	
+	// проверяем есть заклинание в пуле give
 	if (CurrentSpellGlobe.AbilitySpec)
 	{
 		CurrentSpellGlobe.StatusTag = UpAbilitySystemComponent->GetStatusTagFromSpec(*CurrentSpellGlobe.AbilitySpec);
@@ -58,6 +58,7 @@ void USpellWidgetController::ClickOnSpellGlobeButton(const FGameplayTag AbilityT
 		if (CurrentSpellGlobe.StatusTag == FUpFightGameplayTags::Get().Abilities_Status_Locked)
 		{// если тег Locked, то кнопка неактивна
 			OnSpellGlobeClickedDelegate.Broadcast(false,WBP_SpellWidget,CurrentSpellGlobe.SpellDescription,CurrentSpellGlobe.NextLevelSpellDescription);
+			// не будем включать подсветку подсказки нажатия на нижний блок заклинаний
 			SelectionActivateDelegate.Broadcast(false, FGameplayTag());
 		}
 		else 
@@ -65,22 +66,22 @@ void USpellWidgetController::ClickOnSpellGlobeButton(const FGameplayTag AbilityT
 			if (GetUpPlayerState()->GetSpellPoints() > 0)
 			{
 				OnSpellGlobeClickedDelegate.Broadcast(true,WBP_SpellWidget,CurrentSpellGlobe.SpellDescription,CurrentSpellGlobe.NextLevelSpellDescription);
-				
 			}
 			else
 			{ // если очки == 0 и тег не Locked, то кнопка неактивна
 				OnSpellGlobeClickedDelegate.Broadcast(false,WBP_SpellWidget,CurrentSpellGlobe.SpellDescription,CurrentSpellGlobe.NextLevelSpellDescription);
+				// не будем включать подсветку подсказки нажатия на нижний блок заклинаний
 				SelectionActivateDelegate.Broadcast(true, AbilityTag);
-				
 			}
 		}
 	}
-	else // если что-то не так, то на всякий отправляем не активировать кнопку
+	else // если что-то не так, то на всякий отправляем не активировать кнопку, отправляем пустой текст в виджеты описания
 	{
 		CurrentSpellGlobe.SpellDescription = FString();
 		CurrentSpellGlobe.NextLevelSpellDescription = FString();
 		CurrentSpellGlobe.isEquipButtonPressed = false;
 		OnSpellGlobeClickedDelegate.Broadcast(false,WBP_SpellWidget,CurrentSpellGlobe.SpellDescription,CurrentSpellGlobe.NextLevelSpellDescription);
+		// не будем включать подсветку подсказки нажатия на нижний блок заклинаний
 		SelectionActivateDelegate.Broadcast(false, FGameplayTag());
 	}
 }

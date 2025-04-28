@@ -119,15 +119,17 @@ void UUpFightSystemComponent::ServerUpgradeAttributes_Implementation(const FGame
 
 void UUpFightSystemComponent::ServerUpgradeSpellPoint_Implementation(const FGameplayTag& AbilityTag,
 	const FGameplayTag& StatusTag)
-{
+{// повысим уровень данного заклинания по тегу на 1 единицу и проверим его статусы
 	FGameplayAbilitySpec* AbilitySpec = GetAbilitySpecByAbilityTag(AbilityTag);
-	
+	// проверим что абилка внутри есть
 	if (IsValid(AbilitySpec->Ability))
-	{
+	{	// прибавим уровень абилки
 		AbilitySpec->Level += 1;
+		// прибавим ее и в PlayerState
 		IPlayerInterface::Execute_AddToSpellPoints(GetAvatarActor(),-1);
+		// поменяет статусы при первом повышения уровня с 0 до 1
 		if (StatusTag == FUpFightGameplayTags::Get().Abilities_Status_Eligible)
-		{
+		{	
 			AbilitySpec->GetDynamicSpecSourceTags().RemoveTag(FUpFightGameplayTags::Get().Abilities_Status_Eligible);
 			AbilitySpec->GetDynamicSpecSourceTags().AddTag(FUpFightGameplayTags::Get().Abilities_Status_Unlocked);
 		}
@@ -137,12 +139,12 @@ void UUpFightSystemComponent::ServerUpgradeSpellPoint_Implementation(const FGame
 }
 
 void UUpFightSystemComponent::ClientUpgradeSpellMenu_Implementation()
-{
-	SpellMenuUpdateDelegate.Broadcast();
+{	// запустит USpellWidgetController::BroadcastInitialValues(), и он обновит во всех виджетах spell даже в Overlay иконки заклинаний
+	SpellWidgetsUpdateDelegate.Broadcast();
 }
 
 void UUpFightSystemComponent::InitializeAbilitiesForMenuControllers_Implementation()
-{
+{// пройдемся по AbilityInfo, если наши заклинания есть в Give то вытащим inputTag и Status, назначим в AbilityInfo и отправим во все SpellWidget(что в Overlay, что в SpellMenu)
 	AUpFightGameMode* UpFightGameMode = Cast<AUpFightGameMode>(UGameplayStatics::GetGameMode(GetAvatarActor()));
 	UAbilityDataAsset* AbilityDataInfoAsset = UpFightGameMode->AbilityDataInfoAsset;
 	
@@ -170,9 +172,9 @@ void UUpFightSystemComponent::InitializeAbilitiesForMenuControllersForClient_Imp
 }
 
 
-
+// запускается в AUpFightPlayerState::AddPlayerLevel при повышения уровня
 void UUpFightSystemComponent::UpdateStatusAbilities(const int32 Level)
-{
+{	// проверим достигли ли мы уровня для добавления новых заклинаний, если достигли то добавим в Give и добавим ему статус
 	UAbilityDataAsset* AbilityDataAsset = UUpFightAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
 
 	for (auto Info : AbilityDataAsset->AbilitiesInfo)
@@ -192,12 +194,11 @@ void UUpFightSystemComponent::UpdateStatusAbilities(const int32 Level)
 		}
 		MarkAbilitySpecDirty(*AbilitySpec);
 	}
-	
 }
-
+// перетаскивания SpellGlobe на новое место, замена тегов статуса на новые
 void UUpFightSystemComponent::ServerSpendEquipAbility_Implementation(const FGameplayTag AbilityTag, const FGameplayTag NewInputTag)
-{
-	/*TODO:  1) если мы заменяем заклинание на глобус где уже есть, то у старого надо обнулить inputTag  
+{ 	// перетаскивания SpellGlobe на новое место, замена тегов статуса на новые
+	/*TODO:  1) если мы заменяем заклинание на глобус где уже есть, то у старого надо обнулить inputTag  DONE
 	 *		2)А если мы перемещаем заклинание на пустой глобус но при этом это заклинание уже есть на глобусах то надо убрать его со старого место  DONE
 	 */
 	if (AbilityTag.IsValid() && NewInputTag.IsValid())
@@ -213,7 +214,7 @@ void UUpFightSystemComponent::ServerSpendEquipAbility_Implementation(const FGame
 			OldAbilitySpec->GetDynamicSpecSourceTags().RemoveTag(FUpFightGameplayTags::Get().Abilities_Status_Equipped);
 			OldAbilitySpec->GetDynamicSpecSourceTags().AddTag(FUpFightGameplayTags::Get().Abilities_Status_Unlocked);
 			
-			// чистим старый глобус 
+			// чистим старый глобус, а точнее делаем невидим Background и Icon изображение, т.к при назначении нового мы заменим иконки и постави видимость
 			ClientClearOldGlobe(NewInputTag);
 			// отмечаем ее для обновления
 			MarkAbilitySpecDirty(*OldAbilitySpec);
@@ -224,7 +225,7 @@ void UUpFightSystemComponent::ServerSpendEquipAbility_Implementation(const FGame
 		{
 			AbilitySpec->GetDynamicSpecSourceTags().RemoveTag(PastInputTag);
 			AbilitySpec->GetDynamicSpecSourceTags().AddTag(NewInputTag);
-			
+			// чистим старый глобус, а точнее делаем невидим Background и Icon изображение, т.к при назначении нового мы заменим иконки и постави видимость
 			ClientClearOldGlobe(PastInputTag);
 			// отмечаем ее для обновления
 			MarkAbilitySpecDirty(*AbilitySpec);
@@ -247,8 +248,8 @@ void UUpFightSystemComponent::ServerSpendEquipAbility_Implementation(const FGame
 }
 
 void UUpFightSystemComponent::ClientSpendEquipAbility_Implementation()
-{
-	SpellMenuUpdateDelegate.Broadcast();
+{	// отправим на обновление 
+	SpellWidgetsUpdateDelegate.Broadcast();
 }
 
 void UUpFightSystemComponent::ClientClearOldGlobe_Implementation(const FGameplayTag PastInputTag)

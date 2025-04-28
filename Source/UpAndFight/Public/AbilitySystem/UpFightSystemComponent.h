@@ -14,7 +14,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagsSignature,const FGameplayTag
 // делегат котоырй будет передавать в Overlay Controller там будет запускаться Инцилизация стартовых абилок для вывода их иконок на экран
 DECLARE_MULTICAST_DELEGATE(FAbilityGivenSignature)
 // делегат который будет сообщать, что нужно сделать BroadCast для SpellMenu
-DECLARE_MULTICAST_DELEGATE(FSpellMenuUpdateDataSignature)
+DECLARE_MULTICAST_DELEGATE(FSpellWidgetsUpdateDataSignature)
 // делегат который будет передавать AbilityInfo с заклинанием
 DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityInfoServerSignature,const FAbilityInfo& AbilityInfo /*AssetTags*/)
 // делегат который будет передавать старый inputTag в контроллер overlay и SpellMenu, чтобы чистить старые глобусы
@@ -42,13 +42,15 @@ public:
 	void ServerUpgradeSpellPoint(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag);
 	UFUNCTION(Client,Reliable)
 	void ClientUpgradeSpellMenu();
+	//пройдемся по AbilityInfo, если наши заклинания есть в Give то вытащим inputTag и Status, назначим в AbilityInfo и отправим во все SpellWidget(что в Overlay, что в SpellMenu)
 	UFUNCTION(Server,Reliable)
 	void InitializeAbilitiesForMenuControllers();
 
 	UFUNCTION(Client,Reliable)
 	void InitializeAbilitiesForMenuControllersForClient(const FAbilityInfo& AbilityInfo);
+	// запускается в AUpFightPlayerState::AddPlayerLevel при повышении уровня
 	void UpdateStatusAbilities(const int32 Level);
-	// перетаскивания SpellGlobe на новое место 
+	// перетаскивания SpellGlobe на новое место, замена тегов статуса на новые
 	UFUNCTION(Server,Reliable)
 	void ServerSpendEquipAbility(const FGameplayTag AbilityTag, const FGameplayTag NewInputTag);
 	UFUNCTION(Client,Reliable)
@@ -72,7 +74,7 @@ public:
 	// экземпляр делегата передающий UUpFightSystemComponent в OverlayController
 	FAbilityGivenSignature AbilityGivenDelegate;
 	// экземпляр делегата который будет сообщать, что нужно сделать BroadCast для SpellMenu
-	FSpellMenuUpdateDataSignature SpellMenuUpdateDelegate;
+	FSpellWidgetsUpdateDataSignature SpellWidgetsUpdateDelegate;
 	FClearOldSpellGLobeServerSignatyre ClearOldGlobeServerDelegate;
 
 	// булевая которая будет проверяться в OverlayController для вывода иконок абилок
