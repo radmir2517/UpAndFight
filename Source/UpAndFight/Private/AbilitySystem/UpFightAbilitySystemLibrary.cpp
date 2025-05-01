@@ -4,6 +4,8 @@
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "UpFightGameplayTags.h"
+#include "AbilitySystem/UpFightAbilityTypes.h"
 #include "Engine/OverlapResult.h"
 #include "Game/UpFightGameMode.h"
 #include "Interaction/CombatInterface.h"
@@ -168,26 +170,29 @@ bool UUpFightAbilitySystemLibrary::AreTheyFriends( const AActor* SourceActor,
 	return SourceActor->Tags[0] == TargetActor->Tags[0];
 }
 
-void UUpFightAbilitySystemLibrary::UpFightApplyGameplayEffect(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceActor,
-	AActor* TargetActor, TMap<FGameplayTag, FScalableFloat> EffectTypes, float Level)
+FGameplayEffectContextHandle UUpFightAbilitySystemLibrary::UpFightApplyGameplayEffect(const FDamageEffectParams& DamageEffectParams)
 {
-	if( !IsValid(SourceActor) || !IsValid(TargetActor) || EffectTypes.IsEmpty() ) return;
-	
-	UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
-	if(!IsValid(SourceASC)) return;
-
-	FGameplayEffectContextHandle ContextHandle = SourceASC->MakeEffectContext();
-	ContextHandle.AddSourceObject(SourceActor);
-	FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(EffectClass,Level,ContextHandle);
-
-	for(auto Pair : EffectTypes)
+	// получаем SourceAvatarActor и теги
+	FUpFightGameplayTags& GameplayTags = FUpFightGameplayTags::Get();
+	AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
+	// для эффекта нужен контекст и спецификация
+	FGameplayEffectContextHandle ContextHandle = DamageEffectParams.SourceAbilitySystemComponent->MakeEffectContext();
+	ContextHandle.AddSourceObject(SourceAvatarActor);
+	const FGameplayEffectSpecHandle SpecHandle = DamageEffectParams.SourceAbilitySystemComponent->MakeOutgoingSpec(DamageEffectParams.GameplayEffectClass,DamageEffectParams.AbilityLevel,ContextHandle);
+	// назначаем урон
+	for(auto Pair : DamageEffectParams.DamageTagAndValue)
 	{
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,Pair.Key,Pair.Value.GetValueAtLevel(Level));
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,Pair.Key,Pair.Value);
 	}
-	
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-	SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(),TargetASC);
-	
+	// назначаем дебаффу его параметры
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.Debuff_Damage, DamageEffectParams.DebuffDamage);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.Debuff_Chance, DamageEffectParams.DebuffChance);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.Debuff_Duration, DamageEffectParams.DebuffDuration);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.Debuff_Frequency, DamageEffectParams.DebuffFrequency);
+	// применяем эффект
+	DamageEffectParams.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	// возвращаем контекст для дальнейшего взаимодействия
+	return ContextHandle;
 }
 
 int32 UUpFightAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* WorldContextObject,const  ECharacterClass& Class, const int32 Level)

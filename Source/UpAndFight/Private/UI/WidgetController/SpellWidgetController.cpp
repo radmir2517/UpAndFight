@@ -48,11 +48,17 @@ void USpellWidgetController::ClickOnSpellGlobeButton(const FGameplayTag AbilityT
 	CurrentSpellGlobe.AbilitySpec = UpAbilitySystemComponent->GetAbilitySpecByAbilityTag(AbilityTag);
 	// проверяем есть заклинание в пуле give
 	if (CurrentSpellGlobe.AbilitySpec)
-	{
-		CurrentSpellGlobe.StatusTag = UpAbilitySystemComponent->GetStatusTagFromSpec(*CurrentSpellGlobe.AbilitySpec);
+	{	// если мы нажали на другой глобус, то надо занулить bool повторного нажатия
+		if (CurrentSpellGlobe.AbilityTag != AbilityTag)
+		{	
+			SpellGlobeReassignedDelegate.Broadcast();
+		}
 		CurrentSpellGlobe.AbilityTag = AbilityTag;
+		CurrentSpellGlobe.StatusTag = UpAbilitySystemComponent->GetStatusTagFromSpec(*CurrentSpellGlobe.AbilitySpec);
 		CurrentSpellGlobe.InputTag = UpAbilitySystemComponent->GetInputTagFromSpec(*CurrentSpellGlobe.AbilitySpec);
-		// чистим от прошлых записе
+		// функция которая в зависимости от статуса(== Unlocked; ==Equipped) будет активировать/дезактивировать кнопку Equip
+		EquipButtonActivation();
+		// чистим от прошлых записей
 		// получаем описание заклинания
 		UpAbilitySystemComponent->GetSpellDescriptions(AbilityTag,CurrentSpellGlobe.SpellDescription,CurrentSpellGlobe.NextLevelSpellDescription);
 		if (CurrentSpellGlobe.StatusTag == FUpFightGameplayTags::Get().Abilities_Status_Locked)
@@ -77,6 +83,12 @@ void USpellWidgetController::ClickOnSpellGlobeButton(const FGameplayTag AbilityT
 	}
 	else // если что-то не так, то на всякий отправляем не активировать кнопку, отправляем пустой текст в виджеты описания
 	{
+		// обнулим статус и деактивируем кнопку Equip
+		CurrentSpellGlobe.StatusTag = FGameplayTag();
+		EquipButtonActivation();
+		// занулим bisClickOnSpellTwice в каждом SpellGlobe, чтобы повторное нажатие не засчитало, для анимации Selection
+		SpellGlobeReassignedDelegate.Broadcast();
+		
 		CurrentSpellGlobe.SpellDescription = FString();
 		CurrentSpellGlobe.NextLevelSpellDescription = FString();
 		CurrentSpellGlobe.isEquipButtonPressed = false;
@@ -112,5 +124,18 @@ void USpellWidgetController::ClickOnEquippedSpellGlobe(const FGameplayTag& NewIn
 		ClickOnSpellGlobeButton(FGameplayTag(),FGameplayTag(),nullptr);
 		// поменяет старый InputTag на новый и отправим обновление виджетов
 		GetUpAbilitySystemComponent()->ServerSpendEquipAbility(CurrentSpellGlobe.AbilityTag, NewInputTag);
+	}
+}
+
+void USpellWidgetController::EquipButtonActivation()
+{// функция которая в зависимости от статуса(== Unlocked; ==Equipped) будет активировать/дезактивировать кнопку Equip
+	FUpFightGameplayTags& UpFightTags = FUpFightGameplayTags::Get();
+	if (CurrentSpellGlobe.StatusTag == UpFightTags.Abilities_Status_Equipped || CurrentSpellGlobe.StatusTag == UpFightTags.Abilities_Status_Unlocked)
+	{
+		EquipButtonActivationDelegate.Broadcast(true);
+	}
+	else
+	{
+		EquipButtonActivationDelegate.Broadcast(false);
 	}
 }

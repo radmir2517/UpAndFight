@@ -7,6 +7,8 @@
 #include "UpFightAbilitySystemLibrary.generated.h"
 
 
+struct FGameplayEffectContextHandle;
+struct FDamageEffectParams;
 class USpellWidgetController;
 class ULevelUpInfo;
 class UGameplayEffect;
@@ -42,6 +44,8 @@ public:
 	UFUNCTION(BlueprintPure,meta = (HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"), Category="UPFightAbilitySystemLibrary|CharacterInfo")
 	static UAbilityDataAsset* GetAbilityInfo(const UObject* WorldContextObject);
 
+	
+
 	/*
 	 * Ability System Startup
 	 */
@@ -54,15 +58,13 @@ public:
 	// вернем врагов цели в определенном радиусе
 	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
 	static void GetLiveActorsFromRadius(const UObject* WorldContextObject, const TArray<AActor*>& IgnoreActors,TArray<AActor*>& ActorsToOut, const float InRadius, const FVector& Origin);
-
 	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|CommonAttributes")
 	static bool AreTheyFriends(const AActor* FirstActor, const AActor* SecondActor);
-
 	/*
 	 * Gameplay Effect 
 	 */
 	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
-	static void UpFightApplyGameplayEffect(TSubclassOf<UGameplayEffect> EffectClass, AActor* SourceActor, AActor* TargetActor, TMap<FGameplayTag, FScalableFloat> EffectTypes, float Level);
+	static FGameplayEffectContextHandle UpFightApplyGameplayEffect(const FDamageEffectParams& DamageEffectParams);
 	/*
 	 * Gameplay Mechanics
 	 */

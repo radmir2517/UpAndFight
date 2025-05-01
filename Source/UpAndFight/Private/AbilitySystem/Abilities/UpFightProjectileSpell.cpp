@@ -5,10 +5,10 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "UpFightGameplayTags.h"
+#include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "Actor/UpFightProjectile.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
-
 
 
 void UUpFightProjectileSpell::SpawnProjectile(const FVector InTargetLocation, const FGameplayTag SocketTag, const bool OverridePitch, const float InPitchOverride)
@@ -26,7 +26,7 @@ void UUpFightProjectileSpell::SpawnProjectile(const FVector InTargetLocation, co
 	FromActorToTargetVector.Normalize();
 	FRotator FromActorToTargetRotation = FromActorToTargetVector.Rotation();
 	FromActorToTargetRotation.Pitch = 0.f;
-	// если bнаклон снаряда будет true то будем менять его по значению
+	// если наклон снаряда будет true, то будем менять его по значению
 	if(OverridePitch)
 	{
 		FromActorToTargetRotation.Pitch = InPitchOverride;
@@ -41,7 +41,9 @@ void UUpFightProjectileSpell::SpawnProjectile(const FVector InTargetLocation, co
 	   GetAvatarActorFromActorInfo());
 	
 	AUpFightProjectile* Projectile = Cast<AUpFightProjectile>(CreatedActor);
-	
+
+	FDamageEffectParams DamageEffectParams = MakeDefaultDamageEffectParams();
+	/* теперь это будет в UUpFightAbilitySystemLibrary::UpFightApplyGameplayEffect
 	// в шарике создаем спецификацию эффекта и назначаем источник
 	Projectile->DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect,1);
 	Projectile->DamageEffectSpecHandle.Data->GetContext().AddSourceObject(GetAvatarActorFromActorInfo());
@@ -50,7 +52,8 @@ void UUpFightProjectileSpell::SpawnProjectile(const FVector InTargetLocation, co
 	{	
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle,Pair.Key,Pair.Value.GetValueAtLevel(GetAbilityLevel()));
 	}
-	
+	*/
+	Projectile->DamageEffectParams = DamageEffectParams;
 	// досоздаем шарик
 	UGameplayStatics::FinishSpawningActor(CreatedActor,ProjectileTransform);
 }

@@ -92,6 +92,20 @@ struct FUpFightGameplayTags
 	FGameplayTag Damage_Arcane;
 	FGameplayTag Damage_Physical;
 	/* end Damage Type Tags */
+
+	/* Debuff Type Tags */
+	FGameplayTag Debuff_Fire;
+	FGameplayTag Debuff_Lightning;
+	FGameplayTag Debuff_Arcane;
+	FGameplayTag Debuff_Physical;
+	/* end Debuff Type Tags */
+	/* Debuff Params */
+	FGameplayTag Debuff_Chance;
+	FGameplayTag Debuff_Damage;
+	FGameplayTag Debuff_Duration;
+	FGameplayTag Debuff_Frequency;
+	/* end Debuff Params */
+	
 	// тег для мета атрибута опыта
 	FGameplayTag Attribute_Meta_IncomingXP;
 	
@@ -109,6 +123,9 @@ struct FUpFightGameplayTags
 	
 	// Карта где будут находиться тип урона и тип соответствующего для него Резиста
 	TMap<FGameplayTag,FGameplayTag> DamageTypesToResistances;
+
+	// Карта где будут находиться тип урона и тип соответствующего для него Дебаффа
+	TMap<FGameplayTag,FGameplayTag> DamageTypesToDebuff;
 
 	FGameplayTag Effect_HitReact;
 

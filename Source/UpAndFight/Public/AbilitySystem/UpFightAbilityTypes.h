@@ -6,9 +6,39 @@
 #include "GameplayEffectTypes.h"
 #include "UpFightAbilityTypes.generated.h"
 
-/**
- * 
- */
+class UGameplayEffect;
+
+USTRUCT(BlueprintType)
+struct FDamageEffectParams
+{// структура для быстрой передачи и назначения параметров
+	FDamageEffectParams(){};
+	
+	GENERATED_BODY()
+	UPROPERTY()
+	TObjectPtr<UObject> WoldContextObject = nullptr;
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> SourceAbilitySystemComponent = nullptr;
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> TargetAbilitySystemComponent = nullptr;
+	UPROPERTY()
+	TSubclassOf<UGameplayEffect> GameplayEffectClass = nullptr;
+
+	UPROPERTY()
+	TMap<FGameplayTag, float> DamageTagAndValue = {};
+	UPROPERTY()
+	int32 AbilityLevel = 1;
+	
+	UPROPERTY()
+	float DebuffDamage = 0.f;
+	UPROPERTY()
+	float DebuffChance = 0.f;
+	UPROPERTY()
+	float DebuffFrequency = 0.f;
+	UPROPERTY()
+	float DebuffDuration = 0.f;
+};
+
+
 USTRUCT(BlueprintType)
 struct FUpFightGameplayEffectContext : public FGameplayEffectContext
 {
@@ -24,7 +54,7 @@ public:
 	
 protected:
 	// сюда мы может добавлять переменные который будет сериализовывать, например шанс крита или блока например
-	// и потом его надо будет прописат ьв сериализацию
+	// и потом его надо будет прописать в сериализацию
 	//bool bIsBlocked = false;
 };
 

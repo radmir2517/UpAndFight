@@ -84,6 +84,20 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	UpFightGameplayTags.Damage_Physical = UpFightTagsManager.AddNativeGameplayTag("Damage.Physical", "Physical Damage Tag");
 	/* end Damage Type Tags */
 
+	/* Debuff Type Tags */
+	UpFightGameplayTags.Debuff_Fire = UpFightTagsManager.AddNativeGameplayTag("Debuff.Fire", "Fire Debuff Tag");
+	UpFightGameplayTags.Debuff_Lightning = UpFightTagsManager.AddNativeGameplayTag("Debuff.Lightning", "Lightning Debuff Tag");
+	UpFightGameplayTags.Debuff_Arcane= UpFightTagsManager.AddNativeGameplayTag("Debuff.Arcane", "Arcane Debuff Tag");
+	UpFightGameplayTags.Debuff_Physical = UpFightTagsManager.AddNativeGameplayTag("Debuff.Physical", "Physical Debuff Tag");
+	/* end Debuff Type Tags */
+	
+	/* Debuff Params */
+	UpFightGameplayTags.Debuff_Damage = UpFightTagsManager.AddNativeGameplayTag("Debuff.Damage", "Damage Debuff Tag");
+	UpFightGameplayTags.Debuff_Chance = UpFightTagsManager.AddNativeGameplayTag("Debuff.Chance ", "Chance Debuff Tag");
+	UpFightGameplayTags.Debuff_Duration= UpFightTagsManager.AddNativeGameplayTag("Debuff.Duration", "Duration Debuff Tag");
+	UpFightGameplayTags.Debuff_Frequency= UpFightTagsManager.AddNativeGameplayTag("Debuff.Frequency", "Frequency Debuff Tag");
+	/* end Debuff Params  */
+
 	UpFightGameplayTags.Attribute_Meta_IncomingXP = UpFightTagsManager.AddNativeGameplayTag("Attribute.Meta.IncomingXP", "IncomingXP Damage Tag");
 	
 	/* Resistance Tags */
@@ -98,6 +112,11 @@ void FUpFightGameplayTags::InitializeNativeGameplayTags()
 	UpFightGameplayTags.DamageTypesToResistances.Add(UpFightGameplayTags.Damage_Arcane,UpFightGameplayTags.Attribute_Resistance_Arcane);
 	UpFightGameplayTags.DamageTypesToResistances.Add(UpFightGameplayTags.Damage_Physical,UpFightGameplayTags.Attribute_Resistance_Physical);
 
+	// добавление в карту тип урона и тип сопротивления 
+	UpFightGameplayTags.DamageTypesToDebuff.Add(UpFightGameplayTags.Damage_Fire,UpFightGameplayTags.Debuff_Fire);
+	UpFightGameplayTags.DamageTypesToDebuff.Add(UpFightGameplayTags.Damage_Lightning,UpFightGameplayTags.Debuff_Lightning);
+	UpFightGameplayTags.DamageTypesToDebuff.Add(UpFightGameplayTags.Damage_Arcane,UpFightGameplayTags.Debuff_Arcane);
+	UpFightGameplayTags.DamageTypesToDebuff.Add(UpFightGameplayTags.Damage_Physical,UpFightGameplayTags.Debuff_Physical);
 	/* GameplayCue Tags */
 	UpFightGameplayTags.GameplayCue_MeleeAttack = UpFightTagsManager.AddNativeGameplayTag("GameplayCue.MeleeAttack", "GameplayCue MeleeAttack");
 	UpFightGameplayTags.GameplayCue_SpawnEffect = UpFightTagsManager.AddNativeGameplayTag("GameplayCue.SpawnEffect", "GameplayCue SpawnEffect");

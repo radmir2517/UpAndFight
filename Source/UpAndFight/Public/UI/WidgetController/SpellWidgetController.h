@@ -30,11 +30,15 @@ struct FCurrentSpellGlobe
 };
 
 // делегат, который передаст новое состояния кнопки Spend после ClickOnSpellGlobeButton()
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnSpellGlobeClickedSignature, bool, isNeedToActivateButton, UUpFightUserWidget*, WBP_SpellWidget, FString, SpellDescription, FString, NextLevelSpellDescription );
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnSpellGlobeClickedSignature, bool, isNeedToActivateButton, UUpFightUserWidget*, WBP_SpellWidget, FString, SpellDescription, FString, NextLevelSpellDescription);
 // делегат, который передаст значение SpellPoints
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSpellPointsSignature, int32, Points);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSelectionActivateSignature, bool, isNeedToActivate, const FGameplayTag&, AbilityTag );
-
+// делегат который будет активировать подсказку-выделение для SpellGlobe
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSelectionActivateSignature, bool, isNeedToActivate, const FGameplayTag&, AbilityTag);
+// делегат который будет обнулять bisClickOnSpellTwice в SPell глобусах, при выборе другого чтобы при повторном нажатии он не думал, что ты нажимаешь второй раз 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSpellGlobeReassignedSignature);
+// делегат который будет активировать или деактивировать кнопку Equip в SpellMenu
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEquipButtonActivationSignature, bool, isEquipButtonActivationb);
 
 UCLASS()
 class UPANDFIGHT_API USpellWidgetController : public UUpFightWidgetController
@@ -56,6 +60,7 @@ public:
 	void ClickOnEquipButton();
 	UFUNCTION(BlueprintCallable)
 	void ClickOnEquippedSpellGlobe(const FGameplayTag& NewInputTag);
+
 	
 	FCurrentSpellGlobe CurrentSpellGlobe;
 
@@ -68,4 +73,14 @@ public:
 	// делегат который будет активировать подсказку-выделение для SpellGlobe
 	UPROPERTY(BlueprintAssignable)
 	FSelectionActivateSignature SelectionActivateDelegate;
+	// делегат, который будет обнулять bisClickOnSpellTwice в SPell глобусах, при выборе другого чтобы при повторном нажатии он не думал, что ты нажимаешь второй раз 
+	UPROPERTY(BlueprintAssignable)
+	FSpellGlobeReassignedSignature SpellGlobeReassignedDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FEquipButtonActivationSignature EquipButtonActivationDelegate;
+
+private:
+	// функция которая в зависимости от статуса(== Unlocked; ==Equipped) будет активировать/дезактивировать кнопку Equip
+	UFUNCTION()
+	void EquipButtonActivation();
 };

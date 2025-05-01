@@ -11,7 +11,6 @@
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "UpAndFight/UpAndFight.h"
 
@@ -46,19 +45,15 @@ void AUpFightProjectile::BeginPlay()
 	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound,GetRootComponent());
 	// задания время жизни
 	SetLifeSpan(LifeSpanValue);
-	
 }
 
 void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(!DamageEffectSpecHandle.IsValid()) return;
-	if(DamageEffectSpecHandle.Data->GetContext().GetSourceObject() != OtherActor)
+	//if(!DamageEffectSpecHandle.IsValid()) return;
+	// если они "друзья" то не выполняем overlap
+	if(!UUpFightAbilitySystemLibrary::AreTheyFriends(DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor(),OtherActor))
 	{
-		const AActor* SourceObject = Cast<AActor>(DamageEffectSpecHandle.Data->GetContext().GetSourceObject());
-		
-		// если друзья, то просто ничего делать не будем
-		if(UUpFightAbilitySystemLibrary::AreTheyFriends(SourceObject,OtherActor)) return;
 		if(!bHit)
 		{
 			// звук удара и эффект удара
@@ -69,12 +64,13 @@ void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 			bHit = true;
 		}
 		
-		// если сервер то уничтожим если клиент то bHit = true
+		// если сервер, то уничтожим если клиент, то bHit = true
 		if(HasAuthority())
 		{
-			if(UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+			if(UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{
-				ASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+				DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+				UUpFightAbilitySystemLibrary::UpFightApplyGameplayEffect(DamageEffectParams);
 			}
 			Destroy();
 		}
@@ -83,7 +79,6 @@ void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 			bHit = true;
 		}
 	}
-
 }
 
 void AUpFightProjectile::Destroyed()

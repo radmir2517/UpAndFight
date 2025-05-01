@@ -17,6 +17,5 @@ class UPANDFIGHT_API UExecCalc_Damage : public UGameplayEffectExecutionCalculati
 public:
 	UExecCalc_Damage();
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
-
 	
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayAbilitySpec.h"
+#include "AbilitySystem/UpFightAbilityTypes.h"
 #include "GameFramework/Actor.h"
 #include "UpFightProjectile.generated.h"
 
@@ -22,8 +23,11 @@ public:
 	UFUNCTION()
 	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
+//	UPROPERTY()
+	//FGameplayEffectSpecHandle DamageEffectSpecHandle;
+
 	UPROPERTY()
-	FGameplayEffectSpecHandle DamageEffectSpecHandle;
+	FDamageEffectParams DamageEffectParams;
 	
 protected:
 	virtual void BeginPlay() override;
