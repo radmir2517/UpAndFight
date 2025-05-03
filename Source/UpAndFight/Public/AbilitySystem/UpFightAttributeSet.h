@@ -161,4 +161,6 @@ public:
 	
 	// отправления ивента получения опыта со значением опыта в GA_ListenForEvent
 	auto SendXPEvent(FEffectProperties& Props) -> void;
+
+	void Debuff(const FEffectProperties& Props);
 };

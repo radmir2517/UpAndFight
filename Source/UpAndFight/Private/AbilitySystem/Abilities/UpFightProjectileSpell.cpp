@@ -41,7 +41,7 @@ void UUpFightProjectileSpell::SpawnProjectile(const FVector InTargetLocation, co
 	   GetAvatarActorFromActorInfo());
 	
 	AUpFightProjectile* Projectile = Cast<AUpFightProjectile>(CreatedActor);
-
+	// создаем параметры 
 	FDamageEffectParams DamageEffectParams = MakeDefaultDamageEffectParams();
 	/* теперь это будет в UUpFightAbilitySystemLibrary::UpFightApplyGameplayEffect
 	// в шарике создаем спецификацию эффекта и назначаем источник

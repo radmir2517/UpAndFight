@@ -10,7 +10,7 @@ class UGameplayEffect;
 
 USTRUCT(BlueprintType)
 struct FDamageEffectParams
-{// структура для быстрой передачи и назначения параметров
+{// структура для быстрой передачи и назначения параметров// структура хранящая параметры для создания эффекта Damage и также параметры дебаффа
 	FDamageEffectParams(){};
 	
 	GENERATED_BODY()
@@ -27,7 +27,7 @@ struct FDamageEffectParams
 	TMap<FGameplayTag, float> DamageTagAndValue = {};
 	UPROPERTY()
 	int32 AbilityLevel = 1;
-	
+	// добавляем параметры дебаффа
 	UPROPERTY()
 	float DebuffDamage = 0.f;
 	UPROPERTY()
@@ -51,11 +51,36 @@ public:
 	{
 		return FGameplayEffectContext::StaticStruct();
 	}
+	// геттеры и сеттеры для дебаффа
+	bool IsSuccessfulDebuff() const {return bIsSuccessfulDebuff;}
+	float GetDebuffDamage() const {return  DebuffDamage;}
+	float GetDebuffDuration() const {return DebuffDuration;}
+	float GetDebuffFrequency() const {return DebuffFrequency;}
+	TSharedPtr<FGameplayTag> GetDamageType() const {return DamageType;}
+
+	void SetIsSuccessfulDebuff(bool bIsSuccess) {bIsSuccessfulDebuff = bIsSuccess;}
+	void SetDebuffDamage(float InDamage) {DebuffDamage = InDamage;}
+	void SetDebuffDuration(float InDuration) {DebuffDuration = InDuration;}
+	void SetDebuffFrequency(float InFrequency) {DebuffFrequency = InFrequency;}
+	void SetDamageType(const TSharedPtr<FGameplayTag>& InDamageType) {DamageType = InDamageType;}
 	
 protected:
 	// сюда мы может добавлять переменные который будет сериализовывать, например шанс крита или блока например
 	// и потом его надо будет прописать в сериализацию
 	//bool bIsBlocked = false;
+	
+	// булеан срабатывания дебаффа
+	// добавляем параметры дебаффа
+	UPROPERTY()
+	bool bIsSuccessfulDebuff = false;
+	UPROPERTY()
+	float DebuffDamage = 0.f;
+	UPROPERTY()
+	float DebuffDuration = 0.f;
+	UPROPERTY()
+	float DebuffFrequency = 0.f;
+	// указатель на тег урона
+	TSharedPtr<FGameplayTag> DamageType;
 };
 
 // используется для определения специальных свойств и поведения пользовательских структур для сетевой сериализации

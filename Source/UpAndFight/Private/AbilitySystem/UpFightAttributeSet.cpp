@@ -8,6 +8,7 @@
 #include "GameplayEffectExtension.h"
 #include "UpFightGameplayTags.h"
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
+#include "AbilitySystem/UpFightAbilityTypes.h"
 #include "AbilitySystem/UpFightSystemComponent.h"
 #include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
@@ -163,7 +164,6 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 		if(!bDead)
 		{	// пробуем активировать GA_HitReact если он есть у персонажа
 			FGameplayTagContainer TagContainer(UpFightGameplayTags.Effect_HitReact);
-			
 			for(auto Spec:Props.TargetAbilitySystemComponent->GetActivatableAbilities())
 			{
 				for(const FGameplayTag& Tag : Spec.Ability->AbilityTags)
@@ -193,6 +193,8 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 			SendXPEvent(Props);
 			ICombatInterface::Execute_Die(Props.TargetCharacter);
 		}
+		// функция дебаффа, она ниже
+		Debuff(Props);
 	}
 	if(Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
 	{
@@ -236,6 +238,53 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 	}
 }
 
+void UUpFightAttributeSet::Debuff(const FEffectProperties& Props)
+{
+	// проверяем что дебафф есть
+	bool IsSuccessfulDebuff = UUpFightAbilitySystemLibrary::IsSuccessfulDebuff(Props.EffectContextHandle);
+	if (IsSuccessfulDebuff)
+	{	// получаем из контекста значения дебаффа, которые мы назначили в UExecCalc_Damage::DetermineDebuff, а там мы получили из FightAbilitySystemLibrary::UpFightApplyGameplayEffect  которые мы получили из UDamageGameplayAbility::MakeDefaultDamageEffectParams
+		float DebuffFrequency = UUpFightAbilitySystemLibrary::GetDebuffFrequency(Props.EffectContextHandle);
+		float DebuffDuration = UUpFightAbilitySystemLibrary::GetDebuffDuration(Props.EffectContextHandle);
+		float DebuffDamageValue = UUpFightAbilitySystemLibrary::GetDebuffDamage(Props.EffectContextHandle);
+		
+		// тег урона, например урон огня
+		TSharedPtr<FGameplayTag> DamageType = UUpFightAbilitySystemLibrary::GetDamageType(Props.EffectContextHandle);
+		
+		// получаем EffectContextHandle
+		FGameplayEffectContextHandle EffectContextHandle  =  Props.SourceAbilitySystemComponent->MakeEffectContext();
+		EffectContextHandle.AddSourceObject(Props.SourceAvatarActor);
+		
+		// получаем контекст, кастуем ради того, чтобы назначить в контекст наш тег урона для будущего
+		FUpFightGameplayEffectContext* UpFightGameplayEffectContext = static_cast<FUpFightGameplayEffectContext*>(EffectContextHandle.Get());
+		UpFightGameplayEffectContext->SetDamageType(DamageType);
+		
+		// далее мы создаем эффекта дебаффа на основе обычного эффекта
+		UGameplayEffect* DebuffGameplayEffect = NewObject<UGameplayEffect>();
+		// назначаем ему длительность и период, который мы назначали в заклинаний
+		DebuffGameplayEffect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
+		DebuffGameplayEffect->DurationMagnitude = FGameplayEffectModifierMagnitude(DebuffDuration);
+		DebuffGameplayEffect->Period = DebuffFrequency;
+		
+		// указываем стаки не больше одного
+		DebuffGameplayEffect->StackingType = EGameplayEffectStackingType::AggregateBySource;
+		DebuffGameplayEffect->StackLimitCount = 1;
+
+		// добавляем модификатор атрибуда, это будет урон и прибавляем его
+		FGameplayModifierInfo DebuffModifier;
+		DebuffModifier.Attribute = GetDamageAttribute();
+		DebuffModifier.ModifierOp = EGameplayModOp::AddBase;
+		DebuffModifier.ModifierMagnitude = FGameplayEffectModifierMagnitude(DebuffDamageValue);
+		
+		// добавляем его в массив
+		DebuffGameplayEffect->Modifiers.Add(DebuffModifier);
+		
+		// и применяем эффект на враге
+		Props.TargetAbilitySystemComponent->ApplyGameplayEffectToSelf(DebuffGameplayEffect,1,EffectContextHandle);
+	}
+}
+
+
 void UUpFightAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
@@ -266,6 +315,7 @@ void UUpFightAttributeSet::SendXPEvent(FEffectProperties& Props)
 	// далее отправим ивент, котоырый активирует WaitGameplayEvent в GA_ListenForEvent
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter,UpGameplayTags.Attribute_Meta_IncomingXP,Payload);
 }
+
 
 void UUpFightAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)
 {

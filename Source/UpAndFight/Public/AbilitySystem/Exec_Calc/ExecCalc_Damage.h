@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
+#include "UpFightGameplayTags.h"
 #include "ExecCalc_Damage.generated.h"
 
 
@@ -16,6 +17,8 @@ class UPANDFIGHT_API UExecCalc_Damage : public UGameplayEffectExecutionCalculati
 	GENERATED_BODY()
 public:
 	UExecCalc_Damage();
+	void DetermineDebuff(FUpFightGameplayTags& GameplayTags, const FGameplayEffectSpec& Spec,
+	                     const FGameplayTag& DamageTypeTag, float& DamageTypeValue) const;
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 	
 };

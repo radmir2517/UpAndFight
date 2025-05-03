@@ -183,9 +183,9 @@ FGameplayEffectContextHandle UUpFightAbilitySystemLibrary::UpFightApplyGameplayE
 	for(auto Pair : DamageEffectParams.DamageTagAndValue)
 	{
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,Pair.Key,Pair.Value);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.DamageTypesToDebuff[Pair.Key], DamageEffectParams.DebuffDamage);
 	}
-	// назначаем дебаффу его параметры
-	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.Debuff_Damage, DamageEffectParams.DebuffDamage);
+	// назначаем дебаффу его параметры полученные из UDamageGameplayAbility::MakeDefaultDamageEffectParams
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.Debuff_Chance, DamageEffectParams.DebuffChance);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.Debuff_Duration, DamageEffectParams.DebuffDuration);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.Debuff_Frequency, DamageEffectParams.DebuffFrequency);
@@ -193,6 +193,98 @@ FGameplayEffectContextHandle UUpFightAbilitySystemLibrary::UpFightApplyGameplayE
 	DamageEffectParams.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	// возвращаем контекст для дальнейшего взаимодействия
 	return ContextHandle;
+}
+
+bool UUpFightAbilitySystemLibrary::IsSuccessfulDebuff(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FUpFightGameplayEffectContext* EffectContext = static_cast<const FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return EffectContext->IsSuccessfulDebuff();
+	}
+	return false;
+}
+
+float UUpFightAbilitySystemLibrary::GetDebuffDuration(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FUpFightGameplayEffectContext* EffectContext = static_cast<const FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return EffectContext->GetDebuffDuration();
+	}
+	return 0.f;
+}
+
+float UUpFightAbilitySystemLibrary::GetDebuffFrequency(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FUpFightGameplayEffectContext* EffectContext = static_cast<const FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return EffectContext->GetDebuffFrequency();
+	}
+	return 0.f;
+}
+
+TSharedPtr<FGameplayTag> UUpFightAbilitySystemLibrary::GetDamageType(
+	const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FUpFightGameplayEffectContext* EffectContext = static_cast<const FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return EffectContext->GetDamageType();
+	}
+	return nullptr;
+}
+
+void UUpFightAbilitySystemLibrary::SetSuccessDebuff(FGameplayEffectContextHandle& EffectContextHandle,
+	bool InIsSuccessfulDebuff)
+{
+	if (FUpFightGameplayEffectContext* EffectContext = static_cast<FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		EffectContext->SetIsSuccessfulDebuff(InIsSuccessfulDebuff);
+	}
+}
+
+void UUpFightAbilitySystemLibrary::SetDebuffDamage(FGameplayEffectContextHandle& EffectContextHandle, float InDamage)
+{
+	if (FUpFightGameplayEffectContext* EffectContext = static_cast<FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		EffectContext->SetDebuffDamage(InDamage);
+	}
+}
+
+void UUpFightAbilitySystemLibrary::SetDebuffDuration(FGameplayEffectContextHandle& EffectContextHandle,
+	float InDuration)
+{
+	if (FUpFightGameplayEffectContext* EffectContext = static_cast<FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		EffectContext->SetDebuffDuration(InDuration);
+	}
+}
+
+void UUpFightAbilitySystemLibrary::SetDebuffFrequency(FGameplayEffectContextHandle& EffectContextHandle,
+	float InFrequency)
+{
+	if (FUpFightGameplayEffectContext* EffectContext = static_cast<FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		EffectContext->SetDebuffFrequency(InFrequency);
+	}
+}
+
+void UUpFightAbilitySystemLibrary::SetDamageType(FGameplayEffectContextHandle& EffectContextHandle,
+	const FGameplayTag& InDamageType)
+{
+	if (FUpFightGameplayEffectContext* EffectContext = static_cast<FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		TSharedPtr<FGameplayTag> DamageType = MakeShared<FGameplayTag>(InDamageType);
+		EffectContext->SetDamageType(DamageType);
+	}
+}
+
+
+float UUpFightAbilitySystemLibrary::GetDebuffDamage(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FUpFightGameplayEffectContext* EffectContext = static_cast<const FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return EffectContext->GetDebuffDamage();
+	}
+	return 0.f;
 }
 
 int32 UUpFightAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* WorldContextObject,const  ECharacterClass& Class, const int32 Level)

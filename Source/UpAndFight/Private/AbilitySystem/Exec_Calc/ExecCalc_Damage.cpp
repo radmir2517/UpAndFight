@@ -3,7 +3,9 @@
 
 #include "AbilitySystem/Exec_Calc/ExecCalc_Damage.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "UpFightGameplayTags.h"
+#include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "AbilitySystem/UpFightAttributeSet.h"
 
 //Структура в который мы можем определять вторичные атрибуты которые будут корректировать урон персонажа
@@ -22,7 +24,7 @@ struct UpFightDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UUpFightAttributeSet,PhysicalResistance,Target,false);
 	}
 };
-// статическая  функция которая будет вовзращать синглтон структуры выше
+// статическая функция которая будет вовзращать синглтон структуры выше
 static UpFightDamageStatics& DamageStatics()
 {	// он будет лишь один до конца работы программы
 	static UpFightDamageStatics DStatics;
@@ -36,6 +38,31 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(DamageStatics().ArcaneResistanceDef);
 	RelevantAttributesToCapture.Add(DamageStatics().PhysicalResistanceDef);
 	
+}
+
+void UExecCalc_Damage::DetermineDebuff(FUpFightGameplayTags& GameplayTags, const FGameplayEffectSpec& Spec, const FGameplayTag& DamageTypeTag, float& DamageTypeValue) const
+{
+	// получим тег дебаффа
+	FGameplayTag& DebuffTag = GameplayTags.DamageTypesToDebuff[DamageTypeTag];
+	FGameplayEffectContextHandle ContextHandle = Spec.GetEffectContext();
+	
+	// получим шанс дебаффа
+	float DebuffChance = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Chance,false);
+	// рассчитаем, сработает ли дебафф
+	if (DebuffChance > FMath::RandRange(0.f,100.f))
+	{
+		UUpFightAbilitySystemLibrary::SetSuccessDebuff(ContextHandle,true);
+		UUpFightAbilitySystemLibrary::SetDamageType(ContextHandle,DamageTypeTag);
+		
+		// получим урон дебаффа который мы назначили в UpFightAbilitySystemLibrary::UpFightApplyGameplayEffect которые мы получили из UDamageGameplayAbility::MakeDefaultDamageEffectParams
+		float DebuffDamage = Spec.GetSetByCallerMagnitude(DebuffTag,false,0);
+		float DebuffDuration = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Duration,false,0);
+		float DebuffFrequency = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Frequency,false,0);
+		// передадим в контекст значения дебаффа
+		UUpFightAbilitySystemLibrary::SetDebuffDamage(ContextHandle,DebuffDamage);
+		UUpFightAbilitySystemLibrary::SetDebuffDuration(ContextHandle,DebuffDuration);
+		UUpFightAbilitySystemLibrary::SetDebuffFrequency(ContextHandle,DebuffFrequency);
+	}
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -81,9 +108,13 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		float Resistance = 0.f;
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef,EvaluateParameters,Resistance);
 		Resistance = FMath::Clamp(Resistance,0.f,100.f);
+		
+		// функция получение и расчета дебаффа и прибавления его к основному урону
+		DetermineDebuff(GameplayTags, Spec, DamageTypeTag, DamageTypeValue);
+		
 		// далее возьмем урон и вычтем процент сопротивления
 		DamageTypeValue *= (100.f - Resistance) / 100.f;
-		
+		// и прибавим к основному значению урона
 		Damage += DamageTypeValue;
 	}
 	if(Damage==0.f) return;

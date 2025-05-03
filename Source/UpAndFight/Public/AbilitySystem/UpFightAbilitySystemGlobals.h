@@ -14,7 +14,7 @@ class UPANDFIGHT_API UUpFightAbilitySystemGlobals : public UAbilitySystemGlobals
 {
 	GENERATED_BODY()
 public:
-	/** Should allocate a project specific GameplayEffectContext struct. Caller is responsible for deallocation */
+	// функция, которая активируется после MakeEffectContext при создании эффекта
 	 virtual FGameplayEffectContext* AllocGameplayEffectContext() const override;
 
 	

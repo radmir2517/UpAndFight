@@ -5,7 +5,6 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "GameplayEffect.h"
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "Components/AudioComponent.h"
@@ -68,7 +67,7 @@ void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		if(HasAuthority())
 		{
 			if(UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
-			{
+			{	// получаем цель атаки и применяем на нем эффект урона
 				DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
 				UUpFightAbilitySystemLibrary::UpFightApplyGameplayEffect(DamageEffectParams);
 			}

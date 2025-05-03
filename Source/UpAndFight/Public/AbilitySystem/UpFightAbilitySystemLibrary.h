@@ -7,6 +7,8 @@
 #include "UpFightAbilitySystemLibrary.generated.h"
 
 
+class UAbilityDataAsset;
+struct FGameplayEffectSpec;
 struct FGameplayEffectContextHandle;
 struct FDamageEffectParams;
 class USpellWidgetController;
@@ -63,8 +65,28 @@ public:
 	/*
 	 * Gameplay Effect 
 	 */
-	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|CommonAttributes")
+	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|GameplayEffect")
 	static FGameplayEffectContextHandle UpFightApplyGameplayEffect(const FDamageEffectParams& DamageEffectParams);
+	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayEffect")
+	static bool IsSuccessfulDebuff(const FGameplayEffectContextHandle& EffectContextHandle);
+	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayEffect")
+	static float GetDebuffDamage(const FGameplayEffectContextHandle& EffectContextHandle);
+	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayEffect")
+	static float GetDebuffDuration(const FGameplayEffectContextHandle& EffectContextHandle);
+	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayEffect")
+	static float GetDebuffFrequency(const FGameplayEffectContextHandle& EffectContextHandle);
+	static TSharedPtr<FGameplayTag> GetDamageType(const FGameplayEffectContextHandle& EffectContextHandle);
+
+	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|GameplayEffect")
+	static void SetSuccessDebuff(FGameplayEffectContextHandle& EffectContextHandle, bool InIsSuccessfulDebuff);
+	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|GameplayEffect")
+	static void SetDebuffDamage(FGameplayEffectContextHandle& EffectContextHandle, float InDamage);
+	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|GameplayEffect")
+	static void SetDebuffDuration(FGameplayEffectContextHandle& EffectContextHandle, float InDuration);
+	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|GameplayEffect")
+	static void SetDebuffFrequency(FGameplayEffectContextHandle& EffectContextHandle, float InFrequency);
+	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayEffect")
+	static void SetDamageType(FGameplayEffectContextHandle& EffectContextHandle,const FGameplayTag& InDamageType);
 	/*
 	 * Gameplay Mechanics
 	 */

@@ -38,9 +38,25 @@ bool FUpFightGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map,
 		{
 			RepBits |= 1 << 6;
 		}
+		if (bIsSuccessfulDebuff)
+		{
+			RepBits |= 1 << 7;
+		}
+		if (DebuffDamage > 0.f)
+		{
+			RepBits |= 1 << 8;
+		}
+		if (DebuffDuration > 0.f)
+		{
+			RepBits |= 1 << 9;
+		}
+		if (DebuffFrequency > 0.f)
+		{
+			RepBits |= 1 << 10;
+		}
 	}
 
-	Ar.SerializeBits(&RepBits, 7);
+	Ar.SerializeBits(&RepBits, 11);
 
 	if (RepBits & (1 << 0))
 	{
@@ -81,6 +97,33 @@ bool FUpFightGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map,
 	else
 	{
 		bHasWorldOrigin = false;
+	}
+	if (RepBits & (1 << 7))
+	{
+		Ar << bIsSuccessfulDebuff;
+	}
+	if (RepBits & (1 << 8))
+	{
+		Ar << DebuffDamage;
+	}
+	if (RepBits & (1 << 9))
+	{
+		Ar << DebuffDuration;
+	}
+	if (RepBits & (1 << 10))
+	{
+		Ar << DebuffFrequency;
+	}
+	if (RepBits & (1 << 11))
+	{
+		if (Ar.IsLoading())
+		{
+			if (!DamageType.IsValid())
+			{
+				DamageType = TSharedPtr<FGameplayTag>(new FGameplayTag());
+			}
+		}
+			DamageType->NetSerialize(Ar, Map, bOutSuccess);
 	}
 
 	if (Ar.IsLoading())
