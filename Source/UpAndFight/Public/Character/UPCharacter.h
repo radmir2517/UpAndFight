@@ -15,6 +15,8 @@ class UGameplayEffect;
 /**
  * 
  */
+
+
 UCLASS()
 class UPANDFIGHT_API AUPCharacter : public AUPCharacterBase, public IPlayerInterface
 {

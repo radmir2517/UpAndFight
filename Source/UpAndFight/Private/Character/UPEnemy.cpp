@@ -68,6 +68,8 @@ void AUPEnemy::PossessedBy(AController* NewController)
 	BlackBoardComponent->SetValueAsBool("RangedAttacker", CharacterClass != ECharacterClass::Warrior);
 	// далле запустим работы нашего дерева
 	UpFightAIController->RunBehaviorTree(BehaviorTree);
+	// делегат который сообщит в debuffNiagara что AbilitySystem Инициализирован
+	AbilitySystemInitializedDelegate.ExecuteIfBound();
 }
 
 void AUPEnemy::InitAbilityInfo()

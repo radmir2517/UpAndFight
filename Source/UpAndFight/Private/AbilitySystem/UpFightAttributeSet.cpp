@@ -131,7 +131,7 @@ void UUpFightAttributeSet::OnRep_PhysicalResistance(const FGameplayAttributeData
 void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
-
+	
 	FEffectProperties Props;
 	// получим SourceASC, SourceCharacter, SourceAvatarActor, SourceController, TargetASC, TargetCharacter,TargetAvatarActor, TargetController и EffectContextHandle
 	SetEffectProperties(Data, Props);
@@ -194,7 +194,7 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 			ICombatInterface::Execute_Die(Props.TargetCharacter);
 		}
 		// функция дебаффа, она ниже
-		Debuff(Props);
+		Debuff(Props,Data);
 	}
 	if(Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
 	{
@@ -238,19 +238,21 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 	}
 }
 
-void UUpFightAttributeSet::Debuff(const FEffectProperties& Props)
+void UUpFightAttributeSet::Debuff(const FEffectProperties& Props, const FGameplayEffectModCallbackData& Data)
 {
 	// проверяем что дебафф есть
 	bool IsSuccessfulDebuff = UUpFightAbilitySystemLibrary::IsSuccessfulDebuff(Props.EffectContextHandle);
 	if (IsSuccessfulDebuff)
-	{	// получаем из контекста значения дебаффа, которые мы назначили в UExecCalc_Damage::DetermineDebuff, а там мы получили из FightAbilitySystemLibrary::UpFightApplyGameplayEffect  которые мы получили из UDamageGameplayAbility::MakeDefaultDamageEffectParams
+	{
+		FUpFightGameplayTags& UpFightGameplayTags = FUpFightGameplayTags::Get();
+		
+		// получаем из контекста значения дебаффа, которые мы назначили в UExecCalc_Damage::DetermineDebuff, а там мы получили из FightAbilitySystemLibrary::UpFightApplyGameplayEffect  которые мы получили из UDamageGameplayAbility::MakeDefaultDamageEffectParams
 		float DebuffFrequency = UUpFightAbilitySystemLibrary::GetDebuffFrequency(Props.EffectContextHandle);
 		float DebuffDuration = UUpFightAbilitySystemLibrary::GetDebuffDuration(Props.EffectContextHandle);
 		float DebuffDamageValue = UUpFightAbilitySystemLibrary::GetDebuffDamage(Props.EffectContextHandle);
 		
 		// тег урона, например урон огня
 		TSharedPtr<FGameplayTag> DamageType = UUpFightAbilitySystemLibrary::GetDamageType(Props.EffectContextHandle);
-		
 		// получаем EffectContextHandle
 		FGameplayEffectContextHandle EffectContextHandle  =  Props.SourceAbilitySystemComponent->MakeEffectContext();
 		EffectContextHandle.AddSourceObject(Props.SourceAvatarActor);
@@ -258,7 +260,7 @@ void UUpFightAttributeSet::Debuff(const FEffectProperties& Props)
 		// получаем контекст, кастуем ради того, чтобы назначить в контекст наш тег урона для будущего
 		FUpFightGameplayEffectContext* UpFightGameplayEffectContext = static_cast<FUpFightGameplayEffectContext*>(EffectContextHandle.Get());
 		UpFightGameplayEffectContext->SetDamageType(DamageType);
-		
+				
 		// далее мы создаем эффекта дебаффа на основе обычного эффекта
 		UGameplayEffect* DebuffGameplayEffect = NewObject<UGameplayEffect>();
 		// назначаем ему длительность и период, который мы назначали в заклинаний
@@ -269,7 +271,7 @@ void UUpFightAttributeSet::Debuff(const FEffectProperties& Props)
 		// указываем стаки не больше одного
 		DebuffGameplayEffect->StackingType = EGameplayEffectStackingType::AggregateBySource;
 		DebuffGameplayEffect->StackLimitCount = 1;
-
+					
 		// добавляем модификатор атрибуда, это будет урон и прибавляем его
 		FGameplayModifierInfo DebuffModifier;
 		DebuffModifier.Attribute = GetDamageAttribute();
@@ -278,9 +280,15 @@ void UUpFightAttributeSet::Debuff(const FEffectProperties& Props)
 		
 		// добавляем его в массив
 		DebuffGameplayEffect->Modifiers.Add(DebuffModifier);
-		
-		// и применяем эффект на враге
-		Props.TargetAbilitySystemComponent->ApplyGameplayEffectToSelf(DebuffGameplayEffect,1,EffectContextHandle);
+
+		if (FGameplayEffectSpec* DebuffEffectSpec = new FGameplayEffectSpec(DebuffGameplayEffect,EffectContextHandle,1.f))
+		{
+			FGameplayEffectSpecHandle DebuffEffectSpecHandle = FGameplayEffectSpecHandle(DebuffEffectSpec);
+			UAbilitySystemBlueprintLibrary::AddGrantedTag(DebuffEffectSpecHandle,UpFightGameplayTags.Debuff_Fire);
+			// и применяем эффект на враге
+			Props.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*DebuffEffectSpecHandle.Data.Get());
+			//Props.TargetAbilitySystemComponent->ApplyGameplayEffectToSelf(DebuffGameplayEffect,1,EffectContextHandle);
+		}
 	}
 }
 

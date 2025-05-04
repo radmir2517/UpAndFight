@@ -40,30 +40,6 @@ UExecCalc_Damage::UExecCalc_Damage()
 	
 }
 
-void UExecCalc_Damage::DetermineDebuff(FUpFightGameplayTags& GameplayTags, const FGameplayEffectSpec& Spec, const FGameplayTag& DamageTypeTag, float& DamageTypeValue) const
-{
-	// получим тег дебаффа
-	FGameplayTag& DebuffTag = GameplayTags.DamageTypesToDebuff[DamageTypeTag];
-	FGameplayEffectContextHandle ContextHandle = Spec.GetEffectContext();
-	
-	// получим шанс дебаффа
-	float DebuffChance = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Chance,false);
-	// рассчитаем, сработает ли дебафф
-	if (DebuffChance > FMath::RandRange(0.f,100.f))
-	{
-		UUpFightAbilitySystemLibrary::SetSuccessDebuff(ContextHandle,true);
-		UUpFightAbilitySystemLibrary::SetDamageType(ContextHandle,DamageTypeTag);
-		
-		// получим урон дебаффа который мы назначили в UpFightAbilitySystemLibrary::UpFightApplyGameplayEffect которые мы получили из UDamageGameplayAbility::MakeDefaultDamageEffectParams
-		float DebuffDamage = Spec.GetSetByCallerMagnitude(DebuffTag,false,0);
-		float DebuffDuration = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Duration,false,0);
-		float DebuffFrequency = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Frequency,false,0);
-		// передадим в контекст значения дебаффа
-		UUpFightAbilitySystemLibrary::SetDebuffDamage(ContextHandle,DebuffDamage);
-		UUpFightAbilitySystemLibrary::SetDebuffDuration(ContextHandle,DebuffDuration);
-		UUpFightAbilitySystemLibrary::SetDebuffFrequency(ContextHandle,DebuffFrequency);
-	}
-}
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
                                               FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -132,5 +108,29 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// в выходной массив мы отправим нашу структуру с измененнным атрибутом урона
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
 	
+}
+
+void UExecCalc_Damage::DetermineDebuff(FUpFightGameplayTags& GameplayTags, const FGameplayEffectSpec& Spec, const FGameplayTag& DamageTypeTag, float& DamageTypeValue) const
+{
+	// получим тег дебаффа
+	FGameplayTag& DebuffTag = GameplayTags.DamageTypesToDebuff[DamageTypeTag];
+	FGameplayEffectContextHandle ContextHandle = Spec.GetEffectContext();
 	
+	// получим шанс дебаффа
+	float DebuffChance = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Chance,false);
+	// рассчитаем, сработает ли дебафф
+	if (DebuffChance > FMath::RandRange(0.f,100.f))
+	{
+		UUpFightAbilitySystemLibrary::SetSuccessDebuff(ContextHandle,true);
+		UUpFightAbilitySystemLibrary::SetDamageType(ContextHandle,DamageTypeTag);
+		
+		// получим урон дебаффа который мы назначили в UpFightAbilitySystemLibrary::UpFightApplyGameplayEffect которые мы получили из UDamageGameplayAbility::MakeDefaultDamageEffectParams
+		float DebuffDamage = Spec.GetSetByCallerMagnitude(DebuffTag,false,0);
+		float DebuffDuration = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Duration,false,0);
+		float DebuffFrequency = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Frequency,false,0);
+		// передадим в контекст значения дебаффа
+		UUpFightAbilitySystemLibrary::SetDebuffDamage(ContextHandle,DebuffDamage);
+		UUpFightAbilitySystemLibrary::SetDebuffDuration(ContextHandle,DebuffDuration);
+		UUpFightAbilitySystemLibrary::SetDebuffFrequency(ContextHandle,DebuffFrequency);
+	}
 }

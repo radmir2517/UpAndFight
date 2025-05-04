@@ -3,8 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "NiagaraComponent.h"
 #include "DebuffNiagaraComponent.generated.h"
+
+
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -16,12 +19,16 @@ public:
 	// Sets default values for this component's properties
 	UDebuffNiagaraComponent();
 
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+							   FActorComponentTickFunction* ThisTickFunction) override;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Niagara")
+	TMap<FGameplayTag, UNiagaraSystem*> NiagaraEffectToDebuffTag;
 
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
+	void DebuffTagChanged(FGameplayTag DebuffTag, int32 NewCount);
 };

@@ -19,7 +19,8 @@ class UUpFightAttributeSet;
 class UUpFightSystemComponent;
 class UAttributeSet;
 
-
+// делегат который просто активируется после выполнения PossessedBy
+DECLARE_DELEGATE(FAbilitySystemInitializedSignature);
 
 // сделаем класс абстрактным, чтобы нельзя было его создать
 UCLASS(Abstract)
@@ -52,7 +53,8 @@ public:
 	virtual int32 GetMinionsCount_Implementation() override;
 	virtual int32 GetMaxMinionsCount_Implementation() override;
 	/*end ICombatInterface*/
-	
+
+	FAbilitySystemInitializedSignature AbilitySystemInitializedDelegate;
 protected:
 	virtual void BeginPlay() override;
 	
