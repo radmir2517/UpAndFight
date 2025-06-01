@@ -34,6 +34,10 @@ public:
 	float DebuffDuration = 0.f;
 	UPROPERTY(EditDefaultsOnly, Category="Damage Properties")
 	float DebuffFrequency = 0.f;
+	UPROPERTY(EditDefaultsOnly, Category="Damage Properties")
+	float DeathImpulseMagnitude = 0.f;
+
+	
 
 	
 

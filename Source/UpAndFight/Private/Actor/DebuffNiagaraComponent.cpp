@@ -12,7 +12,6 @@ UDebuffNiagaraComponent::UDebuffNiagaraComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	bAutoActivate = false;
-
 }
 
 
@@ -23,7 +22,7 @@ void UDebuffNiagaraComponent::BeginPlay()
 	AUPCharacterBase* UpCharacterBase = Cast<AUPCharacterBase>(GetOwner());
 	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner());
 	if (ASC == nullptr)
-	{
+	{	// после PossessedBy получим делегат что AbilitySystem инициализирован
 		UpCharacterBase->AbilitySystemInitializedDelegate.BindLambda([&]()
 		{
 			ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner());

@@ -192,6 +192,7 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 			// отправления ивента получения опыта со значением опыта
 			SendXPEvent(Props);
 			ICombatInterface::Execute_Die(Props.TargetCharacter);
+			//TODO: применить DeathImpulse который мы записали в эффект при смерти
 		}
 		// функция дебаффа, она ниже
 		Debuff(Props,Data);

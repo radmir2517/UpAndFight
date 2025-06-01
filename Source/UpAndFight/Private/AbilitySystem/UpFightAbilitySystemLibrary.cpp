@@ -185,6 +185,11 @@ FGameplayEffectContextHandle UUpFightAbilitySystemLibrary::UpFightApplyGameplayE
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,Pair.Key,Pair.Value);
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.DamageTypesToDebuff[Pair.Key], DamageEffectParams.DebuffDamage);
 	}
+	// если задан импульс смерти, то передадим его в контекст чтобы дальше его применить при смерти
+	if (DamageEffectParams.DeathImpulseMagnitude > 0.0f)
+	{
+		SetDeathImpulse(ContextHandle,DamageEffectParams.DeathImpulse);
+	}
 	// назначаем дебаффу его параметры полученные из UDamageGameplayAbility::MakeDefaultDamageEffectParams
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.Debuff_Chance, DamageEffectParams.DebuffChance);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,GameplayTags.Debuff_Duration, DamageEffectParams.DebuffDuration);
@@ -232,8 +237,17 @@ TSharedPtr<FGameplayTag> UUpFightAbilitySystemLibrary::GetDamageType(
 	return nullptr;
 }
 
+FVector UUpFightAbilitySystemLibrary::GetDeathVector(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FUpFightGameplayEffectContext* EffectContext = static_cast<const FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return EffectContext->GetDeathImpulse();
+	}
+	return FVector::ZeroVector;
+}
+
 void UUpFightAbilitySystemLibrary::SetSuccessDebuff(FGameplayEffectContextHandle& EffectContextHandle,
-	bool InIsSuccessfulDebuff)
+                                                    bool InIsSuccessfulDebuff)
 {
 	if (FUpFightGameplayEffectContext* EffectContext = static_cast<FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
@@ -274,6 +288,15 @@ void UUpFightAbilitySystemLibrary::SetDamageType(FGameplayEffectContextHandle& E
 	{
 		TSharedPtr<FGameplayTag> DamageType = MakeShared<FGameplayTag>(InDamageType);
 		EffectContext->SetDamageType(DamageType);
+	}
+}
+
+void UUpFightAbilitySystemLibrary::SetDeathImpulse(FGameplayEffectContextHandle& EffectContextHandle,
+	const FVector& InDeathImpulse)
+{
+	if (FUpFightGameplayEffectContext* EffectContext = static_cast<FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		EffectContext->SetDeathImpulse(InDeathImpulse);
 	}
 }
 

@@ -36,6 +36,10 @@ struct FDamageEffectParams
 	float DebuffFrequency = 0.f;
 	UPROPERTY()
 	float DebuffDuration = 0.f;
+	UPROPERTY()
+	FVector DeathImpulse = FVector::ZeroVector;
+	UPROPERTY()
+	float DeathImpulseMagnitude = 0.f;
 };
 
 
@@ -57,12 +61,16 @@ public:
 	float GetDebuffDuration() const {return DebuffDuration;}
 	float GetDebuffFrequency() const {return DebuffFrequency;}
 	TSharedPtr<FGameplayTag> GetDamageType() const {return DamageType;}
+	FVector GetDeathImpulse () const {return DeathImpulse;}
+	float GetDeathImpulseMagnitude() const {return DeathImpulseMagnitude;}
 
 	void SetIsSuccessfulDebuff(bool bIsSuccess) {bIsSuccessfulDebuff = bIsSuccess;}
 	void SetDebuffDamage(float InDamage) {DebuffDamage = InDamage;}
 	void SetDebuffDuration(float InDuration) {DebuffDuration = InDuration;}
 	void SetDebuffFrequency(float InFrequency) {DebuffFrequency = InFrequency;}
 	void SetDamageType(const TSharedPtr<FGameplayTag>& InDamageType) {DamageType = InDamageType;}
+	void SetDeathImpulse(const FVector InDeath) {DeathImpulse = InDeath;}
+	void SetDeathImpulseMagnitude(const float InDeathImpulseMagnitude) {DeathImpulseMagnitude = InDeathImpulseMagnitude;}
 	
 protected:
 	// сюда мы может добавлять переменные который будет сериализовывать, например шанс крита или блока например
@@ -79,8 +87,14 @@ protected:
 	float DebuffDuration = 0.f;
 	UPROPERTY()
 	float DebuffFrequency = 0.f;
+	UPROPERTY()
+	float DeathImpulseMagnitude = 0.f;
 	// указатель на тег урона
 	TSharedPtr<FGameplayTag> DamageType;
+
+	// добавим импульс дебаффа
+	UPROPERTY()
+	FVector DeathImpulse = FVector::ZeroVector;
 };
 
 // используется для определения специальных свойств и поведения пользовательских структур для сетевой сериализации

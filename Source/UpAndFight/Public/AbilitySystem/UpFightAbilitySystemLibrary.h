@@ -76,7 +76,10 @@ public:
 	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayEffect")
 	static float GetDebuffFrequency(const FGameplayEffectContextHandle& EffectContextHandle);
 	static TSharedPtr<FGameplayTag> GetDamageType(const FGameplayEffectContextHandle& EffectContextHandle);
-
+	// получим импульс смерти в при применении заклинание шара GetActorForwardVector * GetDeathImpulseMagnitude
+	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayEffect")
+	static FVector GetDeathVector(const FGameplayEffectContextHandle& EffectContextHandle);
+	
 	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|GameplayEffect")
 	static void SetSuccessDebuff(FGameplayEffectContextHandle& EffectContextHandle, bool InIsSuccessfulDebuff);
 	UFUNCTION(BlueprintCallable, Category="UPFightAbilitySystemLibrary|GameplayEffect")
@@ -87,6 +90,9 @@ public:
 	static void SetDebuffFrequency(FGameplayEffectContextHandle& EffectContextHandle, float InFrequency);
 	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayEffect")
 	static void SetDamageType(FGameplayEffectContextHandle& EffectContextHandle,const FGameplayTag& InDamageType);
+	// зададим импульс смерти в при применении заклинание шара GetActorForwardVector * GetDeathImpulseMagnitude
+	UFUNCTION(BlueprintPure, Category="UPFightAbilitySystemLibrary|GameplayEffect")
+	static void SetDeathImpulse(FGameplayEffectContextHandle& EffectContextHandle,const FVector& InDeathImpulse);
 	/*
 	 * Gameplay Mechanics
 	 */

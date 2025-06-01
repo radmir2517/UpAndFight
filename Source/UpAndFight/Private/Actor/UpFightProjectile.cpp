@@ -8,7 +8,9 @@
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/UpFightAbilitySystemLibrary.h"
 #include "Components/AudioComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "UpAndFight/UpAndFight.h"
@@ -68,7 +70,11 @@ void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		{
 			if(UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{	// получаем цель атаки и применяем на нем эффект урона
-				DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+				if (DamageEffectParams.DeathImpulseMagnitude > 0.f)
+				{// зададим импульс при смерти если у нас установлен не 0
+					DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+					DamageEffectParams.DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
+				}
 				UUpFightAbilitySystemLibrary::UpFightApplyGameplayEffect(DamageEffectParams);
 			}
 			Destroy();
