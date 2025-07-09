@@ -72,9 +72,9 @@ void AUpFightProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 			{	// получаем цель атаки и применяем на нем эффект урона
 				if (DamageEffectParams.DeathImpulseMagnitude > 0.f)
 				{// зададим импульс при смерти если у нас установлен не 0
-					DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
 					DamageEffectParams.DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
 				}
+				DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
 				UUpFightAbilitySystemLibrary::UpFightApplyGameplayEffect(DamageEffectParams);
 			}
 			Destroy();

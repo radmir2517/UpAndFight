@@ -237,7 +237,7 @@ TSharedPtr<FGameplayTag> UUpFightAbilitySystemLibrary::GetDamageType(
 	return nullptr;
 }
 
-FVector UUpFightAbilitySystemLibrary::GetDeathVector(const FGameplayEffectContextHandle& EffectContextHandle)
+FVector UUpFightAbilitySystemLibrary::GetDeathImpulse(const FGameplayEffectContextHandle& EffectContextHandle)
 {
 	if (const FUpFightGameplayEffectContext* EffectContext = static_cast<const FUpFightGameplayEffectContext*>(EffectContextHandle.Get()))
 	{

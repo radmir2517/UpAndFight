@@ -41,7 +41,7 @@ public:
 	virtual void UpdateMotionWarping_Implementation(const FVector& TargetLocation) override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
-	virtual void Die_Implementation() override;
+	virtual void Die_Implementation(const FVector& DeathVector) override;
 	virtual bool IsDead_Implementation() override;
 	virtual AActor* GetActor_Implementation() override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
@@ -63,7 +63,7 @@ protected:
 	void AddCharacterStartupAbilities();
 	void GiveAndActivatePassiveAbilities();
 	UFUNCTION(NetMulticast,Reliable)
-	virtual void MulticastHandleDeath();
+	virtual void MulticastHandleDeath(const FVector& DeathVector);
 
 	void Dissolve();
 	UFUNCTION(BlueprintImplementableEvent)

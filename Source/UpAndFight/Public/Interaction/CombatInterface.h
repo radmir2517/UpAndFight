@@ -78,7 +78,7 @@ public:
 	AActor* GetActor();
 	
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
-	void Die();
+	void Die(const FVector& DeathVector);
 
 	
 };

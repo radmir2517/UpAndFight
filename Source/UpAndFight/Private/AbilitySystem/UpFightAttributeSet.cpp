@@ -13,10 +13,12 @@
 #include "AbilitySystem/Abilities/UpFightGameplayAbility.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "Interaction/EnemyInterface.h"
 #include "Interaction/PlayerInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/UpFightPlayerController.h"
 
@@ -191,8 +193,11 @@ void UUpFightAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 		{
 			// отправления ивента получения опыта со значением опыта
 			SendXPEvent(Props);
-			ICombatInterface::Execute_Die(Props.TargetCharacter);
+			FVector DeathImpulse = UUpFightAbilitySystemLibrary::GetDeathImpulse(Props.EffectContextHandle);
+			ICombatInterface::Execute_Die(Props.TargetCharacter,DeathImpulse);
 			//TODO: применить DeathImpulse который мы записали в эффект при смерти
+			
+			
 		}
 		// функция дебаффа, она ниже
 		Debuff(Props,Data);

@@ -49,7 +49,7 @@ public:
 	/* end EnemyInterface */
 	
 
-	virtual void MulticastHandleDeath_Implementation() override;
+	virtual void MulticastHandleDeath_Implementation(const FVector& DeathVector) override;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UWidgetComponent> HealthWidgetComponent;
 

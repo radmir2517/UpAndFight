@@ -81,10 +81,10 @@ TArray<FTaggedMontage> AUPCharacterBase::GetAttackMontages_Implementation()
 	return AttackMontages;
 }
 
-void AUPCharacterBase::Die_Implementation()
+void AUPCharacterBase::Die_Implementation(const FVector& DeathVector)
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	MulticastHandleDeath();
+	MulticastHandleDeath(DeathVector);
 }
 
 bool AUPCharacterBase::IsDead_Implementation()
@@ -129,13 +129,12 @@ int32 AUPCharacterBase::GetMaxMinionsCount_Implementation()
 	return MaxMinionsCount;
 }
 
-void AUPCharacterBase::MulticastHandleDeath_Implementation()
+void AUPCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathVector)
 {
 	
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic,ECR_Block);
 	GetMesh()->SetSimulatePhysics(true);
-	
 	
 	Weapon->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	Weapon->SetCollisionResponseToChannel(ECC_Pawn,ECR_Block);
@@ -148,6 +147,15 @@ void AUPCharacterBase::MulticastHandleDeath_Implementation()
 	if(IsValid(GetInstigator()))
 	{
 		Execute_IncreaseMinionsCount(GetInstigator(),-1);
+	}
+	
+	if (DeathVector.Size() > 0)
+	{
+		GetMesh()->AddImpulse(DeathVector, NAME_None,true);
+		if (Weapon)
+		{
+			Weapon->AddImpulse(DeathVector * 0.1f, NAME_None,true);
+		}
 	}
 	
 	// воспроивзедения звука смерти

@@ -125,15 +125,14 @@ ECharacterClass AUPEnemy::GetCharacterClass_Implementation()
 	return CharacterClass;
 }
 
-void AUPEnemy::MulticastHandleDeath_Implementation()
+void AUPEnemy::MulticastHandleDeath_Implementation(const FVector& DeathVector)
 {
-	Super::MulticastHandleDeath_Implementation();
+	Super::MulticastHandleDeath_Implementation(DeathVector);
 	if(IsValid(BlackBoardComponent))
 	{
 		BlackBoardComponent->SetValueAsBool("bDead", true);
 	}
 }
-
 
 UEnemyWidgetController* AUPEnemy::GetEnemyWidgetController()
 {
